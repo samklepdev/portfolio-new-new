@@ -26,6 +26,15 @@ export async function getPublishedProjects() {
   });
 }
 
+/**
+ * A project row with its tags and metrics nested, as returned by
+ * getPublishedProjects(). Inferred rather than hand-written so it cannot drift
+ * from the schema or the `with` clause above.
+ */
+export type PublishedProject = Awaited<
+  ReturnType<typeof getPublishedProjects>
+>[number];
+
 /** Single project by slug, for the /projects/[slug] detail page. */
 export async function getProjectBySlug(slug: string) {
   return db.query.projects.findFirst({
