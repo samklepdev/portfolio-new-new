@@ -1,0 +1,186 @@
+.card {
+  position: relative;
+  display: block;
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background-color: #12161f;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 32px rgba(0, 240, 255, 0.1);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--neon-turquoise, #00f0ff);
+  outline-offset: 3px;
+}
+
+/* The lead card spans the full grid width and carries the glow. Turquoise
+   dominates; the purple is a gradient-only accent per the design direction. */
+.featured {
+  border-color: rgba(0, 240, 255, 0.35);
+  background-image: linear-gradient(
+    135deg,
+    rgba(0, 240, 255, 0.07),
+    rgba(176, 38, 255, 0.05) 60%,
+    transparent
+  );
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.12);
+}
+
+.featured:hover,
+.featured:focus-visible {
+  border-color: rgba(0, 240, 255, 0.65);
+  box-shadow: 0 0 56px rgba(0, 240, 255, 0.18);
+}
+
+@media (min-width: 768px) {
+  .featured {
+    grid-column: 1 / -1;
+    padding: 2.5rem;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.375rem;
+}
+
+.role {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.title {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.featured .title {
+  font-size: 2rem;
+}
+
+.summary {
+  margin-top: 0.875rem;
+  max-width: 46ch;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.metricValue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.metricLabel {
+  margin-top: 0.25rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  min-height: 1.75rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.tag {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: rgba(0, 240, 255, 0.85);
+  white-space: nowrap;
+}
+
+.cta {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  color: var(--neon-pink, #ff2e97);
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+.card:hover .arrow,
+.card:focus-visible .arrow {
+  transform: translateX(3px);
+}
+
+/* Hover-reveal, but only where hovering is possible. Touch devices get the
+   tags outright — there is no hover state to discover them with. The tags stay
+   in the DOM either way; this is a visual reveal, not conditional content. */
+@media (hover: hover) and (pointer: fine) {
+  .tags {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .card:hover .tags,
+  .card:focus-visible .tags {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* The lead card is the focal point — its tags read as part of the card
+     rather than a reward for hovering. */
+  .featured .tags {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .arrow,
+  .tags {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    transform: none;
+  }
+}
