@@ -1,6 +1,14 @@
-import { and, eq, asc, desc, sql } from "drizzle-orm";
+import { and, count, eq, asc, desc, sql } from "drizzle-orm";
 import { db } from "./index";
 import { projects } from "./schema";
+
+/** Shared ordering, so a paginated slice matches the unpaginated list exactly. */
+const publishedOrder = [
+  desc(projects.featured),
+  sql`${projects.startedAt} desc nulls last`,
+  desc(projects.sortOrder),
+  asc(projects.id),
+];
 
 /**
  * All published projects for the grid, with tags and metrics nested —
@@ -13,17 +21,48 @@ export async function getPublishedProjects() {
     // old site used, highest first. startedAt is still consulted ahead of it for
     // any project that gains a real date, with `nulls last` so undated projects
     // do not float to the top (Postgres sorts NULLs first on DESC).
-    orderBy: [
-      desc(projects.featured),
-      sql`${projects.startedAt} desc nulls last`,
-      desc(projects.sortOrder),
-      asc(projects.id),
-    ],
+    orderBy: publishedOrder,
     with: {
       projectTags: { with: { tag: true } },
       metrics: { orderBy: (metrics, { asc }) => [asc(metrics.sortOrder)] },
     },
   });
+}
+
+/**
+ * One page of published projects, plus the total needed to render the pager.
+ *
+ * Paged in SQL rather than by slicing the full list in the component, so the
+ * page never fetches — or nests tags and metrics onto — rows it will not
+ * render. The count is a second round trip; a window function would fold it
+ * into one query but is not expressible through the relational query builder.
+ */
+export async function getPublishedProjectsPage(page: number, perPage: number) {
+  const where = eq(projects.status, "published");
+
+  const [rows, [totals]] = await Promise.all([
+    db.query.projects.findMany({
+      where,
+      orderBy: publishedOrder,
+      limit: perPage,
+      offset: (page - 1) * perPage,
+      with: {
+        projectTags: { with: { tag: true } },
+        metrics: { orderBy: (metrics, { asc }) => [asc(metrics.sortOrder)] },
+      },
+    }),
+    db.select({ value: count() }).from(projects).where(where),
+  ]);
+
+  const total = totals?.value ?? 0;
+
+  return {
+    projects: rows,
+    total,
+    // At least 1, so an empty database renders "page 1 of 1" rather than 404ing
+    // on its own only valid page.
+    totalPages: Math.max(1, Math.ceil(total / perPage)),
+  };
 }
 
 /**

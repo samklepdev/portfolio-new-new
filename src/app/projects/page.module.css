@@ -1,6 +1,7 @@
+/* Wider than the home page: three cards across need the room to stay legible. */
 .page {
   margin: 0 auto;
-  max-width: 64rem;
+  max-width: 78rem;
   padding: 6rem 2rem;
 }
 
@@ -27,6 +28,12 @@
   margin-top: 0.75rem;
   margin-bottom: 3rem;
   color: rgba(255, 255, 255, 0.6);
+}
+
+.count {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 @media (prefers-reduced-motion: reduce) {
