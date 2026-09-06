@@ -1,0 +1,36 @@
+.page {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 6rem 2rem;
+}
+
+.back {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 200ms ease;
+}
+
+.back:hover,
+.back:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.heading {
+  margin-top: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.intro {
+  margin-top: 0.75rem;
+  margin-bottom: 3rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back {
+    transition: none;
+  }
+}

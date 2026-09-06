@@ -4,9 +4,35 @@
   padding: 6rem 2rem;
 }
 
-.projectsHeading {
+.projectsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 2.5rem;
+}
+
+.projectsHeading {
   font-size: 1.875rem;
   font-weight: 600;
   color: #ffffff;
+}
+
+.allProjectsLink {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  color: var(--neon-turquoise, #00f0ff);
+  transition: opacity 200ms ease;
+}
+
+.allProjectsLink:hover,
+.allProjectsLink:focus-visible {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .allProjectsLink {
+    transition: none;
+  }
 }

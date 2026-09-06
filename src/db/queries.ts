@@ -1,4 +1,4 @@
-import { eq, asc, desc, sql } from "drizzle-orm";
+import { and, eq, asc, desc, sql } from "drizzle-orm";
 import { db } from "./index";
 import { projects } from "./schema";
 
@@ -19,6 +19,25 @@ export async function getPublishedProjects() {
       sql`${projects.startedAt} desc nulls last`,
       asc(projects.id),
     ],
+    with: {
+      projectTags: { with: { tag: true } },
+      metrics: { orderBy: (metrics, { asc }) => [asc(metrics.sortOrder)] },
+    },
+  });
+}
+
+/**
+ * The featured projects only, for the home page. The full list — featured
+ * included — lives at /projects and comes from getPublishedProjects().
+ *
+ * Filtered and limited in SQL rather than by slicing in the component, so the
+ * home page never fetches rows it will not render.
+ */
+export async function getFeaturedProjects(limit = 3) {
+  return db.query.projects.findMany({
+    where: and(eq(projects.status, "published"), eq(projects.featured, true)),
+    orderBy: [sql`${projects.startedAt} desc nulls last`, asc(projects.id)],
+    limit,
     with: {
       projectTags: { with: { tag: true } },
       metrics: { orderBy: (metrics, { asc }) => [asc(metrics.sortOrder)] },
