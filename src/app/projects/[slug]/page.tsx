@@ -3,7 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getProjectBySlug, getPublishedProjects } from "@/db/queries";
-import { getContentSlugs, getProjectContent } from "@/lib/content";
+import {
+  getContentSlugs,
+  getProjectContent,
+  resolvePublicImage,
+} from "@/lib/content";
+import { ProjectTabs, type ProjectTab } from "@/components/projects/ProjectTabs";
 import styles from "./page.module.css";
 
 export const revalidate = 60;
@@ -62,6 +67,7 @@ export default async function ProjectPage({ params }: PageProps) {
   }
 
   const tags = project.projectTags.map((pt) => pt.tag);
+  const tabs = await buildTabs(content.frontmatter);
 
   return (
     <main className={styles.page}>
@@ -124,6 +130,58 @@ export default async function ProjectPage({ params }: PageProps) {
       <article className={styles.prose}>
         <MDXRemote source={content.body} />
       </article>
+
+      <ProjectTabs tabs={tabs} />
     </main>
   );
+}
+
+/**
+ * The tech/design panels, built from frontmatter rather than the body — that is
+ * where the old site kept this writing.
+ *
+ * The descriptions contain raw HTML (`<br />`), so they go through MDX, where
+ * that is valid JSX. This avoids dangerouslySetInnerHTML while still honouring
+ * the line breaks the author wrote.
+ */
+async function buildTabs(
+  frontmatter: Record<string, unknown>
+): Promise<ProjectTab[]> {
+  const sources = [
+    {
+      id: "tech",
+      label: "Tech",
+      description: frontmatter.techDescription,
+      image: frontmatter.techTabImg,
+      alt: frontmatter.techTabImgAlt,
+    },
+    {
+      id: "design",
+      label: "Design",
+      description: frontmatter.designDescription,
+      image: frontmatter.designTabImg,
+      alt: frontmatter.designTabImgAlt,
+    },
+  ];
+
+  const tabs: ProjectTab[] = [];
+
+  for (const source of sources) {
+    if (typeof source.description !== "string" || !source.description.trim()) {
+      continue;
+    }
+
+    const src = await resolvePublicImage(source.image);
+
+    tabs.push({
+      id: source.id,
+      label: source.label,
+      image: src
+        ? { src, alt: typeof source.alt === "string" ? source.alt : "" }
+        : null,
+      content: <MDXRemote source={source.description} />,
+    });
+  }
+
+  return tabs;
 }

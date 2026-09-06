@@ -1,4 +1,4 @@
-import { readFile, readdir } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 
@@ -37,6 +37,33 @@ export async function getProjectContent(
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw error;
+  }
+}
+
+const PUBLIC_DIR = path.join(process.cwd(), "public");
+
+/**
+ * Returns the URL only if the file actually exists under public/.
+ *
+ * The content frontmatter references screenshots (/images/screenshots/…) that
+ * are not in the repo yet. Checking first means a page with missing artwork
+ * renders without it, rather than showing a column of broken-image icons — and
+ * starts showing them the moment the files are added, with no code change.
+ */
+export async function resolvePublicImage(
+  url: unknown
+): Promise<string | null> {
+  if (typeof url !== "string" || !url.startsWith("/")) return null;
+
+  const filePath = path.join(PUBLIC_DIR, url);
+  // Reject anything that escapes public/ via ../ in the frontmatter.
+  if (!filePath.startsWith(PUBLIC_DIR + path.sep)) return null;
+
+  try {
+    await access(filePath);
+    return url;
+  } catch {
+    return null;
   }
 }
 
