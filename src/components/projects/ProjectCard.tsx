@@ -1,69 +1,90 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { PublishedProject } from "@/db/queries";
+import { resolvePublicImage } from "@/lib/content";
 import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {
   project: PublishedProject;
-  /** Carries the glow border. Applies to every featured project. */
+  /**
+   * The wide hero card: spans the full grid width, image beside the copy, glow
+   * border. Only the home page asks for it — /projects is a uniform list.
+   */
   featured?: boolean;
-  /** The single project that also spans the full grid width. Implies featured. */
-  lead?: boolean;
 };
 
-export function ProjectCard({
+export async function ProjectCard({
   project,
   featured = false,
-  lead = false,
 }: ProjectCardProps) {
   const tags = project.projectTags.map((pt) => pt.tag);
+  // A cover_image row pointing at a file that is not in public/ would render a
+  // broken thumbnail; resolve it first and fall back to a plain card instead.
+  const cover = await resolvePublicImage(project.coverImage);
 
-  const className = [
-    styles.card,
-    featured ? styles.featured : "",
-    lead ? styles.lead : "",
-  ]
+  const className = [styles.card, featured ? styles.featured : ""]
     .filter(Boolean)
     .join(" ");
 
   return (
     <Link href={`/projects/${project.slug}`} className={className}>
-      <article>
-        <header className={styles.header}>
-          {project.role && <p className={styles.role}>{project.role}</p>}
-          <h3 className={styles.title}>{project.title}</h3>
-        </header>
-
-        <p className={styles.summary}>{project.summary}</p>
-
-        {/* Metrics only exist for some projects, and only the wide card has room
-            for them — render nothing rather than an empty strip. */}
-        {lead && project.metrics.length > 0 && (
-          <dl className={styles.metrics}>
-            {project.metrics.map((metric) => (
-              <div key={metric.id} className={styles.metric}>
-                <dt className={styles.metricLabel}>{metric.label}</dt>
-                <dd className={styles.metricValue}>{metric.value}</dd>
-              </div>
-            ))}
-          </dl>
+      <article className={styles.inner}>
+        {cover && (
+          <div className={styles.thumb}>
+            <Image
+              src={cover}
+              // Decorative: the link's accessible name already includes the
+              // title, so alt text here would only duplicate it.
+              alt=""
+              fill
+              className={styles.thumbImage}
+              sizes={
+                featured
+                  ? "(min-width: 900px) 55vw, 100vw"
+                  : "(min-width: 768px) 50vw, 100vw"
+              }
+            />
+          </div>
         )}
 
-        <footer className={styles.footer}>
-          {/* Always in the DOM for crawlers and screen readers — the reveal is
-              purely visual, and only on devices that can actually hover. */}
-          {tags.length > 0 && (
-            <ul className={styles.tags}>
-              {tags.map((tag) => (
-                <li key={tag.id} className={styles.tag}>
-                  {tag.name}
-                </li>
+        <div className={styles.body}>
+          <header className={styles.header}>
+            {(project.category ?? project.role) && (
+              <p className={styles.eyebrow}>{project.category ?? project.role}</p>
+            )}
+            <h3 className={styles.title}>{project.title}</h3>
+          </header>
+
+          <p className={styles.summary}>{project.summary}</p>
+
+          {/* Metrics only exist for some projects, and only the wide card has
+              room for them — render nothing rather than an empty strip. */}
+          {featured && project.metrics.length > 0 && (
+            <dl className={styles.metrics}>
+              {project.metrics.map((metric) => (
+                <div key={metric.id} className={styles.metric}>
+                  <dt className={styles.metricLabel}>{metric.label}</dt>
+                  <dd className={styles.metricValue}>{metric.value}</dd>
+                </div>
               ))}
-            </ul>
+            </dl>
           )}
-          <span className={styles.cta} aria-hidden="true">
-            View project <span className={styles.arrow}>→</span>
-          </span>
-        </footer>
+
+          <footer className={styles.footer}>
+            {tags.length > 0 && (
+              <ul className={styles.tags}>
+                {tags.map((tag) => (
+                  <li key={tag.id} className={styles.tag}>
+                    {tag.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <span className={styles.cta} aria-hidden="true">
+              View project <span className={styles.arrow}>→</span>
+            </span>
+          </footer>
+        </div>
       </article>
     </Link>
   );

@@ -27,7 +27,7 @@ export default async function Home() {
             All projects <span aria-hidden="true">→</span>
           </Link>
         </div>
-        <ProjectGrid projects={projects} />
+        <ProjectGrid projects={projects} featureFirst />
       </section>
     </main>
   );
