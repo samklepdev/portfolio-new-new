@@ -1,0 +1,91 @@
+.wrapper {
+  margin-top: 3rem;
+}
+
+.tablist {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tab {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--neon-turquoise, #00f0ff);
+  outline-offset: -2px;
+}
+
+.tabActive {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+/* Sits on top of the tablist border rather than adding height, so switching
+   tabs cannot shift the panel below. */
+.tabActive::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--neon-turquoise, #00f0ff);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+}
+
+.panel {
+  padding-top: 2rem;
+}
+
+.solo {
+  margin-top: 3rem;
+  padding-top: 0;
+}
+
+.prose {
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.prose a {
+  color: var(--neon-turquoise, #00f0ff);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.prose strong {
+  color: #ffffff;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}
