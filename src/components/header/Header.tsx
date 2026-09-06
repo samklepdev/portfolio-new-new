@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useScrollStore } from "@/lib/scrollStore";
-import styles from "./SiteNav.module.css";
+import styles from "./Header.module.css";
 
 /**
  * About and Contact belong here too — they are the other two links the old
@@ -19,7 +19,7 @@ const LINKS = [
 
 const RESUME_URL = "/images/documents/samuel-klepper-resume.pdf";
 
-export function SiteNav() {
+export function Header() {
   const pathname = usePathname();
   const heroDismissed = useScrollStore((state) => state.heroDismissed);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -75,7 +75,7 @@ export function SiteNav() {
           />
         </Link>
 
-        <ul id="site-nav-links" className={styles.links} data-open={menuOpen}>
+        <ul id="header-nav-links" className={styles.links} data-open={menuOpen}>
           {LINKS.map((link) => (
             <li key={link.href}>
               <Link
@@ -125,7 +125,7 @@ export function SiteNav() {
             type="button"
             className={styles.menuButton}
             aria-expanded={menuOpen}
-            aria-controls="site-nav-links"
+            aria-controls="header-nav-links"
             onClick={() => setMenuOpen((open) => !open)}
           >
             <span className={styles.srOnly}>
