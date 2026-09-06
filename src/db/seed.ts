@@ -44,6 +44,7 @@ const PROJECTS = [
     title: "Steady",
     summary:
       "React Native / Expo mobile app supporting people on medication-assisted treatment.",
+    featured: true,
     role: "Solo dev",
   },
   {

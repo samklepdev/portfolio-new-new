@@ -4,18 +4,29 @@ import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {
   project: PublishedProject;
-  /** The lead card: spans the full grid width and carries the glow border. */
+  /** Carries the glow border. Applies to every featured project. */
   featured?: boolean;
+  /** The single project that also spans the full grid width. Implies featured. */
+  lead?: boolean;
 };
 
-export function ProjectCard({ project, featured = false }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  featured = false,
+  lead = false,
+}: ProjectCardProps) {
   const tags = project.projectTags.map((pt) => pt.tag);
 
+  const className = [
+    styles.card,
+    featured ? styles.featured : "",
+    lead ? styles.lead : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <Link
-      href={`/projects/${project.slug}`}
-      className={`${styles.card} ${featured ? styles.featured : ""}`}
-    >
+    <Link href={`/projects/${project.slug}`} className={className}>
       <article>
         <header className={styles.header}>
           {project.role && <p className={styles.role}>{project.role}</p>}
@@ -24,9 +35,9 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
 
         <p className={styles.summary}>{project.summary}</p>
 
-        {/* Metrics only exist for some projects; render nothing rather than an
-            empty strip when the table has no rows for this slug. */}
-        {featured && project.metrics.length > 0 && (
+        {/* Metrics only exist for some projects, and only the wide card has room
+            for them — render nothing rather than an empty strip. */}
+        {lead && project.metrics.length > 0 && (
           <dl className={styles.metrics}>
             {project.metrics.map((metric) => (
               <div key={metric.id} className={styles.metric}>
