@@ -9,14 +9,14 @@ import { projects } from "./schema";
 export async function getPublishedProjects() {
   return db.query.projects.findMany({
     where: eq(projects.status, "published"),
-    // Postgres sorts NULLs first on DESC, which would float undated projects to
-    // the top of the grid — `nulls last` keeps them at the bottom. The asc(id)
-    // tiebreak makes ordering stable and, while startedAt is unset across the
-    // board, falls back to seed order so the first project listed in seed.ts is
-    // the one that leads the grid.
+    // sortOrder mirrors the `id` in the content frontmatter — the ordering the
+    // old site used, highest first. startedAt is still consulted ahead of it for
+    // any project that gains a real date, with `nulls last` so undated projects
+    // do not float to the top (Postgres sorts NULLs first on DESC).
     orderBy: [
       desc(projects.featured),
       sql`${projects.startedAt} desc nulls last`,
+      desc(projects.sortOrder),
       asc(projects.id),
     ],
     with: {
@@ -36,7 +36,11 @@ export async function getPublishedProjects() {
 export async function getFeaturedProjects(limit = 3) {
   return db.query.projects.findMany({
     where: and(eq(projects.status, "published"), eq(projects.featured, true)),
-    orderBy: [sql`${projects.startedAt} desc nulls last`, asc(projects.id)],
+    orderBy: [
+      sql`${projects.startedAt} desc nulls last`,
+      desc(projects.sortOrder),
+      asc(projects.id),
+    ],
     limit,
     with: {
       projectTags: { with: { tag: true } },
