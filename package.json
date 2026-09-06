@@ -7,39 +7,38 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/db/seed.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.0",
+    "@react-three/postprocessing": "^3.0.0",
+    "dotenv": "^16.6.1",
+    "drizzle-orm": "^0.36.0",
+    "gray-matter": "^4.0.3",
+    "gsap": "^3.12.0",
     "next": "^15.0.0",
+    "next-mdx-remote": "^5.0.0",
+    "postgres": "^3.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-
     "three": "^0.170.0",
-    "@react-three/fiber": "^9.0.0",
-    "@react-three/drei": "^10.0.0",
-    "@react-three/postprocessing": "^3.0.0",
-
-    "gsap": "^3.12.0",
-    "zustand": "^5.0.0",
-
-    "drizzle-orm": "^0.36.0",
-    "postgres": "^3.4.0",
-
-    "next-mdx-remote": "^5.0.0",
-    "gray-matter": "^4.0.3"
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.6.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.170.0",
-
+    "drizzle-kit": "^0.28.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.0.0",
-
-    "drizzle-kit": "^0.28.0"
+    "tsx": "^4.23.13",
+    "typescript": "^5.6.0"
   }
 }
