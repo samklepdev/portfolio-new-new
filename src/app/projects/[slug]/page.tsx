@@ -55,8 +55,8 @@ export default async function ProjectPage({ params }: PageProps) {
     getProjectContent(slug),
   ]);
 
-  // A draft or missing row is a 404, as is a published row with no MDX file —
-  // rendering a case study with no case study would be worse than not found.
+  // A draft or missing row is a 404, as is a published row with no content file
+  // — a project page with no project write-up is worse than not found.
   if (!project || project.status !== "published" || !content) {
     notFound();
   }

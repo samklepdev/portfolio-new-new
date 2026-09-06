@@ -2,17 +2,18 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 
-const CONTENT_DIR = path.join(process.cwd(), "content", "projects");
+const CONTENT_DIR = path.join(process.cwd(), "src", "content", "projects");
+const CONTENT_EXT = ".md";
 
 export type ProjectContent = {
-  /** Raw MDX body, frontmatter stripped. */
+  /** Raw markdown body, frontmatter stripped. */
   body: string;
-  /** Frontmatter. Only `slug` is expected — everything else lives in Postgres. */
+  /** Frontmatter — title, excerpt, category, link, tech icons and so on. */
   frontmatter: Record<string, unknown>;
 };
 
 /**
- * Reads content/projects/{slug}.mdx.
+ * Reads src/content/projects/{slug}.md.
  *
  * Returns null when the file does not exist, rather than throwing: a published
  * row without a matching file is a content/database drift problem for the
@@ -27,7 +28,10 @@ export async function getProjectContent(
   if (!/^[a-z0-9-]+$/.test(slug)) return null;
 
   try {
-    const raw = await readFile(path.join(CONTENT_DIR, `${slug}.mdx`), "utf8");
+    const raw = await readFile(
+      path.join(CONTENT_DIR, `${slug}${CONTENT_EXT}`),
+      "utf8"
+    );
     const { content, data } = matter(raw);
     return { body: content, frontmatter: data };
   } catch (error) {
@@ -37,15 +41,15 @@ export async function getProjectContent(
 }
 
 /**
- * Slugs that actually have an MDX file. Used by generateStaticParams so the
+ * Slugs that actually have a content file. Used by generateStaticParams so the
  * build never prerenders a detail page whose content does not exist yet.
  */
 export async function getContentSlugs(): Promise<string[]> {
   try {
     const files = await readdir(CONTENT_DIR);
     return files
-      .filter((file) => file.endsWith(".mdx"))
-      .map((file) => file.replace(/\.mdx$/, ""));
+      .filter((file) => file.endsWith(CONTENT_EXT))
+      .map((file) => file.slice(0, -CONTENT_EXT.length));
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
     throw error;

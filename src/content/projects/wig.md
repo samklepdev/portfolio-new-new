@@ -1,0 +1,32 @@
+---
+id: 1
+title: 'WealthGuard Insurance Group'
+date: 'December 31, 2021'
+excerpt: 'Programs & underwriting information for WealthGuard Insurance Group.'
+imageUrl: '/images/screenshots/goguard/goguard.png'
+image2Url: '/images/screenshots/goguard/goguard.png'
+techTabImg: '/images/screenshots/goguard/goguard-programs.png'
+techTabImgAlt: 'WealthGuard insurance programs'
+techDescription: 'Being that this project was mostly information based, I reached for NextJS to serve static pages and perform fast. There also was a program/data heavy demand that was ever changing, so I utilized a GraphQL infrastructure with GraphCMS. I reached for Markdown to quickly edit/change content as need be, and am serving it via MDXRemote.'
+designTabImg: '/images/screenshots/goguard/goguard-design.png'
+designTabImgAlt: 'WealthGuard program content & form'
+designDescription: 'The design was kept minimal and simple only accentuating key features. Since there needs to be contact with Brokers & Agents about programs they are interested in, the contact forms are pre-populated with the program the user is on. I also created custom PDF flyers with infographics containing company related information. There is both a light & dark version available.'
+category: 'Insurance'
+repo: 'https://gitlab.com/bklep/gig'
+link: 'https://goguardig.com'
+tech1: '/images/tech-icons/html-5.png'
+tech1Name: 'HTML'
+tech2: '/images/tech-icons/css-3.png'
+tech2Name: 'CSS'
+tech3: '/images/tech-icons/next-js.svg'
+tech3Name: 'Next'
+tech4: '/images/tech-icons/graphql.png'
+tech4Name: 'GraphQL'
+tech5: '/images/tech-icons/tailwind.png'
+tech5Name: 'Tailwind'
+baseColor: 'goguard-bg'
+baseTextColor: 'goguard-text'
+tailwindColor: 'red'
+---
+
+**WealthGuard Insurance Group** is a local insurance company out of Magnolia, TX. This project was dedicated to their service side of their indusurance business, **GoGuard**, where they advertise their services to Agents & Brokers.

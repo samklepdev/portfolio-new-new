@@ -1,0 +1,31 @@
+---
+id: 12
+title: 'One Time Close'
+date: 'February 1, 2024'
+excerpt: 'Program that allows borrowers to finance both the construction and permanent financing of their house.'
+imageUrl: '/images/screenshots/bouncing-pixel/otc/otc-home-screenshot.png'
+image2Url: '/images/screenshots/bouncing-pixel/otc/otc-content-screenshot.png'
+techTabImg: '/images/screenshots/bouncing-pixel/otc/otc-steps-screenshot.png'
+techTabImgAlt: 'One Time Close Steps'
+techDescription: 'The main feature of the One Time Close application was to be informed about the finance process of building on your own lot, therefore having a way for the user to navigate through the 9 steps. This was another legacy project being updated from PHP & jQuery to NextJS with a DotNET backend.'
+designTabImg: '/images/screenshots/bouncing-pixel/otc/otc-articles-screenshot.png'
+designTabImgAlt: 'One Time Close Articles'
+designDescription: 'Another main feature was the articles section. I created a custom admin dashboard that would allow the client to add, edit, and delete articles. The articles would then be displayed on the front end in a custom designed blog.'
+category: 'Real Estate'
+link: 'https://www.onetimeclose.com/' 
+tech1: '/images/tech-icons/html-5.png'
+tech1Name: 'HTML'
+tech2: '/images/tech-icons/css-3.png'
+tech2Name: 'CSS'
+tech3: '/images/tech-icons/next-js.svg'
+tech3Name: 'Next'
+tech4: '/images/tech-icons/mongodb.png'
+tech4Name: 'Mongo'
+tech5: '/images/tech-icons/dotnet.png'
+tech5Name: 'DotNET'
+baseColor: 'otc-bg'
+baseTextColor: 'otc-text'
+tailwindColor: 'amber'
+---
+
+**One Time Close** is a mortgage program that finances the lot purchase, the construction and permanent loan of a new home.
