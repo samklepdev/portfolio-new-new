@@ -1,0 +1,11 @@
+.projects {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 6rem 2rem;
+}
+
+.projectsHeading {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
