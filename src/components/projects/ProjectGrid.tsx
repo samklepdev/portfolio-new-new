@@ -9,11 +9,17 @@ type ProjectGridProps = {
    * /projects is a uniform list — only the home page has a focal point.
    */
   featureFirst?: boolean;
+  /**
+   * Columns at desktop width. The index page packs three across; the home page
+   * stays at two so its featured card has something to lead.
+   */
+  columns?: 2 | 3;
 };
 
 export function ProjectGrid({
   projects,
   featureFirst = false,
+  columns = 2,
 }: ProjectGridProps) {
   if (projects.length === 0) {
     return <p className={styles.empty}>No published projects yet.</p>;
@@ -24,7 +30,9 @@ export function ProjectGrid({
   const leadId = featureFirst ? projects[0].id : undefined;
 
   return (
-    <div className={styles.grid}>
+    <div
+      className={`${styles.grid} ${columns === 3 ? styles.three : styles.two}`}
+    >
       {projects.map((project) => (
         <ProjectCard
           key={project.id}

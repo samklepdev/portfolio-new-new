@@ -164,9 +164,12 @@
 
 /* margin-top: auto pins the footer to the bottom so cards of differing summary
    length still line their tag rows up. */
+/* flex-end, not center: the tag list is what varies in height between cards
+   (one wrapped row vs two), and centering against it leaves the "View project"
+   links sitting at different heights across a row. */
 .footer {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
   margin-top: auto;
