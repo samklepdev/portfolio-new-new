@@ -1,0 +1,31 @@
+---
+id: 10
+title: 'FHA'
+date: 'May 1, 2023'
+excerpt: 'FHA loan refinance and home purchase loans.'
+imageUrl: '/images/screenshots/bouncing-pixel/fha/fha-home-screenshot.png'
+image2Url: '/images/screenshots/bouncing-pixel/fha/fha-requirements-screenshot.png'
+techTabImg: '/images/screenshots/bouncing-pixel/fha/fha-calculator-screenshot.png'
+techTabImgAlt: 'FHA Calculator'
+techDescription: 'FHA loan program was a legacy project that needed a complete overhaul from PHP & jQuery to NextJS. One of the main features was the FHA loan calculators. I created custom calculators that would allow the user to input their loan amount, interest rate, and loan term to calculate their monthly payment.'
+designTabImg: '/images/screenshots/bouncing-pixel/fha/fha-articles-screenshot.png'
+designTabImgAlt: 'FHA Articles'
+designDescription: 'Another main feature was the articles section. I created a custom admin dashboard that would allow the client to add, edit, and delete articles. The articles would then be displayed on the front end in a custom designed blog.'
+category: 'Real Estate'
+link: 'https://fha.com/' 
+tech1: '/images/tech-icons/html-5.png'
+tech1Name: 'HTML'
+tech2: '/images/tech-icons/css-3.png'
+tech2Name: 'CSS'
+tech3: '/images/tech-icons/next-js.svg'
+tech3Name: 'Next'
+tech4: '/images/tech-icons/mongodb.png'
+tech4Name: 'Mongo'
+tech5: '/images/tech-icons/dotnet.png'
+tech5Name: 'DotNET'
+baseColor: 'fha-bg'
+baseTextColor: 'fha-text'
+tailwindColor: 'blue'
+---
+
+**FHA** loan program will let you purchase a home with a low down payment and flexible guidelines.

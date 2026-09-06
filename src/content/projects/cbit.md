@@ -1,0 +1,31 @@
+---
+id: 8
+title: 'CBit Trainer'
+date: 'December 1, 2022'
+excerpt: 'Online learning platform for habit reversal training (HRT).'
+imageUrl: '/images/screenshots/bouncing-pixel/cbit/cbit-home-screenshot.png'
+image2Url: '/images/screenshots/bouncing-pixel/cbit/cbit-forum-screenshot.png'
+techTabImg: '/images/screenshots/bouncing-pixel/cbit/cbit-dashboard-screenshot.png'
+techTabImgAlt: 'CBit Trainer dashboard page'
+techDescription: 'The requirements for this project were to allow therapists to create and manage courses on how to implement habit reversal training (HRT) for tic disorders. <br /><br />I used DotNET for the server-side rendering of data and session/account management & React.js for the rendering of the front-end.'
+designTabImg: '/images/screenshots/bouncing-pixel/cbit/cbit-training-screenshot.png'
+designTabImgAlt: 'CBit Trainer training page'
+designDescription: 'The design and layout of the application was based around the idea of providing custom lessons and courses for therapists to create and manage. <br /><br /> The application is designed to be easy to use and navigate, while providing many other features such as consultations via zoom, a social connection forum, past and present webinars and a messaging inbox linked to the users email.'
+category: 'Psychiatry'
+link: 'https://cbittrainer.com/' 
+tech1: '/images/tech-icons/html-5.png'
+tech1Name: 'HTML'
+tech2: '/images/tech-icons/css-3.png'
+tech2Name: 'CSS'
+tech3: '/images/tech-icons/react.png'
+tech3Name: 'React'
+tech4: '/images/tech-icons/mongodb.png'
+tech4Name: 'Mongo'
+tech5: '/images/tech-icons/dotnet.png'
+tech5Name: 'DotNET'
+baseColor: 'cbit-bg'
+baseTextColor: 'cbit-text'
+tailwindColor: 'orange'
+---
+
+**CBit Trainer** is an online learning platform where therapists can create and manage courses on how to implement habit reversal training (HRT) for tic disorders.

@@ -1,128 +1,240 @@
 import "dotenv/config";
-import { sql } from "drizzle-orm";
+import { eq, notInArray, sql } from "drizzle-orm";
 import { client, db } from "./index";
 import { projects, tags, projectTags } from "./schema";
+import { getContentSlugs, getProjectContent } from "../lib/content";
 
-// Seeds are upserts, not plain inserts: `onConflictDoNothing().returning()`
-// returns only the rows it actually wrote, so on a second run it hands back an
-// empty array and the tag/project linking below silently does nothing.
-// `onConflictDoUpdate` always returns the row, which keeps re-runs idempotent
-// and lets edits here propagate to an already-seeded database.
+// The content files in src/content/projects are the source of truth. This
+// imports them into Postgres, which acts as the queryable index: the site reads
+// prose from the files and everything filterable/sortable from the database.
+//
+// Upserts rather than inserts, so re-running is idempotent AND edits to the
+// files propagate. `onConflictDoNothing().returning()` would return an empty
+// array on the second run and silently skip all the tag linking below.
 
-const TAGS = [
-  { name: "TypeScript", kind: "language" },
-  { name: "React", kind: "framework" },
-  { name: "Next.js", kind: "framework" },
-  { name: "C#", kind: "language" },
-  { name: ".NET", kind: "framework" },
-  { name: "PostgreSQL", kind: "domain" },
-  { name: "React Native", kind: "framework" },
-  { name: "Bitcoin", kind: "domain" },
-  { name: "Clean Architecture", kind: "domain" },
-];
+/**
+ * Which projects lead the home page. Taken from what the live site currently
+ * features rather than picked arbitrarily.
+ */
+const FEATURED_SLUGS = new Set(["build-on", "gulf-winds", "otc"]);
 
-const PROJECTS = [
-  {
-    slug: "bitcoin-storefront",
-    title: "Bitcoin Storefront",
-    summary:
-      "Next.js e-commerce storefront with non-custodial Bitcoin payments, built on Clean Architecture / DDD.",
-    featured: true,
-    role: "Solo dev",
-    repoUrl: "https://github.com/samklepdev/bitcoin-storefront",
-  },
-  {
-    slug: "veo-design-studio",
-    title: "VEO Design Studio",
-    summary:
-      "Home visualization and buyer selection platform built for BuildOn Technologies.",
-    featured: true,
-    role: "Senior Engineer",
-  },
-  {
-    slug: "steady-mat-app",
-    title: "Steady",
-    summary:
-      "React Native / Expo mobile app supporting people on medication-assisted treatment.",
-    featured: true,
-    role: "Solo dev",
-  },
-  {
-    slug: "portfolio-cms",
-    title: "Portfolio CMS",
-    summary:
-      "Custom TypeScript/Express/PostgreSQL backend with JWT/RBAC auth powering an earlier version of this site.",
-    role: "Solo dev",
-    liveUrl: "https://samklep.dev",
-  },
-];
+/** Frontmatter values are `unknown`; read them without scattering casts. */
+function str(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
 
-const TAGS_BY_PROJECT_SLUG: Record<string, string[]> = {
-  "bitcoin-storefront": ["TypeScript", "Next.js", "React", "Bitcoin", "Clean Architecture"],
-  "veo-design-studio": ["TypeScript", "React", "C#", ".NET"],
-  "steady-mat-app": ["TypeScript", "React Native"],
-  "portfolio-cms": ["TypeScript", "React", "PostgreSQL"],
+function num(value: unknown): number {
+  if (typeof value === "number") return value;
+  const parsed = Number.parseInt(String(value ?? ""), 10);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+type ImportedProject = {
+  slug: string;
+  title: string;
+  summary: string;
+  category: string | null;
+  dateLabel: string | null;
+  sortOrder: number;
+  liveUrl: string | null;
+  repoUrl: string | null;
+  coverImage: string | null;
+  featured: boolean;
+  tech: { name: string; iconUrl: string | null }[];
 };
 
+async function readProjects(): Promise<ImportedProject[]> {
+  const slugs = await getContentSlugs();
+  const parsed: ImportedProject[] = [];
+
+  for (const slug of slugs.sort()) {
+    const content = await getProjectContent(slug);
+    if (!content) continue;
+
+    const fm = content.frontmatter;
+    const title = str(fm.title);
+    const summary = str(fm.excerpt);
+
+    // title and summary are NOT NULL in the schema — skip loudly rather than
+    // writing a half-formed row or crashing partway through the import.
+    if (!title || !summary) {
+      console.warn(`  skipping ${slug}: missing ${!title ? "title" : "excerpt"}`);
+      continue;
+    }
+
+    // tech1..tech5 hold icon paths, tech1Name..tech5Name the display names.
+    const tech: ImportedProject["tech"] = [];
+    for (let i = 1; i <= 5; i += 1) {
+      const name = str(fm[`tech${i}Name`]);
+      if (!name) continue;
+      tech.push({ name, iconUrl: str(fm[`tech${i}`]) });
+    }
+
+    parsed.push({
+      slug,
+      title,
+      summary,
+      category: str(fm.category),
+      dateLabel: str(fm.date),
+      sortOrder: num(fm.id),
+      liveUrl: str(fm.link),
+      repoUrl: str(fm.repo),
+      coverImage: str(fm.imageUrl),
+      featured: FEATURED_SLUGS.has(slug),
+      tech,
+    });
+  }
+
+  return parsed;
+}
+
 async function seed() {
-  console.log("Seeding tags...");
+  const imported = await readProjects();
+
+  if (imported.length === 0) {
+    throw new Error(
+      "No project content found in src/content/projects — refusing to wipe the database."
+    );
+  }
+
+  console.log(`Read ${imported.length} project files.`);
+
+  // --- tags -----------------------------------------------------------------
+  const techByName = new Map<string, string | null>();
+  for (const project of imported) {
+    for (const { name, iconUrl } of project.tech) {
+      // First icon path wins; they are identical across files in practice.
+      if (!techByName.has(name)) techByName.set(name, iconUrl);
+    }
+  }
 
   const tagRows = await db
     .insert(tags)
-    .values(TAGS)
+    .values(
+      [...techByName].map(([name, iconUrl]) => ({
+        name,
+        kind: "tech",
+        iconUrl,
+      }))
+    )
     .onConflictDoUpdate({
       target: tags.name,
-      set: { kind: sql`excluded.kind` },
+      set: { kind: sql`excluded.kind`, iconUrl: sql`excluded.icon_url` },
     })
     .returning();
 
-  const tagIdByName = new Map(tagRows.map((t) => [t.name, t.id]));
+  const tagIdByName = new Map(tagRows.map((tag) => [tag.name, tag.id]));
+  console.log(`  ${tagRows.length} tech tags`);
 
-  console.log(`  ${tagRows.length} tags`);
-  console.log("Seeding projects...");
-
+  // --- projects -------------------------------------------------------------
   const projectRows = await db
     .insert(projects)
-    .values(PROJECTS)
+    .values(
+      imported.map((project) => ({
+        slug: project.slug,
+        title: project.title,
+        summary: project.summary,
+        category: project.category,
+        dateLabel: project.dateLabel,
+        sortOrder: project.sortOrder,
+        liveUrl: project.liveUrl,
+        repoUrl: project.repoUrl,
+        coverImage: project.coverImage,
+        featured: project.featured,
+        status: "published",
+      }))
+    )
     .onConflictDoUpdate({
       target: projects.slug,
       set: {
         title: sql`excluded.title`,
         summary: sql`excluded.summary`,
-        featured: sql`excluded.featured`,
-        role: sql`excluded.role`,
-        repoUrl: sql`excluded.repo_url`,
+        category: sql`excluded.category`,
+        dateLabel: sql`excluded.date_label`,
+        sortOrder: sql`excluded.sort_order`,
         liveUrl: sql`excluded.live_url`,
+        repoUrl: sql`excluded.repo_url`,
+        coverImage: sql`excluded.cover_image`,
+        featured: sql`excluded.featured`,
+        status: sql`excluded.status`,
         updatedAt: new Date(),
       },
     })
     .returning();
 
+  const projectIdBySlug = new Map(projectRows.map((row) => [row.slug, row.id]));
   console.log(`  ${projectRows.length} projects`);
-  console.log("Linking tags to projects...");
 
-  const links = projectRows.flatMap((project) =>
-    (TAGS_BY_PROJECT_SLUG[project.slug] ?? []).flatMap((name) => {
-      const tagId = tagIdByName.get(name);
-      if (!tagId) {
-        console.warn(`  skipping unknown tag "${name}" on ${project.slug}`);
-        return [];
-      }
-      return [{ projectId: project.id, tagId }];
-    })
-  );
+  // --- tag links ------------------------------------------------------------
+  // Replace rather than append: a tech removed from a file must disappear from
+  // the join table too, which an insert-only pass would never do.
+  let linkCount = 0;
+  for (const project of imported) {
+    const projectId = projectIdBySlug.get(project.slug);
+    if (!projectId) continue;
 
-  if (links.length > 0) {
-    await db.insert(projectTags).values(links).onConflictDoNothing();
+    await db.delete(projectTags).where(eq(projectTags.projectId, projectId));
+
+    const links = project.tech
+      .map(({ name }) => tagIdByName.get(name))
+      .filter((tagId): tagId is number => tagId !== undefined)
+      .map((tagId) => ({ projectId, tagId }));
+
+    if (links.length > 0) {
+      await db.insert(projectTags).values(links).onConflictDoNothing();
+      linkCount += links.length;
+    }
+  }
+  console.log(`  ${linkCount} project/tag links`);
+
+  // --- prune ----------------------------------------------------------------
+  // The files are the source of truth, so a row with no file is stale. Without
+  // this, the four original personal projects would linger and render as dead
+  // links. project_tags and project_metrics cascade.
+  const removed = await db
+    .delete(projects)
+    .where(
+      notInArray(
+        projects.slug,
+        imported.map((project) => project.slug)
+      )
+    )
+    .returning({ slug: projects.slug });
+
+  if (removed.length > 0) {
+    console.log(
+      `  removed ${removed.length} stale project(s): ${removed
+        .map((row) => row.slug)
+        .join(", ")}`
+    );
   }
 
-  console.log(`  ${links.length} project/tag links`);
-  console.log("Seed complete.");
+  const orphanTags = await db
+    .delete(tags)
+    .where(
+      notInArray(
+        tags.id,
+        db.select({ id: projectTags.tagId }).from(projectTags)
+      )
+    )
+    .returning({ name: tags.name });
+
+  if (orphanTags.length > 0) {
+    console.log(
+      `  removed ${orphanTags.length} orphan tag(s): ${orphanTags
+        .map((row) => row.name)
+        .join(", ")}`
+    );
+  }
+
+  console.log("Import complete.");
 }
 
 seed()
   .catch((err) => {
-    console.error("Seed failed:", err);
+    console.error("Import failed:", err);
     process.exitCode = 1;
   })
   .finally(() => client.end());

@@ -1,0 +1,31 @@
+---
+id: 8
+title: 'Tic Helper'
+date: 'October 1, 2022'
+excerpt: 'Therapy program for families of children with Chronic Tic Disorder and Tourette Disorder.'
+imageUrl: '/images/screenshots/bouncing-pixel/tic-helper/tic-helper-screenshot.png'
+image2Url: '/images/screenshots/bouncing-pixel/tic-helper/tic-helper-learning-screenshot.png'
+techTabImg: '/images/screenshots/bouncing-pixel/tic-helper/tic-helper-demo-screenshot.png'
+techTabImgAlt: 'Becks Prime Gallery'
+techDescription: 'As the name suggests, the idea behind this application was to provide a way for people suffering from different types of tics to have a way to log their current status and practice solutions provided by a licensed psychiatrist.<br /><br /> The application uses Node.js, Express.js and MongoDB for the server-side rendering of data and session/account management & Dust.js for the templating of the HTML.'
+designTabImg: '/images/screenshots/bouncing-pixel/tic-helper/tic-helper-register-screenshot.png'
+designTabImgAlt: 'TicHelper register an account page'
+designDescription: 'The design and layout of the application was based around the idea of providing a way for people to log their current status and practice solutions provided by a licensed psychiatrist.<br /><br />The application is designed to be easy to use and navigate, while providing a way for people to track their progress and complete the outlined therapy program consisting of modules and exercises.'
+category: 'Psychiatry'
+link: 'https://tichelper.com/' 
+tech1: '/images/tech-icons/html-5.png'
+tech1Name: 'HTML'
+tech2: '/images/tech-icons/css-3.png'
+tech2Name: 'CSS'
+tech3: '/images/tech-icons/express.png'
+tech3Name: 'Express'
+tech4: '/images/tech-icons/mongodb.png'
+tech4Name: 'Mongo'
+tech5: '/images/tech-icons/node.png'
+tech5Name: 'Node'
+baseColor: 'tic-helper-bg'
+baseTextColor: 'tic-helper-text'
+tailwindColor: 'teal'
+---
+
+**TicHelper** is an online, self-guided therapy program for families of children with Chronic Tic Disorder and Tourette Disorder.

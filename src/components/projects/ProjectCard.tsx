@@ -61,7 +61,7 @@ export function ProjectCard({
             </ul>
           )}
           <span className={styles.cta} aria-hidden="true">
-            Case study <span className={styles.arrow}>→</span>
+            View project <span className={styles.arrow}>→</span>
           </span>
         </footer>
       </article>

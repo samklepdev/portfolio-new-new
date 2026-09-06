@@ -1,0 +1,31 @@
+---
+id: 11
+title: 'FHA Loan'
+date: 'July 1, 2023'
+excerpt: 'Program that lets you purchase a home with a low down payment and flexible guidelines'
+imageUrl: '/images/screenshots/bouncing-pixel/fha-loan/fha-loan-home-screenshot.png'
+image2Url: '/images/screenshots/bouncing-pixel/fha-loan/fha-loan-credit-screenshot.png'
+techTabImg: '/images/screenshots/bouncing-pixel/fha-loan/fha-loan-steps-screenshot.png'
+techTabImgAlt: 'FHA Loan Steps'
+techDescription: 'The main feature of the FHA loan application was to be informed about the loan process, therefore having a way for the user to navigate through the 9 steps. This was another legacy project being updated from PHP & jQuery to NextJS with a DotNET backend.'
+designTabImg: '/images/screenshots/bouncing-pixel/fha-loan/fha-loan-articles-screenshot.png'
+designTabImgAlt: 'FHA Loan Articles'
+designDescription: 'Another main feature was the articles section. I created a custom admin dashboard that would allow the client to add, edit, and delete articles. The articles would then be displayed on the front end in a custom designed blog.'
+category: 'Real Estate'
+link: 'https://www.fhaloan.com/' 
+tech1: '/images/tech-icons/html-5.png'
+tech1Name: 'HTML'
+tech2: '/images/tech-icons/css-3.png'
+tech2Name: 'CSS'
+tech3: '/images/tech-icons/next-js.svg'
+tech3Name: 'Next'
+tech4: '/images/tech-icons/mongodb.png'
+tech4Name: 'Mongo'
+tech5: '/images/tech-icons/dotnet.png'
+tech5Name: 'DotNET'
+baseColor: 'fha-loan-bg'
+baseTextColor: 'fha-loan-text'
+tailwindColor: 'blue'
+---
+
+**FHA Loan** program lets you purchase a home with a low down payment and flexible guidelines.

@@ -18,6 +18,14 @@ export const projects = pgTable("projects", {
   status: text("status").notNull().default("published"), // draft | published | archived
   featured: boolean("featured").notNull().default(false),
   role: text("role"), // "Solo dev", "Lead", "Contract"
+  category: text("category"), // industry, e.g. "Real Estate", "Food & Hospitality"
+  // The content files carry a display string ("November 2025", "October 1,
+  // 2022") rather than a real date. Kept verbatim so the site shows what the
+  // author wrote; startedAt/completedAt stay available for actual dates.
+  dateLabel: text("date_label"),
+  // Mirrors the `id` in the content frontmatter — the ordering the old site
+  // used. Higher is more recent.
+  sortOrder: integer("sort_order").notNull().default(0),
   startedAt: date("started_at"),
   completedAt: date("completed_at"), // null = ongoing
   repoUrl: text("repo_url"),
@@ -30,7 +38,8 @@ export const projects = pgTable("projects", {
 export const tags = pgTable("tags", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().unique(), // "TypeScript", "React", "C#"
-  kind: text("kind").notNull(), // "language" | "framework" | "domain"
+  kind: text("kind").notNull(), // "language" | "framework" | "domain" | "tech"
+  iconUrl: text("icon_url"), // e.g. /images/tech-icons/typescript.png
 });
 
 export const projectTags = pgTable(

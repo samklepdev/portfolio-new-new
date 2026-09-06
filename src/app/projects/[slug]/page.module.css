@@ -1,0 +1,203 @@
+.page {
+  margin: 0 auto;
+  max-width: 48rem;
+  padding: 6rem 2rem;
+}
+
+.back {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 200ms ease;
+}
+
+.back:hover,
+.back:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.header {
+  margin-top: 1.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.role {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.title {
+  margin-top: 0.5rem;
+  font-size: 2.75rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.summary {
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  list-style: none;
+}
+
+.tag {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: rgba(0, 240, 255, 0.85);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.link {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: var(--neon-pink, #ff2e97);
+  transition: opacity 200ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  opacity: 0.75;
+}
+
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.metricValue {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.metricLabel {
+  margin-top: 0.25rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Styling for MDX output. The case studies are plain markdown, so these are
+   element selectors rather than classes — there is nothing to hang a class on. */
+.prose {
+  margin-top: 3rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.prose h2 {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose h3 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose a {
+  color: var(--neon-turquoise, #00f0ff);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: 0.5rem;
+}
+
+.prose strong {
+  color: #ffffff;
+}
+
+.prose blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(0, 240, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prose code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.07);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875em;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+/* Syntax highlighting is roadmap item 5 (shiki / rehype-pretty-code); until
+   then code blocks are plain, and must not inherit the inline-code colour. */
+.prose pre {
+  overflow-x: auto;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  background-color: #12161f;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back,
+  .link {
+    transition: none;
+  }
+}
