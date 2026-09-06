@@ -1,0 +1,238 @@
+/* Fixed rather than sticky: on the home page the hero is pinned by
+   ScrollTrigger, so there is no normal document flow for a sticky bar to stick
+   to until the pin releases. */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(11, 14, 20, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 0 auto;
+  max-width: 78rem;
+  height: 4rem;
+  padding: 0 1.5rem;
+}
+
+.logo {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  opacity: 0.9;
+  transition: opacity 200ms ease;
+}
+
+.logo:hover,
+.logo:focus-visible {
+  opacity: 1;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  display: inline-block;
+  padding: 0.25rem 0;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 200ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: #ffffff;
+}
+
+/* Underline as a pseudo-element rather than border-bottom, so it can sit flush
+   under the bar's own baseline without nudging the text. */
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.25rem;
+  height: 2px;
+  border-radius: 1px;
+  background-color: var(--neon-turquoise, #00f0ff);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms ease;
+}
+
+.active {
+  color: #ffffff;
+}
+
+.active::after {
+  transform: scaleX(1);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.resume {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.875rem;
+  border: 1px solid rgba(255, 46, 151, 0.45);
+  border-radius: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: var(--neon-pink, #ff2e97);
+  white-space: nowrap;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+
+.resume:hover,
+.resume:focus-visible {
+  border-color: var(--neon-pink, #ff2e97);
+  background-color: rgba(255, 46, 151, 0.1);
+}
+
+.resumeIcon {
+  flex-shrink: 0;
+}
+
+.avatar {
+  border-radius: 999px;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  object-fit: cover;
+}
+
+.menuButton {
+  display: none;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.menuIcon {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 20px;
+}
+
+.menuIcon span {
+  display: block;
+  height: 2px;
+  border-radius: 1px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.logo:focus-visible,
+.link:focus-visible,
+.resume:focus-visible,
+.menuButton:focus-visible {
+  outline: 2px solid var(--neon-turquoise, #00f0ff);
+  outline-offset: 3px;
+}
+
+/* --- mobile ---------------------------------------------------------------
+   Below 640px the links move into a panel under the bar and the hamburger
+   takes over. The avatar goes — the logo already carries the identity and the
+   Resume action is the one worth keeping at this width. */
+@media (max-width: 639px) {
+  .nav {
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .avatar {
+    display: none;
+  }
+
+  .menuButton {
+    display: block;
+  }
+
+  .links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 1rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(11, 14, 20, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .links[data-open="false"] {
+    display: none;
+  }
+
+  .link {
+    display: block;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+  }
+
+  /* The sliding underline reads as decoration on a stacked list; a left rule
+     is clearer about which row is current. */
+  .link::after {
+    left: -1rem;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
+    transform-origin: center;
+    transform: scaleY(0);
+  }
+
+  .active::after {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .link,
+  .link::after,
+  .logo,
+  .resume {
+    transition: none;
+  }
+}
