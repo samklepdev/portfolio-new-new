@@ -20,8 +20,8 @@
   outline-offset: 3px;
 }
 
-/* The lead card spans the full grid width and carries the glow. Turquoise
-   dominates; the purple is a gradient-only accent per the design direction. */
+/* Glow treatment, shared by every featured project. Turquoise dominates; the
+   purple is a gradient-only accent per the design direction. */
 .featured {
   border-color: rgba(0, 240, 255, 0.35);
   background-image: linear-gradient(
@@ -39,8 +39,10 @@
   box-shadow: 0 0 56px rgba(0, 240, 255, 0.18);
 }
 
+/* Only the lead card spans the full grid width. Everything else about it is
+   shared with .featured. */
 @media (min-width: 768px) {
-  .featured {
+  .lead {
     grid-column: 1 / -1;
     padding: 2.5rem;
   }
@@ -66,7 +68,7 @@
   color: #ffffff;
 }
 
-.featured .title {
+.lead .title {
   font-size: 2rem;
 }
 
@@ -165,8 +167,9 @@
   }
 
   /* The lead card is the focal point — its tags read as part of the card
-     rather than a reward for hovering. */
-  .featured .tags {
+     rather than a reward for hovering. The other featured cards are grid-sized,
+     so they keep the reveal like any other card. */
+  .lead .tags {
     opacity: 1;
     transform: none;
   }
