@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the old site's auto-scrolling client carousel with a static, monochrome band of ten client logos, placed between the About section and Selected work on the home page.
+**Goal:** Replace the old site's auto-scrolling client carousel with a static, monochrome band of twelve client logos, placed between the About section and Selected work on the home page.
 
-**Architecture:** One server component (`ClientBand`) plus a colocated CSS module. The logo list is a hand-ordered constant inside the component — not a database table, because the logo set and the project set disagree in both directions. Logos are sized by height with a per-logo optical correction, and knocked out to a single white via a CSS filter so ten brand palettes do not compete on a dark page. No JavaScript ships.
+**Architecture:** One server component (`ClientBand`) plus a colocated CSS module. The logo list is a hand-ordered constant inside the component — not a database table, because the logo set and the project set disagree in both directions. Logos are sized by height with a per-logo optical correction, and knocked out to a single white via a CSS filter so twelve brand palettes do not compete on a dark page. No JavaScript ships.
 
 **Tech Stack:** Next.js 15 App Router, React 19, TypeScript, CSS Modules, `next/image`.
 
@@ -17,8 +17,9 @@ Every task's requirements implicitly include this section.
 - **CSS Modules only.** Never introduce Tailwind directives, `tailwind.config.ts`, or postcss/autoprefixer. Tailwind was deliberately stripped from this project.
 - **Server component.** No `"use client"` in either new file. No JavaScript ships for this feature.
 - **Logos are not links.** The band is credibility, not navigation. Do not wrap logos in `Link` or `<a>`, and do not add `tabindex`.
-- **No count in the copy.** The label is exactly `Businesses I've built for`. Do not add a number, "11", "since 2020", or similar.
-- **Monochrome knockout:** `filter: brightness(0) invert(1)` at `opacity: 0.55`, restored to `filter: none` / `opacity: 1` on hover.
+- **No count in the copy.** The label is exactly `Businesses I've built for`. Do not add a count, a year, or a "since 2020"-style qualifier.
+- **Monochrome knockout:** `filter: brightness(0) invert(1)` at `opacity: 0.55`. Hover lifts opacity to `1` and **keeps** the knockout — it must not restore brand colour, because several logos are black artwork that would vanish on the dark background.
+- **Every logo needs a genuinely transparent background.** `sips -g hasAlpha` is not a sufficient check: it reports whether the channel exists, not whether it is used. Audit by sampling border-pixel alpha.
 - **SVG sources require `unoptimized`** on `next/image`. The optimizer returns 400 for SVG unless `dangerouslyAllowSVG` is set. Precedent: `src/components/header/Header.tsx:66-72`.
 - **Section padding on one side only.** Neighbouring sections each bring their own `6rem` and padding does not collapse the way margins would.
 - **No new dependencies, no schema change, no migration.**
@@ -48,13 +49,11 @@ The verification cycle for every task is:
 - Consumes: nothing from other tasks. Assets already exist in `public/images/logos/`.
 - Produces: `export function ClientBand()` — a named export taking no props, imported by `src/app/page.tsx`. Task 2 tunes the `CLIENTS` constant inside `ClientBand.tsx` and the `--logo-height` value in `ClientBand.module.css`; neither changes this signature.
 
-**Asset notes:** Use exactly these ten files. Do **not** use `public/images/logos/dss.jpg` — it is `dss-logo.png` flattened onto a white background, so it has no alpha channel and the knockout filter would render it as a solid white rectangle.
+**Asset notes:** Use exactly these twelve files. Do **not** use `public/images/logos/dss.jpg` — it is `dss-logo.png` flattened onto a white background, so it has no alpha and duplicates a file that does.
 
-> **Blocker on one entry — `baylor-logo.png`.** The file currently in the repo is an 8-bit colormap PNG with **no alpha channel** (`file` reports `8-bit colormap`; `sips -g hasAlpha` reports `no`). Under `filter: brightness(0) invert(1)` it will fill its whole bounding box and render as a solid white rectangle — the same failure that disqualifies `dss.jpg`.
->
-> Do not ship it as-is. Either replace the asset with a transparent PNG or SVG before starting, or drop the Baylor entry from `CLIENTS` and complete the band with the other nine, adding Baylor when a transparent asset exists. The other nine logos are unaffected either way.
->
-> Verify any replacement with `sips -g hasAlpha public/images/logos/baylor-logo.png` — it must report `hasAlpha: yes` before the entry goes in.
+`baylor-logo.png`, `mHawk.png` and `ud.png` shipped with opaque backgrounds and have already been repaired in the repo — they are transparent now, and the `width`/`height` values in `CLIENTS` are the **post-trim** dimensions, not the originals. Do not re-measure them against any older copy.
+
+If a logo is ever added, audit it first: `sips -g hasAlpha` is **not** a sufficient check, because it reports whether an alpha channel exists rather than whether it is used. An opaque RGBA file passes it and still renders as a solid white rectangle. Sample border-pixel alpha instead.
 
 - [ ] **Step 1: Create the component**
 
@@ -84,16 +83,22 @@ type ClientLogo = {
 /**
  * A hand-ordered list, not a database query. The logo set and the project set
  * disagree in both directions — Melissa Hawkins, PsycTech, and Baylor have logos
- * and no project file, while BuildOn, Gulf Winds, One Time Close, C-Bit, TicHelper,
- * and Super Chef have projects and no logo — so a `clients` table would mean a
- * migration for ten static rows that nothing queries, joined on a relationship
- * that is partial either way.
+ * and no project file, while One Time Close, C-Bit, TicHelper, and Super Chef
+ * have projects and no logo — so a `clients` table would mean a migration for
+ * twelve static rows that nothing queries, joined on a relationship that is
+ * partial either way.
  *
  * Order is chosen so wide wordmarks and square badges alternate rather than
  * clumping into lopsided rows. Adding a client means inserting where it balances,
  * not appending.
  */
 const CLIENTS: ClientLogo[] = [
+  {
+    name: "BuildOn Technologies",
+    src: "/images/logos/buildon-logo.png",
+    width: 408,
+    height: 100,
+  },
   {
     name: "FHA",
     src: "/images/logos/fha-logo.png",
@@ -110,8 +115,8 @@ const CLIENTS: ClientLogo[] = [
   {
     name: "Baylor College of Medicine",
     src: "/images/logos/baylor-logo.png",
-    width: 180,
-    height: 182,
+    width: 124,
+    height: 101,
     scale: 0.85,
   },
   {
@@ -123,8 +128,8 @@ const CLIENTS: ClientLogo[] = [
   {
     name: "Melissa Hawkins Photography",
     src: "/images/logos/mHawk.png",
-    width: 296,
-    height: 106,
+    width: 259,
+    height: 72,
   },
   {
     name: "Winfield's Chocolate Bar",
@@ -137,8 +142,15 @@ const CLIENTS: ClientLogo[] = [
   {
     name: "Ultra Demolition",
     src: "/images/logos/ud.png",
-    width: 192,
-    height: 120,
+    width: 185,
+    height: 111,
+  },
+  {
+    name: "Gulf Winds International",
+    src: "/images/logos/gwi-logo.png",
+    width: 143,
+    height: 142,
+    scale: 0.85,
   },
   {
     name: "WealthGuard Insurance Group",
@@ -252,22 +264,27 @@ Create `src/components/home/ClientBand.module.css`:
    hairline and WealthGuard as a slab. Setting height AND width together also
    keeps next/image from warning about a single modified dimension.
 
-   The knockout is what lets ten brand palettes sit on #0B0E14 without
+   The knockout is what lets twelve brand palettes sit on #0B0E14 without
    becoming a ransom note — they flatten to one white and read as one texture. */
 .logo {
   height: calc(100% * var(--logo-scale, 1));
   width: auto;
-  max-width: 9rem;
+  max-width: 10rem;
   object-fit: contain;
   filter: brightness(0) invert(1);
   opacity: 0.55;
-  transition: opacity 200ms ease, filter 200ms ease;
+  transition: opacity 200ms ease;
 }
 
-/* Hover only — there is no focus state to style because the logos are not
+/* Hover lifts brightness and keeps the knockout. It deliberately does NOT
+   restore brand colour: Melissa Hawkins and Ultra Demolition are black artwork
+   and would vanish against #0B0E14, and Baylor is white type so nothing would
+   visibly happen. An opacity lift works for every logo whatever its source
+   colour, and reads as texture rather than as "this is a link".
+
+   Hover only — there is no focus state to style, because the logos are not
    links and must not be made focusable. */
 .logo:hover {
-  filter: none;
   opacity: 1;
 }
 
@@ -326,7 +343,7 @@ Expected: `✓ Compiled successfully`, no TypeScript errors, no ESLint warnings.
 Run `npm run dev` and open `http://localhost:3000`. Scroll past the hero to the band.
 
 Pass criteria:
-- All ten logos render — no broken images, no missing files.
+- All twelve logos render — no broken images, no missing files.
 - Every logo is white/monochrome, not in its brand colours. In particular, no logo renders as a filled white rectangle — that means its source lacks an alpha channel.
 - Hovering one logo restores its full colour.
 - The label reads `BUSINESSES I'VE BUILT FOR` in uppercase mono, not in the Space Grotesk display face.
@@ -344,7 +361,7 @@ git commit -m "Add a static client logo band to the home page
 Replaces the old site's scrolling client carousel. The band is credibility
 at a glance, not navigation, so it is static and the logos are unlinked.
 
-Logos are knocked out to a single white so ten brand palettes do not
+Logos are knocked out to a single white so twelve brand palettes do not
 compete on the dark background, and sized by height because the set spans
 a 3:1 wordmark to a taller-than-wide badge."
 ```
@@ -371,18 +388,18 @@ With `npm run dev` running, view `http://localhost:3000` at a viewport of at lea
 
 Look at the band with your eyes unfocused, or squint. You are checking whether any mark jumps forward or recedes relative to its neighbours — not whether they are the same physical size.
 
-The square badges (DeLeon, Winfield's, WealthGuard, Becks, Baylor, Edge196) ship at `scale: 0.85`. The wide wordmarks (PsycTech, FHA, Melissa Hawkins, Ultra Demolition) ship unscaled.
+The square badges (DeLeon, Winfield's, WealthGuard, Becks, Baylor, Gulf Winds, Edge196) ship at `scale: 0.85`. The wide wordmarks (BuildOn, Melissa Hawkins, PsycTech, FHA, Ultra Demolition) ship unscaled.
 
 Adjust the `scale` value on any individual logo that reads too heavy or too light. Sensible range is `0.7` to `1.0`. Change one logo at a time and re-look — changing several at once makes it impossible to tell which change helped.
 
 Three specific things to check, because they are the most likely to be wrong:
+- **BuildOn** at `4.08` is the widest mark in the set. At `2.5rem` tall it wants ~163px of width, which exceeds the `max-width: 10rem` (160px) ceiling — so it will be width-constrained and render slightly short. **Melissa Hawkins** at `3.60` sits right at the limit. If either reads short next to its neighbours, raise `max-width` on `.logo` rather than scaling them up.
 - **Edge196** is a small square SVG at `68×67`. It may need to go below `0.85`.
-- **PsycTech** at `3.15` is now the widest mark in the set and the most likely to hit the `max-width: 9rem` ceiling before reaching full height, which would make it read short next to its neighbours. If so, raise `max-width` on `.logo` rather than scaling PsycTech up. **FHA** at `3.00` is close behind and has the same exposure.
-- **Baylor** is a near-square institutional seal, which typically carries fine internal detail. At `2.5rem` tall that detail may turn to mud once knocked out to flat white. If it does, it needs a simplified or wordmark version of the logo rather than a scale change.
+- **Tagline text will not survive**, and that is expected — FHA's "another American dream comes true", DeLeon's "SAFETY SOLUTIONS LLC", PsycTech's "Technology for Psychology" and Melissa Hawkins' "PHOTOGRAPHY" all go illegible at `2.5rem`. They read as texture. Do not raise `--logo-height` to try to rescue them; that would make the band shout.
 
 - [ ] **Step 3: Check the row break**
 
-At desktop width the ten logos should break into balanced rows rather than leaving one orphan on a final row. If a single logo is stranded alone, reorder the `CLIENTS` array so wide and square marks alternate differently. Do not add or remove logos to force a break.
+At desktop width the twelve logos should break into balanced rows rather than leaving one orphan on a final row. If a single logo is stranded alone, reorder the `CLIENTS` array so wide and square marks alternate differently. Do not add or remove logos to force a break.
 
 - [ ] **Step 4: Check narrow viewports**
 
@@ -408,7 +425,7 @@ Expected: `✓ Compiled successfully`, no errors or warnings, `/` still prerende
 git add src/components/home/ClientBand.tsx src/components/home/ClientBand.module.css
 git commit -m "Tune optical balance of the client logo band
 
-Per-logo scale corrections and spacing adjustments so the ten marks read
+Per-logo scale corrections and spacing adjustments so the twelve marks read
 as equal weight rather than equal size."
 ```
 
@@ -416,6 +433,6 @@ as equal weight rather than equal size."
 
 ## Notes for the reviewer
 
-- **The band asserts no count.** If a number appears anywhere in the copy, reject it. Ten logo files against fifteen project files, three logos naming companies with no project, six projects with no logo, and duplicate project entries for FHA and WealthGuard — no figure is defensible without reconciling two stores and keeping it true as work is added.
+- **The band asserts no count.** If a number appears anywhere in the copy, reject it. Twelve logo files against fifteen project files, three logos naming companies with no project, four projects with no logo, and duplicate project entries for FHA and WealthGuard — no figure is defensible without reconciling two stores and keeping it true as work is added.
 - **Hover on an unlinked logo is a known, accepted tradeoff.** It suggests a click target that is not there. The spec keeps it because it reads as texture rather than a promise. Removing it is a one-line deletion if you disagree; it is not an oversight.
 - **`dss.jpg` stays in the repo untouched.** It is unused by this feature. Deleting it is out of scope.

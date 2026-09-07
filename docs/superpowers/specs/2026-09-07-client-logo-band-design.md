@@ -44,9 +44,9 @@ The two sets do not align, and forcing them together would misrepresent both:
 | | |
 |---|---|
 | Logo, no project file | Melissa Hawkins Photography, PsycTech, Baylor College of Medicine |
-| Project file, no logo | BuildOn Technologies, Gulf Winds International, One Time Close, C-Bit Trainer, TicHelper, Super Chef |
+| Project file, no logo | One Time Close, C-Bit Trainer, TicHelper, Super Chef |
 
-A `clients` table would mean a schema change and a migration to hold ten
+A `clients` table would mean a schema change and a migration to hold twelve
 static rows that nothing else queries, joined to projects by a relationship that
 is partial in both directions. The project laid down the rule that Postgres holds
 *queryable* metadata; a curated display list that is never filtered, sorted, or
@@ -67,35 +67,52 @@ type ClientLogo = {
 
 ### Sources
 
-Ten assets in `public/images/logos/`. The monochrome treatment requires an alpha
-channel; the "Alpha" column is a hard prerequisite, not a nicety.
+Twelve assets in `public/images/logos/`.
 
-| Asset | Client | Intrinsic | Ratio | Alpha |
-|---|---|---|---|---|
-| `dss-logo.png` | DeLeon Safety Solutions | 400×340 | 1.18 | yes |
-| `ud.png` | Ultra Demolition | 192×120 | 1.60 | yes |
-| `mHawk.png` | Melissa Hawkins Photography | 296×106 | 2.79 | yes |
-| `winfields-logo.svg` | Winfield's Chocolate Bar | square | 1.00 | vector |
-| `becks-logo.png` | Becks Prime | 191×147 | 1.30 | yes |
-| `psyctech-logo.png` | PsycTech | 800×254 | 3.15 | yes |
-| `fha-logo.png` | FHA | 360×120 | 3.00 | yes |
-| `wig-logo.png` | WealthGuard Insurance Group | 184×191 | 0.96 | yes |
-| `edge196.svg` | Edge196 | square | 1.00 | vector |
-| `baylor-logo.png` | Baylor College of Medicine | 180×182 | 0.99 | **no** |
+| Asset | Client | Intrinsic | Ratio |
+|---|---|---|---|
+| `buildon-logo.png` | BuildOn Technologies | 408×100 | 4.08 |
+| `mHawk.png` | Melissa Hawkins Photography | 259×72 | 3.60 |
+| `psyctech-logo.png` | PsycTech | 800×254 | 3.15 |
+| `fha-logo.png` | FHA | 360×120 | 3.00 |
+| `ud.png` | Ultra Demolition | 185×111 | 1.67 |
+| `becks-logo.png` | Becks Prime | 191×147 | 1.30 |
+| `baylor-logo.png` | Baylor College of Medicine | 124×101 | 1.23 |
+| `dss-logo.png` | DeLeon Safety Solutions | 400×340 | 1.18 |
+| `gwi-logo.png` | Gulf Winds International | 143×142 | 1.01 |
+| `winfields-logo.svg` | Winfield's Chocolate Bar | square | 1.00 |
+| `edge196.svg` | Edge196 | square | 1.00 |
+| `wig-logo.png` | WealthGuard Insurance Group | 184×191 | 0.96 |
 
-PsycTech replaces the separate C-Bit Trainer and TicHelper marks, and Baylor
-College of Medicine replaces SuperChef.
+PsycTech replaces the separate C-Bit Trainer and TicHelper marks and Baylor
+College of Medicine replaces SuperChef; BuildOn and Gulf Winds were added after.
 
-`dss.jpg` is skipped — it is `dss-logo.png` flattened onto white, so it has no
-alpha and cannot be knocked out. The file stays where it is; removing it is out
-of scope.
+### The transparency prerequisite
 
-**`baylor-logo.png` currently fails the alpha prerequisite.** It is an 8-bit
-colormap PNG with no alpha channel, so `brightness(0) invert(1)` would fill its
-entire bounding box and render it as a solid white rectangle — the same failure
-that disqualifies `dss.jpg`. It must be replaced with a transparent PNG or SVG
-before it can ship in the band. Blocking for that one entry only; the other nine
-are unaffected.
+The knockout requires a genuinely **transparent background**, which is not the
+same thing as having an alpha channel. `sips -g hasAlpha` reports whether the
+channel exists, not whether it is used — a fully opaque RGBA file passes that
+check and still renders as a solid white rectangle under the filter.
+
+Audit by sampling border-pixel alpha instead. Three files failed this and were
+repaired:
+
+| Asset | Was | Fix |
+|---|---|---|
+| `baylor-logo.png` | white type on an opaque blue tile, no alpha channel at all | key on luminance, keep light pixels |
+| `mHawk.png` | black script on an opaque white field | key on luminance, keep dark pixels |
+| `ud.png` | black artwork on an opaque white field | key on luminance, keep dark pixels |
+
+In each case alpha is ramped across a threshold band rather than hard-cut, so
+antialiased edges stay smooth, the original RGB is preserved, and the transparent
+margin is trimmed afterwards. Baylor goes 180×182 → 124×101 — the tile is gone
+and only the wordmark survives.
+
+`dss.jpg` remains skipped — it is `dss-logo.png` flattened onto white, so it has
+no alpha and duplicates a file that does. It stays where it is; removing it is
+out of scope.
+
+New assets must clear the border-alpha audit before being added.
 
 Adding a client later is one entry in the constant plus the asset — the list is
 ordered by hand, so new marks go wherever they balance the rows best rather than
@@ -112,16 +129,16 @@ max-width: 9rem
 object-fit: contain
 ```
 
-Sizing by height is the whole trick. The set spans 3.15 (PsycTech, a wide
+Sizing by height is the whole trick. The set spans 4.08 (BuildOn, a wide
 wordmark) to 0.96 (WealthGuard, taller than wide); matching on width would render
-PsycTech as a hairline and WealthGuard as a slab.
+BuildOn as a hairline and WealthGuard as a slab.
 
 Height alone is not sufficient either. At equal height a square badge carries far
 more ink than a wordmark and reads as louder. The optional `scale` corrects this
 per logo — roughly `0.85` for the square and near-square marks (Edge196,
-Winfield's, WealthGuard, DeLeon, Becks, Baylor), unset for the wide ones (PsycTech,
-FHA, Melissa Hawkins, Ultra Demolition). Values are tuned by eye against the
-rendered band, not computed.
+Winfield's, WealthGuard, DeLeon, Becks, Baylor, Gulf Winds), unset for the wide
+ones (BuildOn, Melissa Hawkins, PsycTech, FHA, Ultra Demolition). Values are tuned
+by eye against the rendered band, not computed.
 
 The container is a centered `flex-wrap` row, `gap: 2.5rem 3.5rem`, tightening to
 `2rem 2.5rem` below 640px so the band lands about three marks per row on a phone
@@ -138,13 +155,21 @@ filter: brightness(0) invert(1);
 opacity: 0.55;
 ```
 
-Ten client logos in ten brand palettes on `#0B0E14` is a ransom note. The
+Twelve client logos in twelve brand palettes on `#0B0E14` is a ransom note. The
 knockout flattens all of them to a single white, so the band reads as one texture
 and stays subordinate to the work below it — which is the point of putting it
 above the grid rather than in it.
 
-Hover and focus restore full color at full opacity, with the transition disabled
-under `prefers-reduced-motion`.
+**Hover lifts opacity to 1 and keeps the knockout.** It does not restore brand
+color. Restoring color was the original design and it does not survive contact
+with the actual assets: Melissa Hawkins and Ultra Demolition are black artwork,
+so "full color" on a `#0B0E14` background renders them invisible, and Baylor is
+now white type, so nothing visibly happens at all. An opacity lift works for
+every logo regardless of its source color, and it drops the affordance problem —
+a color change reads as "this is a link", where a brightness change reads as
+texture.
+
+The transition is disabled under `prefers-reduced-motion`.
 
 The two SVG sources need `unoptimized` on `next/image`; the optimizer returns 400
 for SVG unless `dangerouslyAllowSVG` is set, and the header logo already
@@ -156,7 +181,7 @@ establishes this precedent. There is nothing in a vector for the optimizer to do
 <section aria-labelledby="clients-heading">
   <h2 id="clients-heading">Businesses I've built for</h2>   // mono, uppercase, small
   <ul>
-    <li><Image alt={name} … /></li>   // ×10
+    <li><Image alt={name} … /></li>   // ×12
   </ul>
 </section>
 ```
@@ -172,9 +197,9 @@ The band is below the fold, so the default lazy loading is correct.
 ## Why no figure
 
 The label states no count. Any number would have to be reconciled across two
-stores that disagree — ten logo files against fifteen project files, three of the
-logos naming companies with no project at all, six projects having no logo, and
-FHA and WealthGuard carrying duplicate project entries — and then kept true as
+stores that disagree — twelve logo files against fifteen project files, three of
+the logos naming companies with no project at all, four projects having no logo,
+and FHA and WealthGuard carrying duplicate project entries — and then kept true as
 work is added. The project's own rule about metrics applies: unverifiable numbers
 on a portfolio are worse than none.
 
@@ -182,10 +207,9 @@ on a portfolio are worse than none.
 
 ## Open questions
 
-- **Hover on unlinked logos.** Restoring color on hover is a mild affordance
-  lie — it suggests a click target that is not there. Kept because it reads as
-  texture rather than a promise, but dropping it costs nothing and is a
-  defensible reversal.
+None outstanding. The hover question — whether restoring brand color on an
+unlinked logo is an affordance lie — was settled by the assets themselves; see
+"Color" above.
 
 ## Files
 
