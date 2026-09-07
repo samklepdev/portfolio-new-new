@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeroSection } from "@/components/hero/HeroSection";
+import { ClientBand } from "@/components/home/ClientBand";
 import { PlaceholderSection } from "@/components/home/PlaceholderSection";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
 import { getFeaturedProjects } from "@/db/queries";
@@ -28,6 +29,10 @@ export default async function Home() {
         href="/about"
         linkLabel="More about me"
       />
+
+      {/* Proof between the introduction and the work: who I am, who trusted me,
+          then the work itself. */}
+      <ClientBand />
 
       {/* Project grid renders normally underneath — no 3D cost here,
           this section should stay fast/crawlable regardless of WebGL support */}
