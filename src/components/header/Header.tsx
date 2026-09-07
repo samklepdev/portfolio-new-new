@@ -7,14 +7,11 @@ import { usePathname } from "next/navigation";
 import { useScrollStore } from "@/lib/scrollStore";
 import styles from "./Header.module.css";
 
-/**
- * About and Contact belong here too — they are the other two links the old
- * site carried — but neither route exists yet, and a nav that 404s is worse
- * than a short one. Add them back the moment those pages land.
- */
 const LINKS = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/projects", label: "Projects" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const RESUME_URL = "/images/documents/samuel-klepper-resume.pdf";
