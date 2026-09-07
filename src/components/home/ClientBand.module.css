@@ -26,7 +26,11 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 2.5rem 3.5rem;
+  /* The column gap is a layout lever, not just breathing room: it sets how much
+     of each row is whitespace, and so how evenly twelve marks of very unequal
+     width can split across two rows. 3.5rem forced row one nearly full before it
+     would break; 4rem lets the rows land within ~70px of each other. */
+  gap: 2.5rem 4rem;
   margin-top: 2.5rem;
 }
 

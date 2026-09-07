@@ -9,9 +9,10 @@ type ClientLogo = {
   width: number;
   height: number;
   /**
-   * Optical correction. At equal height a square badge carries far more ink
-   * than a wordmark and reads as louder, so the square marks are knocked back.
-   * Tuned by eye against the rendered band, not computed.
+   * Optical correction, so the marks read as equal weight rather than equal
+   * size. Solid masses (badges, the FHA house, BuildOn's slab) carry far more
+   * ink at a given height and read as louder, so they are knocked back; hairline
+   * marks run unscaled. Tuned by eye against the rendered band, not computed.
    */
   scale?: number;
   /** SVG only: the image optimizer 400s on SVG without dangerouslyAllowSVG. */
@@ -27,21 +28,23 @@ type ClientLogo = {
  * partial either way.
  *
  * Order is chosen so wide wordmarks and square badges alternate rather than
- * clumping into lopsided rows. Adding a client means inserting where it balances,
- * not appending.
+ * clumping into lopsided rows. It is load-bearing: flex-wrap fills greedily, so
+ * the sequence decides where the break lands. Grouping the five wide marks first
+ * put every badge on row two and left the band a lopsided pyramid (a 919px row
+ * over a 527px one); interleaving them evens it to roughly 783 over 713 while
+ * still breaking 6/6. Adding a client means inserting where it balances, not
+ * appending, and re-checking the break at desktop width.
  */
 const CLIENTS: ClientLogo[] = [
+  // Knocked back from 1: the boldest wordmark in the set, and the only one that
+  // hit the 10rem ceiling. 0.92 both quiets it and drops its natural width under
+  // the cap, so it is no longer letterboxed a couple of pixels short.
   {
     name: "BuildOn Technologies",
     src: "/images/logos/buildon-logo.png",
     width: 408,
     height: 100,
-  },
-  {
-    name: "FHA",
-    src: "/images/logos/fha-logo.png",
-    width: 360,
-    height: 120,
+    scale: 0.92,
   },
   {
     name: "DeLeon Safety Solutions",
@@ -51,17 +54,31 @@ const CLIENTS: ClientLogo[] = [
     scale: 0.85,
   },
   {
-    name: "Baylor College of Medicine",
-    src: "/images/logos/baylor-logo.png",
-    width: 124,
-    height: 101,
-    scale: 0.85,
-  },
-  {
     name: "PsycTech",
     src: "/images/logos/psyctech-logo.png",
     width: 800,
     height: 254,
+  },
+  {
+    name: "Gulf Winds International",
+    src: "/images/logos/gwi-logo.png",
+    width: 143,
+    height: 142,
+    scale: 0.78,
+  },
+  {
+    name: "Ultra Demolition",
+    src: "/images/logos/ud.png",
+    width: 185,
+    height: 111,
+  },
+  // Stacked hairline serif, not a badge — the 0.85 badge correction was making
+  // an already-light mark disappear. Runs unscaled.
+  {
+    name: "Baylor College of Medicine",
+    src: "/images/logos/baylor-logo.png",
+    width: 124,
+    height: 101,
   },
   {
     name: "Melissa Hawkins Photography",
@@ -70,38 +87,18 @@ const CLIENTS: ClientLogo[] = [
     height: 72,
   },
   {
-    name: "Winfield's Chocolate Bar",
-    src: "/images/logos/winfields-logo.svg",
-    width: 158,
-    height: 159,
-    scale: 0.85,
-    unoptimized: true,
-  },
-  {
-    name: "Ultra Demolition",
-    src: "/images/logos/ud.png",
-    width: 185,
-    height: 111,
-  },
-  {
-    name: "Gulf Winds International",
-    src: "/images/logos/gwi-logo.png",
-    width: 143,
-    height: 142,
-    scale: 0.85,
-  },
-  {
     name: "WealthGuard Insurance Group",
     src: "/images/logos/wig-logo.png",
     width: 184,
     height: 191,
-    scale: 0.85,
+    scale: 0.8,
   },
+  // The solid house is the largest unbroken ink mass in the set.
   {
-    name: "Becks Prime",
-    src: "/images/logos/becks-logo.png",
-    width: 191,
-    height: 147,
+    name: "FHA",
+    src: "/images/logos/fha-logo.png",
+    width: 360,
+    height: 120,
     scale: 0.85,
   },
   {
@@ -109,7 +106,22 @@ const CLIENTS: ClientLogo[] = [
     src: "/images/logos/edge196.svg",
     width: 68,
     height: 67,
-    scale: 0.85,
+    scale: 0.78,
+    unoptimized: true,
+  },
+  {
+    name: "Becks Prime",
+    src: "/images/logos/becks-logo.png",
+    width: 191,
+    height: 147,
+    scale: 0.8,
+  },
+  // Hairline monogram, the lightest mark here even unscaled.
+  {
+    name: "Winfield's Chocolate Bar",
+    src: "/images/logos/winfields-logo.svg",
+    width: 158,
+    height: 159,
     unoptimized: true,
   },
 ];
