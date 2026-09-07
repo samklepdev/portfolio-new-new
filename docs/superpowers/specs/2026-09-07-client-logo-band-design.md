@@ -43,10 +43,10 @@ The two sets do not align, and forcing them together would misrepresent both:
 
 | | |
 |---|---|
-| Logo, no project file | Melissa Hawkins Photography |
-| Project file, no logo | BuildOn Technologies, Gulf Winds International, One Time Close |
+| Logo, no project file | Melissa Hawkins Photography, PsycTech, Baylor College of Medicine |
+| Project file, no logo | BuildOn Technologies, Gulf Winds International, One Time Close, C-Bit Trainer, TicHelper, Super Chef |
 
-A `clients` table would mean a schema change and a migration to hold eleven
+A `clients` table would mean a schema change and a migration to hold ten
 static rows that nothing else queries, joined to projects by a relationship that
 is partial in both directions. The project laid down the rule that Postgres holds
 *queryable* metadata; a curated display list that is never filtered, sorted, or
@@ -67,26 +67,35 @@ type ClientLogo = {
 
 ### Sources
 
-Eleven assets exist in `public/images/logos/`. All nine PNGs carry an alpha
-channel, which the monochrome treatment requires.
+Ten assets in `public/images/logos/`. The monochrome treatment requires an alpha
+channel; the "Alpha" column is a hard prerequisite, not a nicety.
 
-| Asset | Client | Intrinsic | Ratio |
-|---|---|---|---|
-| `dss-logo.png` | DeLeon Safety Solutions | 400×340 | 1.18 |
-| `ud.png` | Ultra Demolition | 192×120 | 1.60 |
-| `mHawk.png` | Melissa Hawkins Photography | 296×106 | 2.79 |
-| `winfields-logo.svg` | Winfield's Chocolate Bar | square | 1.00 |
-| `becks-logo.png` | Becks Prime | 191×147 | 1.30 |
-| `cBit-logo.png` | C-Bit Trainer | 141×124 | 1.14 |
-| `ticHelper-logo.png` | TicHelper | 302×230 | 1.31 |
-| `SuperChef-logo.png` | SuperChef | 500×250 | 2.00 |
-| `fha-logo.png` | FHA | 360×120 | 3.00 |
-| `wig-logo.png` | WealthGuard Insurance Group | 184×191 | 0.96 |
-| `edge196.svg` | Edge196 | square | 1.00 |
+| Asset | Client | Intrinsic | Ratio | Alpha |
+|---|---|---|---|---|
+| `dss-logo.png` | DeLeon Safety Solutions | 400×340 | 1.18 | yes |
+| `ud.png` | Ultra Demolition | 192×120 | 1.60 | yes |
+| `mHawk.png` | Melissa Hawkins Photography | 296×106 | 2.79 | yes |
+| `winfields-logo.svg` | Winfield's Chocolate Bar | square | 1.00 | vector |
+| `becks-logo.png` | Becks Prime | 191×147 | 1.30 | yes |
+| `psyctech-logo.png` | PsycTech | 800×254 | 3.15 | yes |
+| `fha-logo.png` | FHA | 360×120 | 3.00 | yes |
+| `wig-logo.png` | WealthGuard Insurance Group | 184×191 | 0.96 | yes |
+| `edge196.svg` | Edge196 | square | 1.00 | vector |
+| `baylor-logo.png` | Baylor College of Medicine | 180×182 | 0.99 | **no** |
+
+PsycTech replaces the separate C-Bit Trainer and TicHelper marks, and Baylor
+College of Medicine replaces SuperChef.
 
 `dss.jpg` is skipped — it is `dss-logo.png` flattened onto white, so it has no
 alpha and cannot be knocked out. The file stays where it is; removing it is out
 of scope.
+
+**`baylor-logo.png` currently fails the alpha prerequisite.** It is an 8-bit
+colormap PNG with no alpha channel, so `brightness(0) invert(1)` would fill its
+entire bounding box and render it as a solid white rectangle — the same failure
+that disqualifies `dss.jpg`. It must be replaced with a transparent PNG or SVG
+before it can ship in the band. Blocking for that one entry only; the other nine
+are unaffected.
 
 Adding a client later is one entry in the constant plus the asset — the list is
 ordered by hand, so new marks go wherever they balance the rows best rather than
@@ -103,16 +112,16 @@ max-width: 9rem
 object-fit: contain
 ```
 
-Sizing by height is the whole trick. The set spans 3.00 (FHA, a wide wordmark) to
-0.96 (WealthGuard, taller than wide); matching on width would render FHA as a
-hairline and WealthGuard as a slab.
+Sizing by height is the whole trick. The set spans 3.15 (PsycTech, a wide
+wordmark) to 0.96 (WealthGuard, taller than wide); matching on width would render
+PsycTech as a hairline and WealthGuard as a slab.
 
 Height alone is not sufficient either. At equal height a square badge carries far
 more ink than a wordmark and reads as louder. The optional `scale` corrects this
 per logo — roughly `0.85` for the square and near-square marks (Edge196,
-Winfield's, WealthGuard, C-Bit, DeLeon, Becks, TicHelper), unset for the wide ones
-(FHA, Melissa Hawkins, SuperChef, Ultra Demolition). Values are tuned by eye
-against the rendered band, not computed.
+Winfield's, WealthGuard, DeLeon, Becks, Baylor), unset for the wide ones (PsycTech,
+FHA, Melissa Hawkins, Ultra Demolition). Values are tuned by eye against the
+rendered band, not computed.
 
 The container is a centered `flex-wrap` row, `gap: 2.5rem 3.5rem`, tightening to
 `2rem 2.5rem` below 640px so the band lands about three marks per row on a phone
@@ -129,7 +138,7 @@ filter: brightness(0) invert(1);
 opacity: 0.55;
 ```
 
-Eleven client logos in eleven brand palettes on `#0B0E14` is a ransom note. The
+Ten client logos in ten brand palettes on `#0B0E14` is a ransom note. The
 knockout flattens all of them to a single white, so the band reads as one texture
 and stays subordinate to the work below it — which is the point of putting it
 above the grid rather than in it.
@@ -147,7 +156,7 @@ establishes this precedent. There is nothing in a vector for the optimizer to do
 <section aria-labelledby="clients-heading">
   <h2 id="clients-heading">Businesses I've built for</h2>   // mono, uppercase, small
   <ul>
-    <li><Image alt={name} … /></li>   // ×11
+    <li><Image alt={name} … /></li>   // ×10
   </ul>
 </section>
 ```
@@ -163,10 +172,11 @@ The band is below the fold, so the default lazy loading is correct.
 ## Why no figure
 
 The label states no count. Any number would have to be reconciled across two
-stores that disagree — eleven logo files, fifteen project files, roughly twelve
-distinct clients once FHA and WealthGuard's duplicate entries collapse — and then
-kept true as work is added. The project's own rule about metrics applies:
-unverifiable numbers on a portfolio are worse than none.
+stores that disagree — ten logo files against fifteen project files, three of the
+logos naming companies with no project at all, six projects having no logo, and
+FHA and WealthGuard carrying duplicate project entries — and then kept true as
+work is added. The project's own rule about metrics applies: unverifiable numbers
+on a portfolio are worse than none.
 
 "Businesses I've built for" makes the claim without incurring the debt.
 
