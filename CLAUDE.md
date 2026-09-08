@@ -32,7 +32,8 @@ First-time setup: `npm install && cp .env.example .env && npm run db:up && npm r
 src/app/          routes — /, /about, /contact, /projects, /projects/[slug]
 src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStaticFallback
                   header/     — Header (client; reveals after the hero)
-                  home/       — ClientBand, AboutSection, ContactSection, ContactForm
+                  home/       — ClientBand, AboutSection, ServicesSection, RingField,
+                                ContactSection, ContactForm
                   footer/     — Footer (site-wide, rendered outside <main>)
                   projects/   — ProjectGrid, ProjectCard, Pagination, ProjectTabs
 src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
@@ -44,7 +45,7 @@ Config files (`next.config.ts`, `drizzle.config.ts`, `docker-compose.yml`, `esli
 `public/` stay at the repo root. `@/*` maps to `./src/*`.
 
 The home page renders, in order: `<HeroSection />` → `<ClientBand />` → `<AboutSection />` →
-projects section → `<ContactSection />`. `<Footer />` sits in `layout.tsx` outside `<main>`.
+`<ServicesSection />` → projects section → `<ContactSection />`. `<Footer />` sits in `layout.tsx` outside `<main>`.
 
 Section spacing follows one convention: **each section pads only its top**, and the last child
 of `<main>` owns the bottom. Padding does not collapse the way margins do, so two adjacent
@@ -142,14 +143,26 @@ spreads; that throws "not iterable". It can collapse once the project is on
   `src/app/toast.css`. Next injects `ReactToastify.css` *after* that file, so equal-specificity
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
+- **Home services section** — `ServicesSection` + `RingField` between About and Projects.
+  Two service cards over a field of 26 concentric SVG rings that ripple outward on hover.
+  Adapted from the Radiant template's `LinkedAvatars`, which is Tailwind + framer-motion;
+  reimplemented as CSS Modules with no new dependency and no client JS. Three things here
+  are load-bearing and look like mistakes if you don't know why:
+  - The ripple crosses a CSS Modules boundary. The hover target (`.card`) and the animated
+    element (`.ring`) live in different modules, and CSS Modules hashes class *and*
+    `@keyframes` names per file — so `.card:hover .ring` cannot be written, and a keyframe
+    name passed through a custom property will not resolve. The trigger is therefore
+    `animation-play-state: var(--ring-play-state, paused)` flipped to `running` by the card.
+    Custom property *values* are not hashed and do inherit. Do not "simplify" it.
+  - `.card:hover` is wrapped in `@media (hover: hover) and (pointer: fine)`. Touch latches
+    `:hover` after a tap, which would leave the ripple running forever on a phone.
+  - The rings deliberately overflow their graphic slot across the whole card; `.body` carries
+    `z-index: 1` so the copy paints above them. Do not "fix" the bleed with `overflow: hidden`.
+  See `docs/superpowers/specs/2026-09-08-home-services-section-design.md`.
 
 ## Not yet built — in order
 
-1. **Home services section** — `ServicesSection` between About and Projects, with a
-   hover-triggered concentric-ring graphic adapted from the Radiant template. Splits *what I
-   build* out of `AboutSection`, which currently doubles as both. See
-   `docs/superpowers/specs/2026-09-08-home-services-section-design.md`.
-2. **Polish** — scroll-reveal on the grid, hover glow states, `@vercel/og` per-project OG images,
+1. **Polish** — scroll-reveal on the grid, hover glow states, `@vercel/og` per-project OG images,
    `shiki`/`rehype-pretty-code` highlighting, reading time, last-updated from git metadata.
 
 ## Possible future additions
