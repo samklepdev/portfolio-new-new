@@ -171,6 +171,11 @@ guard, same reason, as `ProjectCard.module.css`.
 There is no `:focus-within` trigger. Nothing inside a card is focusable, so it
 could never fire, and a selector that cannot match is worse than an absent one.
 
+On mouse-out the card stops naming an animation, so the animation is removed and
+every ring returns to rest immediately. It does not freeze mid-ripple. The
+mechanism is `animation-name: var(--ring-animation, none)` rather than
+`animation-play-state`, because a paused animation holds its current frame.
+
 `prefers-reduced-motion: reduce` removes the animation entirely; the rings
 render static at rest opacity.
 

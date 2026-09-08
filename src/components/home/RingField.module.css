@@ -28,29 +28,22 @@
   stroke-opacity: 0.15;
   transform-box: view-box;
   transform-origin: 250px 250px;
-  animation: ripple 2s ease-in-out infinite;
+  animation-name: var(--ring-animation, none);
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
   animation-delay: calc(var(--i) * 50ms);
-  animation-play-state: var(--ring-play-state, paused);
 }
 
-@keyframes ripple {
-  0% {
-    transform: scale(1);
-    stroke-opacity: 0.15;
-  }
-  18.75% {
-    transform: scale(1.08);
-    stroke-opacity: 0.4;
-  }
-  37.5% {
-    transform: scale(1);
-    stroke-opacity: 0.15;
-  }
-  100% {
-    transform: scale(1);
-    stroke-opacity: 0.15;
-  }
-}
+/* The ripple keyframes deliberately live in ServicesSection.module.css, not here.
+   The hover target (.card) is in that file and hands the animation over through
+   --ring-animation, switching between the keyframe name and `none` so the rings
+   drop back to rest on mouse-out instead of freezing mid-ripple.
+   css-loader scopes @keyframes names AND the value of --ring-animation into the
+   namespace of whichever file declares them, so the two only resolve to the same
+   identifier when they are declared together. Defining the keyframes here and
+   referencing them from there silently emits no keyframes at all — the build
+   still succeeds and the animation just never runs. Keep them co-located. */
 
 .core {
   position: relative;
@@ -69,6 +62,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ring {
-    animation: none;
+    animation-name: none;
   }
 }

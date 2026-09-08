@@ -400,7 +400,7 @@ Adds the staggered outward ripple, running only on hover or focus.
 
 **Interfaces:**
 - Consumes: the `--i` custom property set per circle in Task 2, and the `.card` class from Task 1.
-- Produces: the inherited custom property `--ring-play-state`, set to `running` by `.card:hover` inside a `@media (hover: hover) and (pointer: fine)` guard, and defaulting to `paused`.
+- Produces: the inherited custom property `--ring-animation`, set to the keyframe name by `.card:hover` inside a `@media (hover: hover) and (pointer: fine)` guard, and defaulting to `none`. The `@keyframes` are declared in `ServicesSection.module.css` alongside the trigger.
 
 - [ ] **Step 1: Add the keyframes and animation to RingField.module.css**
 
@@ -414,7 +414,7 @@ Replace the `.ring` rule with:
   transform-origin: 250px 250px;
   animation: ripple 2s ease-in-out infinite;
   animation-delay: calc(var(--i) * 50ms);
-  animation-play-state: var(--ring-play-state, paused);
+  animation-name: var(--ring-animation, none);
 }
 
 @keyframes ripple {
@@ -439,7 +439,9 @@ Replace the `.ring` rule with:
 
 The percentages are not arbitrary. Radiant runs `duration: 0.75` with `repeatDelay: 1.25`, a 2s period that is active for the first 37.5% and idle for the rest; `18.75%` is the midpoint of the active portion. `animation-delay: calc(var(--i) * 50ms)` reproduces framer-motion's `delay: n * 0.05`.
 
-**Why `animation-play-state` and not a class or a keyframe name:** the hover target (`.card`) lives in `ServicesSection.module.css` and the animated element (`.ring`) lives in `RingField.module.css`. CSS Modules hashes class names *and* `@keyframes` names per file, so `.card:hover .ring` cannot be written across the two modules, and a keyframe name passed through a custom property would not resolve to the hashed name. Custom property *values* are not hashed and do inherit through the DOM, so passing `running` / `paused` is the one mechanism that crosses the boundary cleanly. Do not "simplify" this into a shared class.
+**Why a custom property carries the animation name:** the hover target (`.card`) lives in `ServicesSection.module.css` and the animated element (`.ring`) lives in `RingField.module.css`. CSS Modules hashes class names per file, so `.card:hover .ring` cannot be written across the two modules. The card sets `--ring-animation` and `.ring` reads `animation-name: var(--ring-animation, none)`; custom properties inherit through the DOM, so this crosses the boundary. Because the name goes to `none` on mouse-out, the animation is removed rather than paused and the rings snap back to rest.
+
+**The `@keyframes` must be declared in `ServicesSection.module.css`, beside the trigger — not next to `.ring`.** css-loader scopes `@keyframes` names *and* the value of `--ring-animation` into the namespace of whichever file declares them. They resolve to the same identifier only when declared in the same file. Split them and the build emits **no keyframes at all**: `next build` still reports success, and the animation silently never runs. Wrapping the keyframes in `:global {}` does not help — that block is dropped outright. Verify by grepping the built CSS for `@keyframes` after any change here.
 
 - [ ] **Step 2: Add the reduced-motion guard**
 
@@ -461,7 +463,7 @@ Add the custom property to the existing guarded hover rule, so it becomes:
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
     border-color: rgba(0, 240, 255, 0.28);
-    --ring-play-state: running;
+    --ring-animation: serviceRingRipple;
   }
 }
 ```
@@ -484,7 +486,7 @@ Pass criteria:
 - The ripple pulses roughly every two seconds, with a clear pause between pulses.
 - In macOS System Settings → Accessibility → Display → Reduce motion, enable it, reload, and hover: nothing animates at all.
 
-**Known and accepted:** moving the pointer off a card pauses the ripple where it stands rather than easing it back to rest. Most rings sit at rest for 62.5% of the cycle so this is rarely visible, and the alternative costs a shared global keyframe name. Do not file this as a defect.
+Moving the pointer off a card removes the animation, so every ring returns to rest immediately rather than freezing mid-ripple. Re-hovering restarts the stagger from the first ring.
 
 - [ ] **Step 6: Commit**
 
@@ -621,4 +623,4 @@ No gaps.
 
 **Placeholder scan:** none. Every code step carries complete code; every command carries expected output.
 
-**Type consistency:** `RingField` is exported as `RingField` and imported as `./RingField` in Task 2 and referenced nowhere else. `ServicesSection` is exported and imported as `@/components/home/ServicesSection` in Task 1. The custom property is `--i` in Task 2 and read as `var(--i)` in Task 3; the play-state property is `--ring-play-state` in both Task 3 steps. Class names used across tasks — `.card`, `.graphic`, `.ring`, `.rings`, `.field`, `.core` — are each defined once and spelled consistently.
+**Type consistency:** `RingField` is exported as `RingField` and imported as `./RingField` in Task 2 and referenced nowhere else. `ServicesSection` is exported and imported as `@/components/home/ServicesSection` in Task 1. The custom property is `--i` in Task 2 and read as `var(--i)` in Task 3; the handoff property is `--ring-animation` in both Task 3 steps. Class names used across tasks — `.card`, `.graphic`, `.ring`, `.rings`, `.field`, `.core` — are each defined once and spelled consistently.

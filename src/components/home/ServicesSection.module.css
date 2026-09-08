@@ -48,7 +48,28 @@
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
     border-color: rgba(0, 240, 255, 0.28);
-    --ring-play-state: running;
+    --ring-animation: serviceRingRipple;
+  }
+}
+
+/* Consumed by .ring in RingField.module.css via the --ring-animation handoff
+   above. Declared here on purpose — see the note in RingField.module.css. */
+@keyframes serviceRingRipple {
+  0% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
+  18.75% {
+    transform: scale(1.08);
+    stroke-opacity: 0.4;
+  }
+  37.5% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
+  100% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
   }
 }
 

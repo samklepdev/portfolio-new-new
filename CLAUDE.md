@@ -149,11 +149,16 @@ spreads; that throws "not iterable". It can collapse once the project is on
   reimplemented as CSS Modules with no new dependency and no client JS. Three things here
   are load-bearing and look like mistakes if you don't know why:
   - The ripple crosses a CSS Modules boundary. The hover target (`.card`) and the animated
-    element (`.ring`) live in different modules, and CSS Modules hashes class *and*
-    `@keyframes` names per file — so `.card:hover .ring` cannot be written, and a keyframe
-    name passed through a custom property will not resolve. The trigger is therefore
-    `animation-play-state: var(--ring-play-state, paused)` flipped to `running` by the card.
-    Custom property *values* are not hashed and do inherit. Do not "simplify" it.
+    element (`.ring`) live in different modules, and CSS Modules hashes class names per
+    file, so `.card:hover .ring` cannot be written. The card instead sets
+    `--ring-animation` and `.ring` reads `animation-name: var(--ring-animation, none)`,
+    so mouse-out drops the animation entirely and the rings reset instead of freezing.
+  - **The `@keyframes` live in `ServicesSection.module.css`, not `RingField.module.css`,
+    and must stay there.** css-loader scopes `@keyframes` names *and* the value of
+    `--ring-animation` into the namespace of whichever file declares them, so the two only
+    resolve to the same identifier when declared together. Defining the keyframes beside
+    `.ring` instead emits **no keyframes at all** — `next build` still succeeds and the
+    animation silently never runs. A `:global {}` wrapper does not fix it; it is dropped.
   - `.card:hover` is wrapped in `@media (hover: hover) and (pointer: fine)`. Touch latches
     `:hover` after a tap, which would leave the ripple running forever on a phone.
   - The rings deliberately overflow their graphic slot across the whole card; `.body` carries
