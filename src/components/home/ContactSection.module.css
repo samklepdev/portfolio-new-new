@@ -1,0 +1,129 @@
+/* Owns the page's bottom padding. This section closes the home page, a job the
+   deleted PlaceholderSection used to do via :last-child — which would have
+   broken silently the moment a footer landed inside <main>. Stating it here
+   makes the dependency explicit instead of positional. */
+.section {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 6rem 2rem 8rem;
+}
+
+.inner {
+  display: grid;
+  gap: 3rem;
+}
+
+@media (min-width: 900px) {
+  .inner {
+    /* The form is the point of the section, so it gets the wider column. */
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+.heading {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.intro {
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+  max-width: 34rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* The one surface in the section. The form beside it is deliberately bare, so
+   the panel reads as a distinct aside rather than a second form. */
+.panel {
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  background-color: #12161f;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3125rem 0.75rem;
+  border: 1px solid rgba(57, 255, 136, 0.28);
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--neon-green, #39ff88);
+}
+
+.statusDot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background-color: var(--neon-green, #39ff88);
+  box-shadow: 0 0 8px rgba(57, 255, 136, 0.8);
+}
+
+/* globals.css puts h3 on the display face, which is right here — this is a real
+   heading, not a label. */
+.panelHeading {
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Numbered rows matching the About section's 01/02/03 treatment, so the two
+   sections speak the same visual language. */
+.steps {
+  list-style: none;
+  margin-top: 1.25rem;
+}
+
+.step {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stepNumber {
+  font-family: var(--font-mono, monospace);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.15);
+}
+
+.stepText {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.fallback {
+  margin-top: 1.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.fallbackLink {
+  color: var(--neon-turquoise, #00f0ff);
+  transition: opacity 200ms ease;
+  /* An email address must never be clipped, and overflow-x: hidden on body
+     means a clip here would be silent. */
+  overflow-wrap: anywhere;
+}
+
+.fallbackLink:hover,
+.fallbackLink:focus-visible {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fallbackLink {
+    transition: none;
+  }
+}
