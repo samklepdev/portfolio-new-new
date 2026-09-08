@@ -1,23 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EMAIL, RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
 import styles from "./page.module.css";
 
 /**
- * Deliberately no form: a working one needs a `contact_submissions` table, a
- * server action, an email provider key, and spam handling. Until that exists a
- * mailto link actually delivers, where a form that silently drops messages
- * does not.
+ * Deliberately no form on this page: the home page carries the working one, and
+ * a mailto here always delivers. Kept as the plain, dependency-free route to
+ * reaching a person.
  */
-const EMAIL = "hello@samklep.dev";
-
-const LINKS = [
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/samuel-klepper-0435b5193/",
-  },
-  { label: "GitHub", href: "https://github.com/samklepdev" },
-  { label: "GitLab", href: "https://gitlab.com/bklep" },
-];
 
 export const metadata: Metadata = {
   title: "Contact — Sam Klepper",
@@ -52,7 +42,7 @@ export default function ContactPage() {
         </a>
 
         <ul className={styles.links}>
-          {LINKS.map((link) => (
+          {SOCIAL_LINKS.map((link) => (
             <li key={link.href}>
               <a
                 className={styles.link}
@@ -67,7 +57,7 @@ export default function ContactPage() {
           <li>
             <a
               className={styles.link}
-              href="/images/documents/samuel-klepper-resume.pdf"
+              href={RESUME_URL}
               download
             >
               Resume

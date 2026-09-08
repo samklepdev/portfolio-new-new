@@ -1,8 +1,7 @@
 import Image from "next/image";
+import { EMAIL } from "@/lib/siteLinks";
 import { ContactForm } from "./ContactForm";
 import styles from "./ContactSection.module.css";
-
-const EMAIL = "hello@samklep.dev";
 
 /**
  * A real client testimonial from the old samklep.dev, quoted verbatim.

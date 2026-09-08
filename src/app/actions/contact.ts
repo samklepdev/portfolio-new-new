@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { contactSubmissions } from "@/db/schema";
 import { validateContact } from "@/lib/contactValidation";
 import type { ContactState } from "@/lib/contactState";
+import { EMAIL } from "@/lib/siteLinks";
 
 // This module may export nothing but async functions — `"use server"` enforces
 // it. ContactState and initialContactState therefore live in src/lib.
@@ -34,7 +35,7 @@ async function notify(row: {
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from: process.env.CONTACT_FROM_EMAIL || "contact@samklep.dev",
-      to: process.env.CONTACT_TO_EMAIL || "hello@samklep.dev",
+      to: process.env.CONTACT_TO_EMAIL || EMAIL,
       replyTo: row.email,
       subject: `Portfolio contact from ${row.name}`,
       text: [
@@ -105,8 +106,7 @@ export async function submitContact(
     console.error("contact: insert failed", cause);
     return {
       status: "error",
-      formError:
-        "Something went wrong saving your message. Please email hello@samklep.dev instead.",
+      formError: `Something went wrong saving your message. Please email ${EMAIL} instead.`,
       values,
     };
   }

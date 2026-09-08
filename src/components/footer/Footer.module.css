@@ -1,0 +1,129 @@
+/* Pages already end with 6–8rem of their own bottom padding, which supplies the
+   gap above this rule. The footer's own top padding is deliberately modest so
+   the two do not add up to a hole — padding does not collapse the way margins
+   would. */
+.footer {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 2.5rem 2rem 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+/* Horizontal from 640px, mirroring the Header's rhythm so the page is
+   bookended. Centred below that, where a single row would wrap badly. */
+@media (min-width: 640px) {
+  .inner {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    text-align: left;
+    gap: 3rem;
+  }
+}
+
+.logo {
+  display: inline-flex;
+  flex: none;
+  opacity: 0.8;
+  transition: opacity 200ms ease;
+}
+
+.logo:hover,
+.logo:focus-visible {
+  opacity: 1;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .nav {
+    align-items: flex-end;
+  }
+}
+
+.links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .links {
+    justify-content: flex-end;
+  }
+}
+
+.link {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 200ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--neon-turquoise, #00f0ff);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+.baseline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .baseline {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.email {
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 200ms ease;
+  /* An email address must never be clipped, and overflow-x: hidden on body
+     means a clip here would be silent. */
+  overflow-wrap: anywhere;
+}
+
+.email:hover,
+.email:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo,
+  .link,
+  .email {
+    transition: none;
+  }
+}
