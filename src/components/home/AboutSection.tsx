@@ -2,11 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./AboutSection.module.css";
 
-/**
- * The old homepage's pitch, addressed to a business owner — not the biography
- * that lives on /about. The logo band above already argues credibility without
- * prose; this argues capability.
- */
 const CAPABILITIES = [
   {
     title: "Modern",
@@ -18,10 +13,6 @@ const CAPABILITIES = [
   },
   {
     title: "SEO optimized",
-    // The old site promised dynamic metadata would *guarantee* top Google
-    // results. Nobody can promise a ranking, and an unverifiable claim costs
-    // more credibility than it buys — the same reason the logo band states no
-    // count. This says what actually gets delivered instead.
     body: "Dynamic metadata and clean markup, so the people already searching for your business are the ones who find it.",
   },
 ];
@@ -34,18 +25,12 @@ export function AboutSection() {
       aria-labelledby="about-heading"
     >
       <div className={styles.inner}>
-        {/* Decorative: the copy beside it carries all the meaning, so an alt
-            text here would only add noise to a screen reader. */}
         <figure className={styles.figure}>
           <Image
             className={styles.image}
             src="/images/laptop.jpg"
             alt=""
             fill
-            // Without this the srcset is built from the intrinsic 4921px width
-            // and ships an order of magnitude more pixels than it renders. The
-            // bleeding figure measures ~50vw + 64px, so 56vw covers it at every
-            // width without under-declaring (which would render soft).
             sizes="(min-width: 1024px) 56vw, 100vw"
           />
         </figure>

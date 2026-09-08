@@ -18,11 +18,6 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-/**
- * Prerender only the slugs that are both published and have an MDX file.
- * Truth is split across Postgres and the filesystem, so the intersection is the
- * set that can actually render; anything else falls through to a 404.
- */
 export async function generateStaticParams() {
   const [projects, contentSlugs] = await Promise.all([
     getPublishedProjects(),
@@ -54,14 +49,11 @@ export async function generateMetadata({
 export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
 
-  // Metadata from Postgres, prose from MDX, joined by slug.
   const [project, content] = await Promise.all([
     getProjectBySlug(slug),
     getProjectContent(slug),
   ]);
 
-  // A draft or missing row is a 404, as is a published row with no content file
-  // — a project page with no project write-up is worse than not found.
   if (!project || project.status !== "published" || !content) {
     notFound();
   }
@@ -136,14 +128,6 @@ export default async function ProjectPage({ params }: PageProps) {
   );
 }
 
-/**
- * The tech/design panels, built from frontmatter rather than the body — that is
- * where the old site kept this writing.
- *
- * The descriptions contain raw HTML (`<br />`), so they go through MDX, where
- * that is valid JSX. This avoids dangerouslySetInnerHTML while still honouring
- * the line breaks the author wrote.
- */
 async function buildTabs(
   frontmatter: Record<string, unknown>
 ): Promise<ProjectTab[]> {

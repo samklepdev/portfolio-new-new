@@ -4,9 +4,6 @@ import { Footer } from "@/components/footer/Footer";
 import { Header } from "@/components/header/Header";
 import "./globals.css";
 
-// next/font self-hosts these at build time — no network request from the
-// browser, no layout shift from a late webfont swap. Exposed as CSS variables
-// because the styling is CSS Modules, not className-per-element.
 const display = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",

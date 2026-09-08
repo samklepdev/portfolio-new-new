@@ -32,7 +32,6 @@
   color: rgba(255, 255, 255, 0.86);
 }
 
-/* Stacked on narrow screens, portrait beside the copy once there is room. */
 .inner {
   display: flex;
   flex-direction: column;
@@ -58,9 +57,6 @@
   background-color: #12161f;
 }
 
-/* A frame rather than a tint: a screen-blended gradient over a photograph
-   casts the skin tones turquoise. This keeps the accent on the edge, where it
-   does not touch the image. */
 .portrait::after {
   content: "";
   position: absolute;
@@ -118,7 +114,6 @@
   }
 }
 
-/* The marker is drawn rather than a list bullet so it can carry the accent. */
 .focusItem {
   position: relative;
   padding-left: 1.25rem;

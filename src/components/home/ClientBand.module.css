@@ -1,13 +1,9 @@
-/* Top padding only: the projects section below brings its own 6rem and padding
-   does not collapse the way margins would. Matches PlaceholderSection. */
 .section {
   margin: 0 auto;
   max-width: 64rem;
   padding: 6rem 2rem 0;
 }
 
-/* globals.css puts every h2 on the display face — this label is an eyebrow, not
-   a heading in the visual hierarchy, so it opts back out to mono. */
 .heading {
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
@@ -26,10 +22,6 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  /* The column gap is a layout lever, not just breathing room: it sets how much
-     of each row is whitespace, and so how evenly twelve marks of very unequal
-     width can split across two rows. 3.5rem forced row one nearly full before it
-     would break; 4rem lets the rows land within ~70px of each other. */
   gap: 2.5rem 4rem;
   margin-top: 2.5rem;
 }
@@ -41,14 +33,6 @@
   height: var(--logo-height);
 }
 
-/* Sized by height, never by width. The set spans 4.08 (BuildOn, a wide
-   wordmark) to 0.96 (WealthGuard, taller than wide); matching on width would
-   render BuildOn as a hairline and WealthGuard as a slab. Setting height AND
-   width together also keeps next/image from warning about a single modified
-   dimension.
-
-   The knockout is what lets twelve brand palettes sit on #0B0E14 without
-   becoming a ransom note — they flatten to one white and read as one texture. */
 .logo {
   height: calc(100% * var(--logo-scale, 1));
   width: auto;
@@ -59,19 +43,6 @@
   transition: opacity 200ms ease;
 }
 
-/* Hover lifts brightness and keeps the knockout. It deliberately does NOT
-   restore brand colour: Melissa Hawkins and Ultra Demolition are black artwork
-   and would vanish against #0B0E14, and Baylor is white type so nothing would
-   visibly happen. An opacity lift works for every logo whatever its source
-   colour, and reads as texture rather than as "this is a link".
-
-   Hover only — there is no focus state to style, because the logos are not
-   links and must not be made focusable.
-
-   Guarded to real hover devices: iOS Safari applies :hover on tap and holds
-   it until the next tap elsewhere, which would otherwise strand one logo at
-   full opacity and defeat the point of the twelve marks reading as one even
-   texture. */
 @media (hover: hover) {
   .logo:hover {
     opacity: 1;

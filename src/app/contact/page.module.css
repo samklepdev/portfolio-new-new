@@ -31,7 +31,6 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Pink leads inside the panel — it is the page's single call to action. */
 .panel {
   position: relative;
   overflow: hidden;
@@ -102,14 +101,6 @@
   transition: background-color 200ms ease, box-shadow 200ms ease;
 }
 
-/* The email token is one unbreakable string, so fit-content floors at its full
-   width. Below ~400px the panel no longer offers enough room for that width
-   at the base padding/font-size, and .panel's overflow: hidden (plus
-   globals.css's overflow-x: hidden on html/body) hides the clip instead of
-   scrolling to it — so this has to be caught here, not left to the fallback
-   above. Smaller padding and type keep the button on one line down to 320px;
-   overflow-wrap: anywhere above is the last-resort safety net if a future
-   change (longer address, wider font) reopens the gap. */
 @media (max-width: 400px) {
   .cta {
     gap: 0.3125rem;

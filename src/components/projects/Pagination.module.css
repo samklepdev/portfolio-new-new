@@ -19,8 +19,6 @@
   opacity: 0.75;
 }
 
-/* Kept in the DOM at the ends of the range so the number row does not shift
-   sideways between pages. */
 .disabled {
   color: rgba(255, 255, 255, 0.25);
   pointer-events: none;

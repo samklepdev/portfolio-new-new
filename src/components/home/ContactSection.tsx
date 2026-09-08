@@ -3,14 +3,6 @@ import { EMAIL } from "@/lib/siteLinks";
 import { ContactForm } from "./ContactForm";
 import styles from "./ContactSection.module.css";
 
-/**
- * A real client testimonial from the old samklep.dev, quoted verbatim.
- *
- * The other one on record — Xavier Chavaria, Owner/Operator, Ultra Demolition —
- * is kept in the design spec. Swapping is a matter of changing this constant and
- * the logo beside it; do not paraphrase either, and do not add a portrait, since
- * no photograph of either person exists here.
- */
 const TESTIMONIAL = {
   quote:
     "I approached Sam with only a rough idea in mind and he helped me bring my idea to fruition. Sam helped with a logo, unique design & functional contact forms to keep up with customer demands.",
@@ -22,10 +14,6 @@ const TESTIMONIAL = {
 };
 
 export function ContactSection() {
-  // Rendered on the server so the "submitted impossibly fast" check still works
-  // with JavaScript disabled. The page is prerendered and revalidated, so this
-  // timestamp can be stale — which only ever makes the elapsed time longer and
-  // can never produce a false "too fast".
   const renderedAt = Date.now();
 
   return (
@@ -56,8 +44,6 @@ export function ContactSection() {
           </p>
 
           <figure className={styles.testimonial}>
-            {/* Knocked back to one white like the logo band, so a client's brand
-                colours do not compete with the page's own accent. */}
             <Image
               className={styles.testimonialLogo}
               src={TESTIMONIAL.logo.src}

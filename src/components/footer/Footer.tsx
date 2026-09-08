@@ -10,24 +10,13 @@ import { DownloadIcon, SOCIAL_ICONS } from "./icons";
 import styles from "./Footer.module.css";
 
 export function Footer() {
-  // Evaluated when the page renders — which, for the statically prerendered
-  // routes, means build time. /about and /contact will therefore show last
-  // year's date after New Year until the site is redeployed. Accepted: the
-  // alternatives are hardcoding (always stale) or computing it in the browser,
-  // which would make this a client component and ship JS to render a number.
   const year = new Date().getFullYear();
 
   return (
     <footer className={styles.footer}>
-      {/* The <footer> spans the viewport so its top rule runs edge to edge like
-          the Header's; this container constrains the content to the same 78rem
-          and 1.5rem gutter the Header's nav uses, so the two logos line up. */}
       <div className={styles.container}>
         <div className={styles.inner}>
           <Link href="/" className={styles.logo} aria-label="Sam Klepper — home">
-            {/* The "-dark" file is the light-artwork variant, i.e. the one
-                meant to sit on a dark background. unoptimized because the
-                optimizer refuses SVG without dangerouslyAllowSVG. */}
             <Image
               src="/images/sbk-logo-dark.svg"
               alt=""
@@ -37,9 +26,6 @@ export function Footer() {
             />
           </Link>
 
-          {/* Labelled because the Header already contributes a navigation
-              landmark; two unlabelled ones are indistinguishable to a screen
-              reader. */}
           <nav className={styles.nav} aria-label="Footer">
             <ul className={styles.links}>
               {NAV_LINKS.map((link) => (
@@ -51,12 +37,8 @@ export function Footer() {
               ))}
             </ul>
 
-            {/* Icon-only. The label moves into visually-hidden text rather than
-                disappearing: without it these links would have no accessible
-                name at all, since the marks themselves are aria-hidden. */}
             <ul className={styles.iconLinks}>
               {SOCIAL_LINKS.map((link) => {
-                // Paired by id, not label — the label is copy and may change.
                 const Icon = SOCIAL_ICONS[link.id];
                 return (
                   <li key={link.href}>

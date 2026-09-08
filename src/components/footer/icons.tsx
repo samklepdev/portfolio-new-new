@@ -1,15 +1,5 @@
 import type { SocialId } from "@/lib/siteLinks";
 
-/**
- * Brand marks as inline SVG. No icon library: three icons plus a download arrow
- * do not justify a dependency, and `Header.tsx` already establishes inline SVG
- * as the pattern here.
- *
- * Paths are the official single-colour marks. They are `aria-hidden` throughout
- * because every icon here sits beside its own visible text label — announcing
- * "GitHub GitHub" helps nobody.
- */
-
 type IconProps = { className?: string };
 
 const BASE = {
@@ -45,7 +35,6 @@ function GitLabIcon({ className }: IconProps) {
   );
 }
 
-/** Not a brand mark — a plain download arrow, matching the Header's. */
 export function DownloadIcon({ className }: IconProps) {
   return (
     <svg

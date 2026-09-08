@@ -1,7 +1,3 @@
-/* Owns the page's bottom padding. This section closes the home page, a job the
-   deleted PlaceholderSection used to do via :last-child — which would have
-   broken silently the moment a footer landed inside <main>. Stating it here
-   makes the dependency explicit instead of positional. */
 .section {
   margin: 0 auto;
   max-width: 64rem;
@@ -33,7 +29,6 @@
 
 @media (min-width: 900px) {
   .inner {
-    /* The form is the point of the section, so it gets the wider column. */
     grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
     gap: 4rem;
     align-items: start;
@@ -44,16 +39,12 @@
   min-width: 0;
 }
 
-/* No surface and no border. The fields beside it already carry the section's
-   only boxes, and a second panel would compete with them. */
 .aside {
   min-width: 0;
 }
 
 @media (min-width: 900px) {
   .aside {
-    /* Aligns the aside's first line with the top of the first input rather
-       than its label, so the two columns read as one row. */
     padding-top: 0.25rem;
   }
 }
@@ -83,11 +74,6 @@
   margin-top: 1.75rem;
 }
 
-/* Same knockout as the client band: a client's brand colours would otherwise
-   compete with the page's own accent. Sized larger and brighter than in the
-   band, though — there it is background texture in a row of twelve, here it is
-   a single focal mark, and DeLeon's seal carries fine detail that turns to mud
-   at band size. */
 .testimonialLogo {
   height: 3.25rem;
   width: auto;
@@ -142,8 +128,6 @@
 .fallbackLink {
   color: var(--neon-turquoise, #00f0ff);
   transition: opacity 200ms ease;
-  /* An email address must never be clipped, and overflow-x: hidden on body
-     means a clip here would be silent. */
   overflow-wrap: anywhere;
 }
 

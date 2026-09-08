@@ -12,22 +12,17 @@ import { relations } from "drizzle-orm";
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
-  slug: text("slug").notNull().unique(), // matches content/projects/{slug}.mdx
+  slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
-  summary: text("summary").notNull(), // short blurb for grid/cards
-  status: text("status").notNull().default("published"), // draft | published | archived
+  summary: text("summary").notNull(),
+  status: text("status").notNull().default("published"),
   featured: boolean("featured").notNull().default(false),
-  role: text("role"), // "Solo dev", "Lead", "Contract"
-  category: text("category"), // industry, e.g. "Real Estate", "Food & Hospitality"
-  // The content files carry a display string ("November 2025", "October 1,
-  // 2022") rather than a real date. Kept verbatim so the site shows what the
-  // author wrote; startedAt/completedAt stay available for actual dates.
+  role: text("role"),
+  category: text("category"),
   dateLabel: text("date_label"),
-  // Mirrors the `id` in the content frontmatter — the ordering the old site
-  // used. Higher is more recent.
   sortOrder: integer("sort_order").notNull().default(0),
   startedAt: date("started_at"),
-  completedAt: date("completed_at"), // null = ongoing
+  completedAt: date("completed_at"),
   repoUrl: text("repo_url"),
   liveUrl: text("live_url"),
   coverImage: text("cover_image"),
@@ -37,9 +32,9 @@ export const projects = pgTable("projects", {
 
 export const tags = pgTable("tags", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull().unique(), // "TypeScript", "React", "C#"
-  kind: text("kind").notNull(), // "language" | "framework" | "domain" | "tech"
-  iconUrl: text("icon_url"), // e.g. /images/tech-icons/typescript.png
+  name: text("name").notNull().unique(),
+  kind: text("kind").notNull(),
+  iconUrl: text("icon_url"),
 });
 
 export const projectTags = pgTable(
@@ -55,7 +50,6 @@ export const projectTags = pgTable(
   (table) => [primaryKey({ columns: [table.projectId, table.tagId] })]
 );
 
-// Per-project stat callouts, e.g. "10k users", "40% faster"
 export const projectMetrics = pgTable("project_metrics", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id")
@@ -66,8 +60,6 @@ export const projectMetrics = pgTable("project_metrics", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
-// Relations power the nested query in db/queries.ts (project -> tags -> metrics
-// in one round trip instead of three separate queries).
 export const projectsRelations = relations(projects, ({ many }) => ({
   projectTags: many(projectTags),
   metrics: many(projectMetrics),
@@ -95,35 +87,16 @@ export const projectMetricsRelations = relations(projectMetrics, ({ one }) => ({
   }),
 }));
 
-/**
- * Messages from the home-page contact form.
- *
- * Standalone by design — no relations. This is the one table holding data the
- * site receives rather than publishes, so it is never joined to a project and
- * never read by a page.
- *
- * The row is the durable record. Email is best-effort and sent *after* the
- * insert, so a provider outage costs a notification rather than a message; the
- * outcome is written back to emailedAt/emailError instead of being assumed.
- *
- * No IP column, deliberately: storing visitor addresses is a privacy and
- * retention obligation, and the spam defence here is a honeypot plus a timing
- * check rather than per-IP limiting.
- */
 export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  // Both optional and nullable. Asking for a budget as a hard requirement loses
-  // enquiries from people who genuinely do not know it yet, and the point of
-  // the form is to start a conversation rather than qualify a lead.
   budget: text("budget"),
   website: text("website"),
   message: text("message").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  // Null until a send succeeds. Both null = queued or never attempted.
   emailedAt: timestamp("emailed_at", { withTimezone: true }),
   emailError: text("email_error"),
 });

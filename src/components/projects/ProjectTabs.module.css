@@ -34,8 +34,6 @@
   color: var(--neon-turquoise, #00f0ff);
 }
 
-/* Sits on top of the tablist border rather than adding height, so switching
-   tabs cannot shift the panel below. */
 .tabActive::after {
   content: "";
   position: absolute;
