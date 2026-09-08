@@ -1,7 +1,8 @@
 import type { CSSProperties } from "react";
 import styles from "./RingField.module.css";
 
-const RING_COUNT = 26;
+const RING_COUNT = 42;
+const RING_GAP = 8;
 
 export function RingField() {
   return (
@@ -13,7 +14,7 @@ export function RingField() {
             className={styles.ring}
             cx="250"
             cy="250"
-            r={index * 14 + 4}
+            r={index * RING_GAP + 4}
             style={{ "--i": index } as CSSProperties}
           />
         ))}

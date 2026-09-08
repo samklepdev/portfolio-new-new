@@ -144,7 +144,7 @@ spreads; that throws "not iterable". It can collapse once the project is on
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
 - **Home services section** — `ServicesSection` + `RingField` between About and Projects.
-  Two service cards over a field of 26 concentric SVG rings that ripple outward on hover.
+  Two service cards over a field of 42 concentric SVG rings that ripple outward on hover.
   Adapted from the Radiant template's `LinkedAvatars`, which is Tailwind + framer-motion;
   reimplemented as CSS Modules with no new dependency and no client JS. Three things here
   are load-bearing and look like mistakes if you don't know why:

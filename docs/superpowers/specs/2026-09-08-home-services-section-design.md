@@ -97,10 +97,18 @@ with `overflow: hidden` on the field — the bleed is the intent.
 
 ## The ring field
 
-26 concentric circles, all at `cx="250" cy="250"`, radius `n * 14 + 4`, in a
-`0 0 500 500` viewBox. The spacing is Radiant's. The count is not: the original
-draws 42, reaching radius 578, but everything past ~350 falls outside the mask
-and is never seen. 26 covers the visible field.
+42 concentric circles, all at `cx="250" cy="250"`, radius `n * 8 + 4`, in a
+`0 0 500 500` viewBox.
+
+The count matches Radiant. The **spacing does not**, and the difference is the
+whole point. Radiant letterboxes a 500-unit viewBox into a 320px-tall graphic, so
+its scale is ~0.64 and its 14-unit gap lands at ~9px on screen. Here the field is
+a square at 130% of a 464px card, so the scale is ~1.20 — the same 14-unit gap
+would render at ~17px, nearly twice as coarse as the source. An 8-unit gap at
+this scale gives ~9.6px, matching Radiant's density.
+
+Derive the gap from the rendered scale, not from Radiant's raw number. Copying
+`14` verbatim is the trap.
 
 Stroke is `--neon-turquoise` at `stroke-opacity: 0.15` at rest.
 

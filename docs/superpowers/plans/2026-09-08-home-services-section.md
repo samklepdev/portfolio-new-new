@@ -42,7 +42,7 @@ The home page reads featured projects from Postgres. If the page 500s, the datab
 |---|---|
 | `src/components/home/ServicesSection.tsx` | Section element, eyebrow/heading, the two-card grid, service copy constant |
 | `src/components/home/ServicesSection.module.css` | Section spacing, grid, card surface, hover trigger |
-| `src/components/home/RingField.tsx` | The decorative SVG: 26 concentric circles plus the core node |
+| `src/components/home/RingField.tsx` | The decorative SVG: 42 concentric circles plus the core node |
 | `src/components/home/RingField.module.css` | Ring stroke, gradient mask, ripple keyframes, core node |
 | `src/app/page.tsx` | Renders `<ServicesSection />` between About and the projects section |
 | `src/components/home/AboutSection.tsx` | Heading and intro copy change only |
@@ -321,7 +321,8 @@ Create `src/components/home/RingField.tsx`:
 import type { CSSProperties } from "react";
 import styles from "./RingField.module.css";
 
-const RING_COUNT = 26;
+const RING_COUNT = 42;
+const RING_GAP = 8;
 
 export function RingField() {
   return (
@@ -333,7 +334,7 @@ export function RingField() {
             className={styles.ring}
             cx="250"
             cy="250"
-            r={index * 14 + 4}
+            r={index * RING_GAP + 4}
             style={{ "--i": index } as CSSProperties}
           />
         ))}
@@ -346,7 +347,7 @@ export function RingField() {
 
 The `as CSSProperties` cast is required: React's `CSSProperties` type does not permit arbitrary `--*` keys, and without the cast `npm run build` fails the type-check.
 
-The radius formula `index * 14 + 4` is Radiant's spacing. The count is 26, not Radiant's 42 — everything past radius ~350 falls outside the mask and is never drawn.
+The count matches Radiant's 42. The gap does not: Radiant's `14` is tuned to its own render scale (~0.64, a 500-unit viewBox letterboxed into a 320px graphic) and yields ~9px on screen. Here the field renders at ~1.20 scale, so `14` would give ~17px — nearly twice as coarse. `8` gives ~9.6px and matches the source's density. Derive the gap from the rendered scale; copying `14` verbatim is the trap.
 
 - [ ] **Step 3: Render it inside the cards**
 
@@ -604,7 +605,7 @@ git commit -m "Tune the service card rings for narrow viewports"
 | Placement between About and Projects, top-only padding, 64rem inner | Task 1 |
 | Card layout, two columns collapsing below 720px | Task 1, Task 5 |
 | Copy — eyebrow, heading, both card bodies | Task 1 |
-| 26 circles, `n * 14 + 4`, turquoise at 0.15 | Task 2 |
+| 42 circles, `n * 8 + 4`, turquoise at 0.15 | Task 2 |
 | Two-gradient intersected mask | Task 2 |
 | Glowing core node | Task 2 |
 | Ripple keyframes, 2s cycle, `--i` stagger | Task 3 |
