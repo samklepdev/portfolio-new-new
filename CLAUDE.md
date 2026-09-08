@@ -144,7 +144,8 @@ spreads; that throws "not iterable". It can collapse once the project is on
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
 - **Home services section** — `ServicesSection` + `RingField` between About and Projects.
-  Two service cards over a field of 42 concentric SVG rings that ripple outward on hover.
+  A four-card bento (spans 4/2/2/4 on a 6-column grid) over fields of 42 concentric SVG
+  rings that ripple outward on hover.
   Adapted from the Radiant template's `LinkedAvatars`, which is Tailwind + framer-motion;
   reimplemented as CSS Modules with no new dependency and no client JS. Three things here
   are load-bearing and look like mistakes if you don't know why:
@@ -163,6 +164,11 @@ spreads; that throws "not iterable". It can collapse once the project is on
     `:hover` after a tap, which would leave the ripple running forever on a phone.
   - The rings deliberately overflow their graphic slot across the whole card; `.body` carries
     `z-index: 1` so the copy paints above them. Do not "fix" the bleed with `overflow: hidden`.
+  - `RingField`'s `.rings` is sized by the graphic's **height** (`height: 300%`), never by
+    card width. The graphic slot is `13rem` in every card, but bento spans make cards ~632px
+    and ~304px wide, so a width-relative field renders the same rings at ~13px and ~6px
+    spacing — the four boxes visibly disagree. Do not "simplify" it back to a percentage
+    width; it looks equivalent on a uniform grid and breaks the moment spans differ.
   See `docs/superpowers/specs/2026-09-08-home-services-section-design.md`.
 
 ## Not yet built — in order
