@@ -126,6 +126,8 @@ Create `src/components/home/ServicesSection.module.css`:
 }
 
 .body {
+  position: relative;
+  z-index: 1;
   padding: 0 1.75rem 1.75rem;
 }
 
@@ -147,6 +149,8 @@ Create `src/components/home/ServicesSection.module.css`:
   }
 }
 ```
+
+`.body` needs `position: relative; z-index: 1` because Task 2's ring field is absolutely positioned and would otherwise paint its strokes over the card's title and copy. The rings are *meant* to spread across the whole card; the z-index is what keeps the text readable on top of them. Do not instead clip the field with `overflow: hidden`.
 
 The `.eyebrow` values are copied from `src/components/projects/ProjectCard.module.css:106-112` so the two eyebrows match exactly. The `.heading` values are copied from `src/components/home/AboutSection.module.css:51-55`.
 

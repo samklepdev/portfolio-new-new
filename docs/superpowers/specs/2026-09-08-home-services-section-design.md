@@ -82,9 +82,18 @@ and framer-motion to do the same thing.
 
 Two equal columns on a `grid` with a `2rem` gap, collapsing to one column below
 `720px`. Each card is a `#12161F` surface with a `1px` hairline border, `0.75rem`
-radius, and `overflow: hidden` so the ring field is clipped to the card. The ring
-field occupies a fixed-height block at the top of the card; the copy sits below
-it, matching the graphic-over-text order of the Radiant card.
+radius, and `overflow: hidden` so the ring field is clipped to the card.
+
+The ring field is anchored to a `13rem` block at the top of the card but is
+deliberately larger than it — a square sized to the card's width, centred on that
+block — so the rings spread across the whole card rather than stopping at a seam.
+This departs from Radiant, which keeps its graphic and text in separate stacked
+halves; the bleed reads as one surface instead of two.
+
+Because the ring field is positioned and the copy is not, painting order would
+otherwise put the strokes on top of the text. `.body` therefore carries
+`position: relative; z-index: 1`. Do not remove it, and do not "fix" the bleed
+with `overflow: hidden` on the field — the bleed is the intent.
 
 ## The ring field
 
