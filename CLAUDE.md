@@ -147,7 +147,7 @@ spreads; that throws "not iterable". It can collapse once the project is on
   A four-card bento (spans 4/2/2/4 on a 6-column grid) over fields of 42 concentric SVG
   rings that ripple outward on hover.
   Adapted from the Radiant template's `LinkedAvatars`, which is Tailwind + framer-motion;
-  reimplemented as CSS Modules with no new dependency and no client JS. Three things here
+  reimplemented as CSS Modules with no new dependency and no client JS. Four things here
   are load-bearing and look like mistakes if you don't know why:
   - The ripple crosses a CSS Modules boundary. The hover target (`.card`) and the animated
     element (`.ring`) live in different modules, and CSS Modules hashes class names per
@@ -169,7 +169,8 @@ spreads; that throws "not iterable". It can collapse once the project is on
     and ~304px wide, so a width-relative field renders the same rings at ~13px and ~6px
     spacing — the four boxes visibly disagree. Do not "simplify" it back to a percentage
     width; it looks equivalent on a uniform grid and breaks the moment spans differ.
-  See `docs/superpowers/specs/2026-09-08-home-services-section-design.md`.
+  See `docs/superpowers/specs/2026-09-08-home-services-section-design.md` for the section
+  and `docs/superpowers/specs/2026-09-08-home-services-bento-design.md` for the bento.
 
 ## Not yet built — in order
 

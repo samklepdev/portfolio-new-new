@@ -9,14 +9,17 @@
 /* Sized off the graphic's height, never its width. The graphic slot is 13rem in
    every card, but bento spans make cards 632px and 304px wide — a width-relative
    field would render the same rings at ~13px and ~6px spacing in the two sizes.
-   Height keeps one scale everywhere; wide cards just reveal more of the field. */
+   One fixed square keeps one scale everywhere; wide cards just reveal more of it.
+   39rem is 3x the 13rem graphic slot — if that slot changes, change this to match.
+   Stated explicitly rather than as height:300% + width:auto + aspect-ratio:1, because
+   that form leans on aspect-ratio filling an auto axis, which is untested here outside
+   Chrome and silently reverts to the width-relative bug if width ever resolves. */
 .rings {
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 300%;
-  width: auto;
-  aspect-ratio: 1;
+  height: 39rem;
+  width: 39rem;
   transform: translate(-50%, -50%);
   mask-image:
     linear-gradient(to bottom, #000 90%, transparent),
