@@ -20,6 +20,21 @@ the copyright on a separate line below. This mirrors the Header's horizontal
 rhythm so the page is bookended, and it adds the least vertical weight after an
 already-tall contact section. Stacks to centred below 640px.
 
+### Full-bleed, matching the Header
+
+The `<footer>` element spans the viewport and carries the top rule, so it runs
+edge to edge exactly like the Header's `border-bottom`. An inner container holds
+the content.
+
+That container mirrors `.nav` in `Header.module.css` precisely — **`max-width:
+78rem` with a `1.5rem` gutter**, not the `64rem`/`2rem` the page sections use.
+Matching only the full-bleed rule would have left the footer logo sitting inboard
+of the header logo; matching the container puts both at the same x.
+
+The baseline divider — the rule between the links and the copyright — stays at
+content width deliberately. It separates two parts of the footer rather than
+bounding the section, so it should align with the content, not the viewport.
+
 ## Content
 
 Taken from the old footer, with two deliberate reconciliations:
@@ -39,6 +54,33 @@ unless `dangerouslyAllowSVG` is set. Precedent: `Header.tsx`.
 External links get `target="_blank"` with `rel="noopener noreferrer"`; the resume
 gets `download`. Both match `/contact`.
 
+### Icons
+
+The social row is **icons only** — LinkedIn, GitHub, GitLab, and a download arrow
+for the resume. The nav row above it stays text.
+
+Inline SVG, no icon library: three brand marks plus an arrow do not justify a
+dependency, and `Header.tsx` already establishes inline SVG as the pattern.
+
+Icons pair to links by a stable `id` on `SOCIAL_LINKS` rather than by matching
+the display label, which is copy and may change.
+
+**Each label becomes visually-hidden text rather than being deleted.** The marks
+are `aria-hidden`, so removing the labels outright would leave these links with
+no accessible name — a screen reader would announce four bare "link"s. Tap
+targets come from padding, giving each a 34px square hit area; an 18px icon alone
+is far under any sensible minimum.
+
+**Verify brand paths by rendering them, not by reading them.** Hand-written SVG
+geometry can be subtly wrong while looking entirely plausible in a diff. The
+paths here were confirmed by rasterising the actual `d` attributes out of the
+source file and looking at the result.
+
+Known tradeoff: a bare download arrow beside three recognisable brand marks does
+not tell a sighted visitor what it downloads. Screen reader users are unaffected.
+Restoring the word "Resume" for that one link is a two-line change if it proves
+confusing.
+
 ## Shared link constants
 
 New `src/lib/siteLinks.ts` exporting `NAV_LINKS`, `SOCIAL_LINKS`, `RESUME_URL`
@@ -51,8 +93,14 @@ call sites and not others. The PR #13 review flagged this duplication as
 something to fold in "whenever a `src/lib/links.ts` appears" — this is that
 moment, and adding a third copy instead would be knowingly making it worse.
 
-Scope is limited to moving the constants and updating the three consumers. No
-behaviour changes to Header or `/contact`.
+**The scope turned out larger than three consumers.** Beyond `Header.tsx` and
+`/contact`, the published address also appeared in the contact action's Resend
+`to` fallback, in that action's error copy, and again in `ContactSection.tsx` —
+four more copies. Leaving them would have made the single-source-of-truth claim
+false, so they were pulled in too. Nothing outside `siteLinks.ts` hardcodes a
+published link now.
+
+No behaviour changes anywhere: this is a constant move only.
 
 ## Copyright line
 
@@ -100,9 +148,12 @@ section's spacing.
 | `src/lib/siteLinks.ts` | new — shared nav, social, resume and email constants |
 | `src/components/footer/Footer.tsx` | new |
 | `src/components/footer/Footer.module.css` | new |
+| `src/components/footer/icons.tsx` | new — inline brand marks and download arrow |
 | `src/app/layout.tsx` | render `<Footer />` after `{children}` |
 | `src/components/header/Header.tsx` | consume the shared constants |
 | `src/app/contact/page.tsx` | consume the shared constants |
+| `src/app/actions/contact.ts` | consume the shared email |
+| `src/components/home/ContactSection.tsx` | consume the shared email |
 
 Server component. No new dependencies, no schema change, no client JavaScript.
 
@@ -110,13 +161,24 @@ Server component. No new dependencies, no schema change, no client JavaScript.
 
 `npm run build` (type-checks and lints), then a browser check on **every** route,
 because this is the first change that touches all of them: `/`, `/about`,
-`/contact`, `/projects`, and a `/projects/[slug]` page. Confirm the footer
-renders, the spacing above it reads as intentional, and the Header and `/contact`
-still work after the constant move.
+`/contact`, `/projects`, and a `/projects/[slug]` page.
 
-Then `document.body.scrollWidth <= window.innerWidth` at 320 / 375 / 640 / 900px.
-`globals.css` sets `overflow-x: hidden`, so a row of links overflowing on a phone
-produces no scrollbar and no visible symptom.
+| Check | Result |
+|---|---|
+| Footer renders on all five routes | ✅ |
+| Navigation landmarks distinguishable | ✅ `Main` and `Footer` |
+| Brand paths render as the correct marks | ✅ rasterised from source |
+| Icon links have accessible names | ✅ LinkedIn, GitHub, GitLab, Resume |
+| Icon tap targets | ✅ 34×34px |
+| Footer spans the full viewport | ✅ at 320 / 375 / 640 / 900 |
+| Header and footer logos aligned | ✅ both at the same x |
+| No horizontal overflow | ✅ at 320 / 375 / 639 / 640 / 900 |
+| Layout flips column → row at its breakpoint | ✅ exactly at 640px |
+
+The overflow check is not optional: `globals.css` sets `overflow-x: hidden`, so a
+row of links overflowing on a phone produces no scrollbar and no visible symptom.
+Assert `document.body.scrollWidth <= window.innerWidth` rather than trusting the
+eye.
 
 Do not run `npm run build` while `next dev` is running — it overwrites `.next`
 and leaves the dev server throwing `MODULE_NOT_FOUND` against its own chunks.
