@@ -6,10 +6,6 @@ import styles from "./ProjectCard.module.css";
 
 type ProjectCardProps = {
   project: PublishedProject;
-  /**
-   * The wide hero card: spans the full grid width, image beside the copy, glow
-   * border. Only the home page asks for it — /projects is a uniform list.
-   */
   featured?: boolean;
 };
 
@@ -18,8 +14,6 @@ export async function ProjectCard({
   featured = false,
 }: ProjectCardProps) {
   const tags = project.projectTags.map((pt) => pt.tag);
-  // A cover_image row pointing at a file that is not in public/ would render a
-  // broken thumbnail; resolve it first and fall back to a plain card instead.
   const cover = await resolvePublicImage(project.coverImage);
 
   const className = [styles.card, featured ? styles.featured : ""]
@@ -33,8 +27,6 @@ export async function ProjectCard({
           <div className={styles.thumb}>
             <Image
               src={cover}
-              // Decorative: the link's accessible name already includes the
-              // title, so alt text here would only duplicate it.
               alt=""
               fill
               className={styles.thumbImage}
@@ -57,8 +49,6 @@ export async function ProjectCard({
 
           <p className={styles.summary}>{project.summary}</p>
 
-          {/* Metrics only exist for some projects, and only the wide card has
-              room for them — render nothing rather than an empty strip. */}
           {featured && project.metrics.length > 0 && (
             <dl className={styles.metrics}>
               {project.metrics.map((metric) => (

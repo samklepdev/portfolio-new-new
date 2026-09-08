@@ -1,6 +1,3 @@
-/* Top padding only, and no horizontal padding at this level: the figure has to
-   escape the container, so .inner owns the gutters instead. Neighbouring
-   sections each bring their own 6rem and padding does not collapse. */
 .section {
   padding: 6rem 0 0;
 }
@@ -13,8 +10,6 @@
   padding: 0 2rem;
 }
 
-/* Small screens: edge to edge, cancelling .inner's gutter. A 6rem overhang on a
-   375px viewport would eat a sixth of the screen, so the bleed is desktop-only. */
 .figure {
   position: relative;
   height: 16rem;
@@ -24,13 +19,9 @@
 
 .image {
   object-fit: cover;
-  /* laptop.jpg carries a strong orange screen glow. One accent dominates per
-     screen and that accent is turquoise, so the photo gets knocked back. */
   filter: saturate(0.55);
 }
 
-/* Dissolves the photograph into the page instead of ending it on a hard line
-   against the copy. Vertical here, horizontal once the layout goes two-column. */
 .figure::after {
   content: "";
   position: absolute;
@@ -48,18 +39,7 @@
 
   .figure {
     height: 32rem;
-    margin: 0;
-    /* Hang 14rem past the left edge of the viewport. The figure's natural left
-       edge is (100vw - 64rem)/2 + 2rem; solving that for -14rem gives
-       16rem - 50vw. A stretched grid item absorbs a negative inline margin by
-       growing, so the right edge stays where the grid put it and no width
-       calculation is needed — the figure ends up ~50vw + 64px wide, which is
-       what the `sizes` attribute declares. body has overflow-x: hidden, so the
-       overhang cannot produce a horizontal scrollbar.
-
-       To change the overhang, change the constant: it is
-       (32rem - 2rem - overhang) - 50vw. 24rem hangs 6rem, 16rem hangs 14rem. */
-    margin-left: calc(16rem - 50vw);
+    margin: 0 0 0 calc(16rem - 50vw);
     border-radius: 0 0.75rem 0.75rem 0;
   }
 
@@ -81,8 +61,6 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* No cards. Card chrome — borders, surfaces, shadows — is the opposite of the
-   brief, so scale and contrast carry the weight instead. */
 .list {
   list-style: none;
   margin-top: 2.5rem;
@@ -106,8 +84,6 @@
   color: rgba(255, 255, 255, 0.12);
 }
 
-/* globals.css puts every h3 on the display face; these are labels, not headings
-   in the visual hierarchy, so they opt back out to mono. */
 .itemTitle {
   font-family: var(--font-mono, monospace);
   font-size: 0.8125rem;

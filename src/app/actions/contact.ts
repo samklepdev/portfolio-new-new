@@ -8,16 +8,8 @@ import { validateContact } from "@/lib/contactValidation";
 import type { ContactState } from "@/lib/contactState";
 import { EMAIL } from "@/lib/siteLinks";
 
-// This module may export nothing but async functions — `"use server"` enforces
-// it. ContactState and initialContactState therefore live in src/lib.
-
-/** Anything submitted faster than this was not typed by a person. */
 const MIN_FILL_MS = 2000;
 
-/**
- * Best-effort notification. Never throws: a delivery problem must not fail a
- * submission that is already safely in Postgres.
- */
 async function notify(row: {
   id: number;
   name: string;
@@ -27,8 +19,6 @@ async function notify(row: {
   message: string;
 }): Promise<string | null> {
   const apiKey = process.env.RESEND_API_KEY;
-  // Not an error condition. Local development and CI run without secrets, and
-  // the submission is already durable by the time we get here.
   if (!apiKey) return "RESEND_API_KEY not set";
 
   try {
@@ -68,36 +58,25 @@ export async function submitContact(
     message: String(formData.get("message") ?? ""),
   };
 
-  // --- spam gates -----------------------------------------------------------
-  // Both report success and write nothing. Telling a bot it failed only makes
-  // it retry with a variation.
   const honeypot = String(formData.get("company") ?? "").trim();
   if (honeypot) return { status: "success" };
 
   const renderedAt = Number(formData.get("renderedAt"));
-  // Only reject when the timestamp is present AND implausible. A missing or
-  // unparseable value is not evidence of a bot, and discarding a real person's
-  // message over it would be exactly the silent loss this form exists to avoid.
   if (Number.isFinite(renderedAt) && renderedAt > 0) {
     if (Date.now() - renderedAt < MIN_FILL_MS) return { status: "success" };
   }
 
-  // --- validation -----------------------------------------------------------
   const result = validateContact(values);
   if (!result.ok) {
     return { status: "error", errors: result.errors, values };
   }
 
-  // --- persist, then notify -------------------------------------------------
-  // Order matters. The row is the durable record; email is best effort. Sending
-  // first would lose the message on any provider hiccup.
   let inserted;
   try {
     [inserted] = await db
       .insert(contactSubmissions)
       .values({
         ...result.data,
-        // Empty optional fields are absent, not blank.
         budget: result.data.budget || null,
         website: result.data.website || null,
       })
@@ -113,8 +92,6 @@ export async function submitContact(
 
   const emailError = await notify({ id: inserted.id, ...result.data });
 
-  // Bookkeeping only — a failure to record the outcome must not change what the
-  // visitor sees, because their message did arrive.
   try {
     await db
       .update(contactSubmissions)
@@ -129,8 +106,6 @@ export async function submitContact(
   }
 
   if (emailError) {
-    // Deliberately still a success. From the visitor's side the message was
-    // received; what failed was my notification, which is mine to chase.
     console.error("contact: notification failed —", emailError);
   }
 

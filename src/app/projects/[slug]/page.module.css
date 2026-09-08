@@ -108,8 +108,6 @@
   color: rgba(255, 255, 255, 0.45);
 }
 
-/* Styling for MDX output. The case studies are plain markdown, so these are
-   element selectors rather than classes — there is nothing to hang a class on. */
 .prose {
   margin-top: 3rem;
   line-height: 1.7;
@@ -168,8 +166,6 @@
   color: var(--neon-turquoise, #00f0ff);
 }
 
-/* Syntax highlighting is roadmap item 5 (shiki / rehype-pretty-code); until
-   then code blocks are plain, and must not inherit the inline-code colour. */
 .prose pre {
   overflow-x: auto;
   padding: 1.25rem;

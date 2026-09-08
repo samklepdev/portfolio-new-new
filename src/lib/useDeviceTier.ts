@@ -2,12 +2,6 @@ import { useEffect, useState } from "react";
 
 export type DeviceTier = "full" | "lite" | "static";
 
-/**
- * Decides how much 3D scene the current device should get.
- * - "full": desktop/high-end — particles + bloom post-processing
- * - "lite": mobile/tablet — fewer particles, no post-processing
- * - "static": prefers-reduced-motion or WebGL unavailable — no canvas at all
- */
 export function useDeviceTier(): DeviceTier {
   const [tier, setTier] = useState<DeviceTier>("lite"); // safe default before hydration
 

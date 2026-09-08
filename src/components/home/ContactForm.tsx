@@ -14,15 +14,10 @@ type FieldProps = {
   defaultValue?: string;
   type?: string;
   autoComplete?: string;
-  /** Renders a textarea spanning both columns instead of a single-line input. */
   multiline?: boolean;
   optional?: boolean;
 };
 
-/**
- * One field, one shape. Five near-identical label/input/error blocks would be
- * five places to forget an aria-describedby.
- */
 function Field({
   name,
   label,
@@ -72,11 +67,6 @@ function Field({
 }
 
 type ContactFormProps = {
-  /**
-   * When the form was rendered, used by the server's "submitted impossibly
-   * fast" check. Passed in from the server component so the check still works
-   * with JavaScript disabled.
-   */
   renderedAt: number;
 };
 
@@ -101,13 +91,9 @@ export function ContactForm({ renderedAt }: ContactFormProps) {
   }
 
   return (
-    // noValidate hands validation to the server, which is the authority here.
-    // The native bubbles would otherwise compete with the inline errors.
     <form action={formAction} className={styles.form} noValidate>
       <input type="hidden" name="renderedAt" value={renderedAt} />
 
-      {/* Honeypot. Moved offscreen rather than display:none — some bots skip
-          undisplayed fields — and kept out of the tab order and the a11y tree. */}
       <div className={styles.honeypot} aria-hidden="true">
         <label htmlFor="contact-company">Company</label>
         <input

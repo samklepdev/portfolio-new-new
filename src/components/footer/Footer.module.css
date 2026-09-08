@@ -1,14 +1,7 @@
-/* Full-bleed, so the top rule runs edge to edge like the Header's border-bottom
-   rather than stopping at the content column. */
 .footer {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Mirrors .nav in Header.module.css — same 78rem cap and 1.5rem gutter, so the
-   footer logo sits directly beneath the header logo.
-   Pages already end with 6–8rem of their own bottom padding, which supplies the
-   gap above the rule. The top padding here is deliberately modest so the two do
-   not add up to a hole — padding does not collapse the way margins would. */
 .container {
   margin: 0 auto;
   max-width: 78rem;
@@ -23,8 +16,6 @@
   text-align: center;
 }
 
-/* Horizontal from 640px, mirroring the Header's rhythm so the page is
-   bookended. Centred below that, where a single row would wrap badly. */
 @media (min-width: 640px) {
   .inner {
     flex-direction: row;
@@ -79,8 +70,6 @@
   transition: color 200ms ease;
 }
 
-/* The social row is icons only, so it gets its own spacing: tighter than the
-   text nav above it, because bare marks do not need word-sized gaps. */
 .iconLinks {
   list-style: none;
   display: flex;
@@ -95,8 +84,6 @@
   }
 }
 
-/* Padding rather than margin, so the tap target is ~2.25rem square. An 18px
-   icon on its own is well under any sensible minimum touch size. */
 .iconLink {
   display: inline-flex;
   align-items: center;
@@ -117,14 +104,12 @@
   outline-offset: 2px;
 }
 
-/* Inherits currentColor, so the mark lights up with its link on hover. */
 .icon {
   flex: none;
   width: 1.125rem;
   height: 1.125rem;
 }
 
-/* The links' only accessible name — the icons beside it are aria-hidden. */
 .srOnly {
   position: absolute;
   width: 1px;
@@ -171,8 +156,6 @@
 .email {
   color: rgba(255, 255, 255, 0.45);
   transition: color 200ms ease;
-  /* An email address must never be clipped, and overflow-x: hidden on body
-     means a clip here would be silent. */
   overflow-wrap: anywhere;
 }
 

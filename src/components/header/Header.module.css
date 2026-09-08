@@ -1,6 +1,3 @@
-/* Fixed rather than sticky: on the home page the hero is pinned by
-   ScrollTrigger, so there is no normal document flow for a sticky bar to stick
-   to until the pin releases. */
 .bar {
   position: fixed;
   top: 0;
@@ -65,8 +62,6 @@
   color: #ffffff;
 }
 
-/* Underline as a pseudo-element rather than border-bottom, so it can sit flush
-   under the bar's own baseline without nudging the text. */
 .link::after {
   content: "";
   position: absolute;
@@ -166,10 +161,8 @@
   outline-offset: 3px;
 }
 
-/* --- mobile ---------------------------------------------------------------
-   Below 640px the links move into a panel under the bar and the hamburger
-   takes over. The avatar goes — the logo already carries the identity and the
-   Resume action is the one worth keeping at this width. */
+/* --- mobile --------------------------------------------------------------- */
+
 @media (max-width: 639px) {
   .nav {
     gap: 1rem;
@@ -209,8 +202,6 @@
     font-size: 1rem;
   }
 
-  /* The sliding underline reads as decoration on a stacked list; a left rule
-     is clearer about which row is current. */
   .link::after {
     left: -1rem;
     right: auto;

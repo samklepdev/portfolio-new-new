@@ -13,15 +13,9 @@ export function Header() {
   const heroDismissed = useScrollStore((state) => state.heroDismissed);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Only the home page has the pinned hero to scroll past; everywhere else the
-  // bar is there from first paint. Deriving this from the route rather than
-  // from "has a hero mounted yet" keeps the first render correct on the server
-  // too, so inner pages never flash a nav in.
   const gatedByHero = pathname === "/";
   const visible = !gatedByHero || heroDismissed;
 
-  // Navigating with the menu open would otherwise leave it open on the next
-  // page. Also close it if the bar retreats behind the hero.
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname, visible]);
@@ -37,24 +31,16 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [menuOpen]);
 
-  // "/" only matches itself; every other link owns its subtree, so a project
-  // detail page still marks Projects as current.
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <header
       className={`${styles.bar} ${visible ? styles.visible : ""}`}
-      // Keeps the hidden bar out of the tab order — it is only moved offscreen,
-      // not unmounted, so it would otherwise still be focusable over the hero.
       inert={!visible}
     >
       <nav className={styles.nav} aria-label="Main">
         <Link href="/" className={styles.logo} aria-label="Sam Klepper — home">
-          {/* The "-dark" file is the light-artwork variant, i.e. the one meant
-              to sit on a dark background. unoptimized because the optimizer
-              refuses SVG without dangerouslyAllowSVG — and there is nothing in
-              a vector for it to optimize. */}
           <Image
             src="/images/sbk-logo-dark.svg"
             alt=""

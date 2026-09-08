@@ -32,8 +32,7 @@ function ParticleField({ count }: { count: number }) {
       positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = radius * Math.cos(phi);
 
-      // turquoise dominant, pink/purple as sparse accents — matches the
-      // "one neon color dominates" rule from the design plan
+      // turquoise dominant, pink/purple as sparse accents
       const color = Math.random() < 0.75 ? palette[0] : palette[Math.random() < 0.5 ? 1 : 2];
       colors[i * 3] = color.r;
       colors[i * 3 + 1] = color.g;

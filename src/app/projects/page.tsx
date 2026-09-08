@@ -6,12 +6,7 @@ import { ProjectGrid } from "@/components/projects/ProjectGrid";
 import { getPublishedProjectsPage } from "@/db/queries";
 import styles from "./page.module.css";
 
-const PER_PAGE = 9; // three rows of three
-
-// No `revalidate` export here: reading searchParams opts the route into dynamic
-// rendering, so it queries Postgres per request and always reflects the current
-// data. That is the trade for addressable ?page= URLs. The home page and the
-// detail pages keep their ISR caching.
+const PER_PAGE = 9;
 
 type ProjectsPageProps = {
   searchParams: Promise<{ page?: string | string[] }>;
@@ -30,8 +25,6 @@ export async function generateMetadata({
   const page = parsePage((await searchParams).page);
 
   return {
-    // Distinct titles per page, so the paginated URLs do not all compete as
-    // duplicates of each other.
     title:
       page > 1
         ? `Projects — Page ${page} — Sam Klepper`
@@ -45,13 +38,11 @@ export default async function ProjectsPage({
 }: ProjectsPageProps) {
   const page = parsePage((await searchParams).page);
 
-  // Everything published, featured included — the home page shows a subset.
   const { projects, total, totalPages } = await getPublishedProjectsPage(
     page,
     PER_PAGE
   );
 
-  // A page past the end is a dead URL, not an empty grid.
   if (page > totalPages) notFound();
 
   const first = total === 0 ? 0 : (page - 1) * PER_PAGE + 1;

@@ -4,18 +4,12 @@ import styles from "./Pagination.module.css";
 type PaginationProps = {
   page: number;
   totalPages: number;
-  /** Route the page numbers hang off, e.g. "/projects". */
   basePath: string;
 };
 
-/**
- * Real links, not buttons — every page is addressable, shareable and
- * crawlable, and the pager works before (or without) hydration.
- */
 export function Pagination({ page, totalPages, basePath }: PaginationProps) {
   if (totalPages <= 1) return null;
 
-  // Page 1 lives at the bare path so there are not two URLs for one page.
   const href = (n: number) => (n === 1 ? basePath : `${basePath}?page=${n}`);
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -36,8 +30,6 @@ export function Pagination({ page, totalPages, basePath }: PaginationProps) {
         {pages.map((n) => (
           <li key={n}>
             {n === page ? (
-              // The current page is not a link to itself; aria-current tells
-              // screen readers which one it is.
               <span
                 className={`${styles.page} ${styles.current}`}
                 aria-current="page"

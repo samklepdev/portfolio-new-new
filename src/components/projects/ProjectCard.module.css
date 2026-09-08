@@ -1,7 +1,7 @@
 .card {
   position: relative;
   display: block;
-  overflow: hidden; /* clips the thumbnail to the rounded corners */
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0.75rem;
   background-color: #12161f;
@@ -20,8 +20,6 @@
   outline-offset: 3px;
 }
 
-/* Stacked by default: thumbnail on top, copy underneath. The featured card
-   turns this into two columns once there is room. */
 .inner {
   display: flex;
   flex-direction: column;
@@ -35,8 +33,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Screenshots are full-page captures — anchoring to the top keeps the site
-   header and hero in frame instead of cropping to the middle of the page. */
 .thumbImage {
   object-fit: cover;
   object-position: top center;
@@ -55,9 +51,6 @@
   padding: 1.5rem;
 }
 
-/* --- featured -------------------------------------------------------------
-   Glow treatment plus the wide slot. Turquoise dominates; the purple is a
-   gradient-only accent per the design direction. */
 .featured {
   border-color: rgba(0, 240, 255, 0.35);
   box-shadow: 0 0 40px rgba(0, 240, 255, 0.12);
@@ -162,11 +155,6 @@
   flex-direction: column-reverse;
 }
 
-/* margin-top: auto pins the footer to the bottom so cards of differing summary
-   length still line their tag rows up. */
-/* flex-end, not center: the tag list is what varies in height between cards
-   (one wrapped row vs two), and centering against it leaves the "View project"
-   links sitting at different heights across a row. */
 .footer {
   display: flex;
   align-items: flex-end;
@@ -212,9 +200,6 @@
   transform: translateX(3px);
 }
 
-/* Hover-reveal, but only where hovering is possible. Touch devices get the
-   tags outright — there is no hover state to discover them with. The tags stay
-   in the DOM either way; this is a visual reveal, not conditional content. */
 @media (hover: hover) and (pointer: fine) {
   .tags {
     opacity: 0;
@@ -228,8 +213,6 @@
     transform: none;
   }
 
-  /* The featured card is the focal point — its tags read as part of the card
-     rather than a reward for hovering. */
   .featured .tags {
     opacity: 1;
     transform: none;

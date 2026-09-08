@@ -3,12 +3,6 @@ import Link from "next/link";
 import { EMAIL, RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
 import styles from "./page.module.css";
 
-/**
- * Deliberately no form on this page: the home page carries the working one, and
- * a mailto here always delivers. Kept as the plain, dependency-free route to
- * reaching a person.
- */
-
 export const metadata: Metadata = {
   title: "Contact — Sam Klepper",
   description: "Get in touch with Sam Klepper — full-stack developer.",
@@ -27,8 +21,6 @@ export default function ContactPage() {
       </p>
 
       <div className={styles.panel}>
-        {/* Green is reserved for status indicators — this is the one place on
-            the page that earns it. */}
         <p className={styles.status}>
           <span className={styles.statusDot} aria-hidden="true" />
           Available for work
