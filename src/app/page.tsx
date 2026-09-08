@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeroSection } from "@/components/hero/HeroSection";
+import { AboutSection } from "@/components/home/AboutSection";
 import { ClientBand } from "@/components/home/ClientBand";
 import { PlaceholderSection } from "@/components/home/PlaceholderSection";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
@@ -24,15 +25,7 @@ export default async function Home() {
           am, then the work. */}
       <ClientBand />
 
-      {/* Placeholders until each has a designed home-page layout. The full
-          versions live at /about and /contact; these only reserve the slot and
-          the anchor. */}
-      <PlaceholderSection
-        id="about"
-        title="About"
-        href="/about"
-        linkLabel="More about me"
-      />
+      <AboutSection />
 
       {/* Project grid renders normally underneath — no 3D cost here,
           this section should stay fast/crawlable regardless of WebGL support */}
@@ -46,6 +39,8 @@ export default async function Home() {
         <ProjectGrid projects={projects} featureFirst />
       </section>
 
+      {/* Still a stub until Contact has a designed home-page layout; the full
+          version lives at /contact. */}
       <PlaceholderSection
         id="contact"
         title="Contact"

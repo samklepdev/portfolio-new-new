@@ -1,0 +1,144 @@
+/* Top padding only, and no horizontal padding at this level: the figure has to
+   escape the container, so .inner owns the gutters instead. Neighbouring
+   sections each bring their own 6rem and padding does not collapse. */
+.section {
+  padding: 6rem 0 0;
+}
+
+.inner {
+  display: grid;
+  gap: 2.5rem;
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 0 2rem;
+}
+
+/* Small screens: edge to edge, cancelling .inner's gutter. A 6rem overhang on a
+   375px viewport would eat a sixth of the screen, so the bleed is desktop-only. */
+.figure {
+  position: relative;
+  height: 16rem;
+  margin: 0 -2rem;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+  /* laptop.jpg carries a strong orange screen glow. One accent dominates per
+     screen and that accent is turquoise, so the photo gets knocked back. */
+  filter: saturate(0.55);
+}
+
+/* Dissolves the photograph into the page instead of ending it on a hard line
+   against the copy. Vertical here, horizontal once the layout goes two-column. */
+.figure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 14, 20, 0) 40%, #0b0e14 100%);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    grid-template-columns: 20rem minmax(0, 1fr);
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .figure {
+    height: 32rem;
+    margin: 0;
+    /* Hang 14rem past the left edge of the viewport. The figure's natural left
+       edge is (100vw - 64rem)/2 + 2rem; solving that for -14rem gives
+       16rem - 50vw. A stretched grid item absorbs a negative inline margin by
+       growing, so the right edge stays where the grid put it and no width
+       calculation is needed — the figure ends up ~50vw + 64px wide, which is
+       what the `sizes` attribute declares. body has overflow-x: hidden, so the
+       overhang cannot produce a horizontal scrollbar.
+
+       To change the overhang, change the constant: it is
+       (32rem - 2rem - overhang) - 50vw. 24rem hangs 6rem, 16rem hangs 14rem. */
+    margin-left: calc(16rem - 50vw);
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+
+  .figure::after {
+    background: linear-gradient(90deg, rgba(11, 14, 20, 0) 55%, #0b0e14 100%);
+  }
+}
+
+.heading {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.intro {
+  margin-top: 1rem;
+  max-width: 34rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* No cards. Card chrome — borders, surfaces, shadows — is the opposite of the
+   brief, so scale and contrast carry the weight instead. */
+.list {
+  list-style: none;
+  margin-top: 2.5rem;
+}
+
+.item {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.item:last-child {
+  padding-bottom: 0;
+}
+
+.number {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.75rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.12);
+}
+
+/* globals.css puts every h3 on the display face; these are labels, not headings
+   in the visual hierarchy, so they opt back out to mono. */
+.itemTitle {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.itemText {
+  margin-top: 0.5rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.link {
+  display: inline-block;
+  margin-top: 2rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: var(--neon-turquoise, #00f0ff);
+  transition: opacity 200ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}
