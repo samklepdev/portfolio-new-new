@@ -1,4 +1,5 @@
 import styles from "./ServicesSection.module.css";
+import { RingField } from "./RingField";
 
 const SERVICES = [
   {
@@ -27,7 +28,9 @@ export function ServicesSection() {
         <ul className={styles.grid}>
           {SERVICES.map((service) => (
             <li key={service.title} className={styles.card}>
-              <div className={styles.graphic} />
+              <div className={styles.graphic}>
+                <RingField />
+              </div>
               <div className={styles.body}>
                 <h3 className={styles.cardTitle}>{service.title}</h3>
                 <p className={styles.cardText}>{service.body}</p>
