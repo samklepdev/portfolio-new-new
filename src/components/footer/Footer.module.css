@@ -68,9 +68,20 @@
 }
 
 .link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.55);
   transition: color 200ms ease;
+}
+
+/* Inherits the link's colour, so the icon and its label light up together on
+   hover rather than the mark staying dim beside brightened text. */
+.icon {
+  flex: none;
+  width: 0.9375rem;
+  height: 0.9375rem;
 }
 
 .link:hover,

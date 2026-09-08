@@ -14,14 +14,21 @@ export const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
+/**
+ * `id` exists so consumers can pair a link with its icon by a stable key
+ * instead of matching on the display label, which is copy and may change.
+ */
 export const SOCIAL_LINKS = [
   {
+    id: "linkedin",
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/samuel-klepper-0435b5193/",
   },
-  { label: "GitHub", href: "https://github.com/samklepdev" },
-  { label: "GitLab", href: "https://gitlab.com/bklep" },
+  { id: "github", label: "GitHub", href: "https://github.com/samklepdev" },
+  { id: "gitlab", label: "GitLab", href: "https://gitlab.com/bklep" },
 ] as const;
+
+export type SocialId = (typeof SOCIAL_LINKS)[number]["id"];
 
 export const RESUME_URL = "/images/documents/samuel-klepper-resume.pdf";
 

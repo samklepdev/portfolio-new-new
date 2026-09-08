@@ -6,6 +6,7 @@ import {
   RESUME_URL,
   SOCIAL_LINKS,
 } from "@/lib/siteLinks";
+import { DownloadIcon, SOCIAL_ICONS } from "./icons";
 import styles from "./Footer.module.css";
 
 export function Footer() {
@@ -47,20 +48,26 @@ export function Footer() {
           </ul>
 
           <ul className={styles.links}>
-            {SOCIAL_LINKS.map((link) => (
-              <li key={link.href}>
-                <a
-                  className={styles.link}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
+            {SOCIAL_LINKS.map((link) => {
+              // Paired by id rather than by label, which is copy and may change.
+              const Icon = SOCIAL_ICONS[link.id];
+              return (
+                <li key={link.href}>
+                  <a
+                    className={styles.link}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Icon className={styles.icon} />
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
             <li>
               <a className={styles.link} href={RESUME_URL} download>
+                <DownloadIcon className={styles.icon} />
                 Resume
               </a>
             </li>
