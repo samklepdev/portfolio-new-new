@@ -25,14 +25,24 @@
 
 .grid {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
   margin-top: 2.5rem;
   list-style: none;
 }
 
+/* Spans apply only above the breakpoint. Below it every card is full width, so
+   .wide and .narrow must not resolve to a grid-column at all. */
 @media (min-width: 720px) {
   .grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .wide {
+    grid-column: span 4;
+  }
+
+  .narrow {
+    grid-column: span 2;
   }
 }
 
