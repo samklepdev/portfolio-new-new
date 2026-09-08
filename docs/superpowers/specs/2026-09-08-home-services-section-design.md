@@ -149,11 +149,19 @@ an explicit `transform-box: view-box`.
 
 ### When it runs
 
-Only under `.card:hover` and `.card:focus-within`. This is a deliberate
-constraint, not a limitation inherited from the original: `CLAUDE.md` reserves
-the one orchestrated animated moment for the hero's boot-up and warns against
-scattering effects elsewhere. A hover-triggered ripple is user-initiated and
-silent until asked for, so it does not compete.
+Only under `.card:hover`, wrapped in `@media (hover: hover) and (pointer: fine)`.
+This is a deliberate constraint, not a limitation inherited from the original:
+`CLAUDE.md` reserves the one orchestrated animated moment for the hero's boot-up
+and warns against scattering effects elsewhere. A hover-triggered ripple is
+user-initiated and silent until asked for, so it does not compete.
+
+The hover-capability guard is load-bearing. On touch devices `:hover` latches
+after a tap and never releases, so an unguarded rule would leave the ripple
+running permanently on a phone — the exact opposite of the intent below. Same
+guard, same reason, as `ProjectCard.module.css`.
+
+There is no `:focus-within` trigger. Nothing inside a card is focusable, so it
+could never fire, and a selector that cannot match is worse than an absent one.
 
 `prefers-reduced-motion: reduce` removes the animation entirely; the rings
 render static at rest opacity.
