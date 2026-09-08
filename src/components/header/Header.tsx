@@ -5,16 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useScrollStore } from "@/lib/scrollStore";
+import { NAV_LINKS, RESUME_URL } from "@/lib/siteLinks";
 import styles from "./Header.module.css";
-
-const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/contact", label: "Contact" },
-];
-
-const RESUME_URL = "/images/documents/samuel-klepper-resume.pdf";
 
 export function Header() {
   const pathname = usePathname();
@@ -73,7 +65,7 @@ export function Header() {
         </Link>
 
         <ul id="header-nav-links" className={styles.links} data-open={menuOpen}>
-          {LINKS.map((link) => (
+          {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
