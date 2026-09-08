@@ -6,11 +6,16 @@
   isolation: isolate;
 }
 
+/* Sized off the graphic's height, never its width. The graphic slot is 13rem in
+   every card, but bento spans make cards 632px and 304px wide — a width-relative
+   field would render the same rings at ~13px and ~6px spacing in the two sizes.
+   Height keeps one scale everywhere; wide cards just reveal more of the field. */
 .rings {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 130%;
+  height: 300%;
+  width: auto;
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   mask-image:
