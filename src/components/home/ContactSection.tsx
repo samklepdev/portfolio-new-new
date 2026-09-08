@@ -1,0 +1,102 @@
+import Image from "next/image";
+import { ContactForm } from "./ContactForm";
+import styles from "./ContactSection.module.css";
+
+const EMAIL = "hello@samklep.dev";
+
+/**
+ * A real client testimonial from the old samklep.dev, quoted verbatim.
+ *
+ * The other one on record — Xavier Chavaria, Owner/Operator, Ultra Demolition —
+ * is kept in the design spec. Swapping is a matter of changing this constant and
+ * the logo beside it; do not paraphrase either, and do not add a portrait, since
+ * no photograph of either person exists here.
+ */
+const TESTIMONIAL = {
+  quote:
+    "I approached Sam with only a rough idea in mind and he helped me bring my idea to fruition. Sam helped with a logo, unique design & functional contact forms to keep up with customer demands.",
+  name: "Martha DeLeon",
+  title: "CEO",
+  company: "DeLeon Safety Solutions",
+  rating: 5,
+  logo: { src: "/images/logos/dss-logo.png", width: 400, height: 340 },
+};
+
+export function ContactSection() {
+  // Rendered on the server so the "submitted impossibly fast" check still works
+  // with JavaScript disabled. The page is prerendered and revalidated, so this
+  // timestamp can be stale — which only ever makes the elapsed time longer and
+  // can never produce a false "too fast".
+  const renderedAt = Date.now();
+
+  return (
+    <section
+      className={styles.section}
+      id="contact"
+      aria-labelledby="contact-heading"
+    >
+      <div className={styles.header}>
+        <h2 id="contact-heading" className={styles.heading}>
+          Let&rsquo;s talk about your project
+        </h2>
+        <p className={styles.intro}>
+          Websites and applications for businesses that need to be found and
+          taken seriously online.
+        </p>
+      </div>
+
+      <div className={styles.inner}>
+        <div className={styles.formColumn}>
+          <ContactForm renderedAt={renderedAt} />
+        </div>
+
+        <aside className={styles.aside}>
+          <p className={styles.status}>
+            <span className={styles.statusDot} aria-hidden="true" />
+            Available for work
+          </p>
+
+          <figure className={styles.testimonial}>
+            {/* Knocked back to one white like the logo band, so a client's brand
+                colours do not compete with the page's own accent. */}
+            <Image
+              className={styles.testimonialLogo}
+              src={TESTIMONIAL.logo.src}
+              alt={TESTIMONIAL.company}
+              width={TESTIMONIAL.logo.width}
+              height={TESTIMONIAL.logo.height}
+              sizes="140px"
+            />
+
+            <p
+              className={styles.rating}
+              aria-label={`${TESTIMONIAL.rating} out of 5 stars`}
+            >
+              <span aria-hidden="true">
+                {"★".repeat(TESTIMONIAL.rating)}
+              </span>
+            </p>
+
+            <blockquote className={styles.quote}>
+              <p>&ldquo;{TESTIMONIAL.quote}&rdquo;</p>
+            </blockquote>
+
+            <figcaption className={styles.attribution}>
+              <span className={styles.attributionName}>{TESTIMONIAL.name}</span>
+              <span className={styles.attributionRole}>
+                {TESTIMONIAL.title}, {TESTIMONIAL.company}
+              </span>
+            </figcaption>
+          </figure>
+
+          <p className={styles.fallback}>
+            Prefer email?{" "}
+            <a className={styles.fallbackLink} href={`mailto:${EMAIL}`}>
+              {EMAIL}
+            </a>
+          </p>
+        </aside>
+      </div>
+    </section>
+  );
+}

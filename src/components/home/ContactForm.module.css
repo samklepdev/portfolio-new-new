@@ -1,0 +1,178 @@
+.form {
+  display: grid;
+  gap: 2rem;
+}
+
+/* Offscreen rather than display:none — some bots skip undisplayed fields — and
+   already aria-hidden with tabIndex -1 in the markup, so it is unreachable by
+   keyboard or screen reader. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Two columns only once there is room for them. Below this the short fields
+   stack, which is better than two cramped inputs sharing 320px. */
+@media (min-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  min-width: 0; /* lets a grid column shrink instead of forcing overflow */
+}
+
+.fieldFull {
+  min-width: 0;
+  grid-column: 1 / -1;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.optional {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  font: inherit;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* The ring replaces the native outline rather than removing it — a 1px border
+   change alone is too quiet to serve as the only focus indicator. */
+.input:focus {
+  outline: none;
+  border-color: var(--neon-turquoise, #00f0ff);
+  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.15);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--neon-pink, #ff2e97);
+}
+
+.input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgba(255, 46, 151, 0.15);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 9rem;
+  line-height: 1.6;
+}
+
+/* Pink carries both errors and the submit button. The palette has no dedicated
+   error colour; the two never occupy the same position, so the overload does
+   not read as ambiguous. */
+.error {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--neon-pink, #ff2e97);
+}
+
+.formError {
+  padding: 0.875rem 1rem;
+  border: 1px solid rgba(255, 46, 151, 0.35);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--neon-pink, #ff2e97);
+}
+
+/* Filled, full width — this is the section's single call to action. Dark text
+   on pink rather than white: white on #FF2E97 lands around 2.5:1, which fails
+   contrast, while #0B0E14 on it clears 8:1. */
+.submit {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background-color: var(--neon-pink, #ff2e97);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9375rem;
+  color: #0b0e14;
+  cursor: pointer;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.submit:hover:not(:disabled) {
+  background-color: #ff4ea8;
+  box-shadow: 0 0 32px rgba(255, 46, 151, 0.28);
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--neon-pink, #ff2e97);
+  outline-offset: 3px;
+}
+
+.submit:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+/* Green is reserved for status indicators, and a delivery confirmation is one. */
+.success {
+  padding: 2rem;
+  border: 1px solid rgba(57, 255, 136, 0.28);
+  border-radius: 0.75rem;
+  background-color: #12161f;
+}
+
+.successTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--neon-green, #39ff88);
+}
+
+.successDot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background-color: var(--neon-green, #39ff88);
+  box-shadow: 0 0 8px rgba(57, 255, 136, 0.8);
+}
+
+.successText {
+  margin-top: 0.75rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .submit {
+    transition: none;
+  }
+}

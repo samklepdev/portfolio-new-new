@@ -94,3 +94,36 @@ export const projectMetricsRelations = relations(projectMetrics, ({ one }) => ({
     references: [projects.id],
   }),
 }));
+
+/**
+ * Messages from the home-page contact form.
+ *
+ * Standalone by design — no relations. This is the one table holding data the
+ * site receives rather than publishes, so it is never joined to a project and
+ * never read by a page.
+ *
+ * The row is the durable record. Email is best-effort and sent *after* the
+ * insert, so a provider outage costs a notification rather than a message; the
+ * outcome is written back to emailedAt/emailError instead of being assumed.
+ *
+ * No IP column, deliberately: storing visitor addresses is a privacy and
+ * retention obligation, and the spam defence here is a honeypot plus a timing
+ * check rather than per-IP limiting.
+ */
+export const contactSubmissions = pgTable("contact_submissions", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  // Both optional and nullable. Asking for a budget as a hard requirement loses
+  // enquiries from people who genuinely do not know it yet, and the point of
+  // the form is to start a conversation rather than qualify a lead.
+  budget: text("budget"),
+  website: text("website"),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  // Null until a send succeeds. Both null = queued or never attempted.
+  emailedAt: timestamp("emailed_at", { withTimezone: true }),
+  emailError: text("email_error"),
+});

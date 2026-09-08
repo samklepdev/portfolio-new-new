@@ -2,7 +2,7 @@ import Link from "next/link";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { AboutSection } from "@/components/home/AboutSection";
 import { ClientBand } from "@/components/home/ClientBand";
-import { PlaceholderSection } from "@/components/home/PlaceholderSection";
+import { ContactSection } from "@/components/home/ContactSection";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
 import { getFeaturedProjects } from "@/db/queries";
 import styles from "./page.module.css";
@@ -39,14 +39,7 @@ export default async function Home() {
         <ProjectGrid projects={projects} featureFirst />
       </section>
 
-      {/* Still a stub until Contact has a designed home-page layout; the full
-          version lives at /contact. */}
-      <PlaceholderSection
-        id="contact"
-        title="Contact"
-        href="/contact"
-        linkLabel="Get in touch"
-      />
+      <ContactSection />
     </main>
   );
 }

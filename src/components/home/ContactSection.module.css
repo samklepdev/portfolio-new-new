@@ -1,0 +1,159 @@
+/* Owns the page's bottom padding. This section closes the home page, a job the
+   deleted PlaceholderSection used to do via :last-child — which would have
+   broken silently the moment a footer landed inside <main>. Stating it here
+   makes the dependency explicit instead of positional. */
+.section {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 6rem 2rem 8rem;
+}
+
+.header {
+  margin-bottom: 3rem;
+}
+
+.heading {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.intro {
+  margin-top: 1rem;
+  max-width: 38rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.inner {
+  display: grid;
+  gap: 3rem;
+}
+
+@media (min-width: 900px) {
+  .inner {
+    /* The form is the point of the section, so it gets the wider column. */
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+.formColumn {
+  min-width: 0;
+}
+
+/* No surface and no border. The fields beside it already carry the section's
+   only boxes, and a second panel would compete with them. */
+.aside {
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .aside {
+    /* Aligns the aside's first line with the top of the first input rather
+       than its label, so the two columns read as one row. */
+    padding-top: 0.25rem;
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3125rem 0.75rem;
+  border: 1px solid rgba(57, 255, 136, 0.28);
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--neon-green, #39ff88);
+}
+
+.statusDot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background-color: var(--neon-green, #39ff88);
+  box-shadow: 0 0 8px rgba(57, 255, 136, 0.8);
+}
+
+.testimonial {
+  margin-top: 1.75rem;
+}
+
+/* Same knockout as the client band: a client's brand colours would otherwise
+   compete with the page's own accent. Sized larger and brighter than in the
+   band, though — there it is background texture in a row of twelve, here it is
+   a single focal mark, and DeLeon's seal carries fine detail that turns to mud
+   at band size. */
+.testimonialLogo {
+  height: 3.25rem;
+  width: auto;
+  max-width: 10rem;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+.rating {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.quote {
+  margin-top: 0.75rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.attribution {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-top: 1.25rem;
+}
+
+.attributionName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.attributionRole {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.fallback {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.fallbackLink {
+  color: var(--neon-turquoise, #00f0ff);
+  transition: opacity 200ms ease;
+  /* An email address must never be clipped, and overflow-x: hidden on body
+     means a clip here would be silent. */
+  overflow-wrap: anywhere;
+}
+
+.fallbackLink:hover,
+.fallbackLink:focus-visible {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fallbackLink {
+    transition: none;
+  }
+}
