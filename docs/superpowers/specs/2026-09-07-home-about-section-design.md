@@ -26,27 +26,33 @@ Two columns at `≥1024px`: figure left, content right. One column below that.
 ### The bleed
 
 The figure is a grid item inside the page's usual centred 64rem container, pulled
-left so it hangs **6rem past the left edge of the viewport**:
+left so it hangs **14rem past the left edge of the viewport**:
 
 ```css
-.figure { margin-left: calc(24rem - 50vw); }
+.figure { margin-left: calc(16rem - 50vw); }
 ```
 
 Derived, not guessed. The figure's natural left edge sits at
-`(100vw − 64rem) / 2 + 2rem`. Solving that for a final position of `−6rem`:
+`(100vw − 64rem) / 2 + 2rem`. Solving that for a final position of `−14rem`:
 
 ```
-−6rem = (100vw − 64rem)/2 + 2rem + margin
-margin = −8rem − (100vw − 64rem)/2
-       = 24rem − 50vw
+−14rem = (100vw − 64rem)/2 + 2rem + margin
+margin = −16rem − (100vw − 64rem)/2
+       = 16rem − 50vw
 ```
 
-Checks: at 1024px it resolves to `−8rem` against a natural left of `2rem` → −6rem.
-At 1440px it resolves to `−21rem` against a natural left of `15rem` → −6rem. The
+Checks: at 1024px it resolves to `−16rem` against a natural left of `2rem` → −14rem.
+At 1440px it resolves to `−29rem` against a natural left of `15rem` → −14rem. The
 overhang is constant at every width above the breakpoint.
 
+**The constant is the only thing to change if the overhang changes.** It is
+`(32rem − 2rem − overhang) − 50vw`: `24rem` hangs 6rem off, `16rem` hangs 14rem.
+
 No width calculation is needed. A stretched grid item absorbs a negative inline
-margin by growing, so the figure's right edge stays where the grid put it.
+margin by growing, so the figure's right edge stays where the grid put it. The
+side effect is that the figure measures roughly `50vw + 64px`, which is what the
+`sizes` attribute has to declare — a larger overhang means a wider figure, and an
+under-declared `sizes` renders soft.
 
 **Two consequences, named here rather than discovered later:**
 
@@ -66,8 +72,8 @@ margin by growing, so the figure's right edge stays where the grid put it.
 
 The bleed is off entirely. The figure goes edge-to-edge (`margin: 0 -2rem`
 against the container's `2rem` padding) at `16rem` tall, above the copy, and the
-layout stacks to a single column. A 6rem overhang on a 375px viewport would eat a
-sixth of the screen.
+layout stacks to a single column. A 14rem overhang on a 375px viewport would put
+more than half the image off-screen.
 
 ### Spacing
 
@@ -119,9 +125,11 @@ becomes an em dash.
 ## Images
 
 `laptop.jpg` is **1.9MB at 4921×3076** — far larger than anything served.
-`next/image` handles the resizing, and `sizes="(min-width: 1024px) 45vw, 100vw"`
+`next/image` handles the resizing, and `sizes="(min-width: 1024px) 56vw, 100vw"`
 is mandatory: without it the srcset is built from intrinsic size and ships up to
-20× the needed pixels, exactly the defect found in the client band.
+20× the needed pixels, exactly the defect found in the client band. The `56vw`
+tracks the figure's `~50vw + 64px` width and must be revisited if the overhang
+constant changes.
 
 Downscaling the source to ~2000px wide would cut the file by roughly 80% and
 speed up optimizer cold starts. Not done here; noted as a cheap follow-up.

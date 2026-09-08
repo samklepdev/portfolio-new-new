@@ -43,8 +43,10 @@ export function AboutSection() {
             alt=""
             fill
             // Without this the srcset is built from the intrinsic 4921px width
-            // and ships an order of magnitude more pixels than it renders.
-            sizes="(min-width: 1024px) 45vw, 100vw"
+            // and ships an order of magnitude more pixels than it renders. The
+            // bleeding figure measures ~50vw + 64px, so 56vw covers it at every
+            // width without under-declaring (which would render soft).
+            sizes="(min-width: 1024px) 56vw, 100vw"
           />
         </figure>
 

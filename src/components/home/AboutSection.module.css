@@ -49,13 +49,17 @@
   .figure {
     height: 32rem;
     margin: 0;
-    /* Hang 6rem past the left edge of the viewport. The figure's natural left
-       edge is (100vw - 64rem)/2 + 2rem; solving that for -6rem gives
-       24rem - 50vw. A stretched grid item absorbs a negative inline margin by
+    /* Hang 14rem past the left edge of the viewport. The figure's natural left
+       edge is (100vw - 64rem)/2 + 2rem; solving that for -14rem gives
+       16rem - 50vw. A stretched grid item absorbs a negative inline margin by
        growing, so the right edge stays where the grid put it and no width
-       calculation is needed. body has overflow-x: hidden, so the overhang
-       cannot produce a horizontal scrollbar. */
-    margin-left: calc(24rem - 50vw);
+       calculation is needed — the figure ends up ~50vw + 64px wide, which is
+       what the `sizes` attribute declares. body has overflow-x: hidden, so the
+       overhang cannot produce a horizontal scrollbar.
+
+       To change the overhang, change the constant: it is
+       (32rem - 2rem - overhang) - 50vw. 24rem hangs 6rem, 16rem hangs 14rem. */
+    margin-left: calc(16rem - 50vw);
     border-radius: 0 0.75rem 0.75rem 0;
   }
 
