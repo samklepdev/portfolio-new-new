@@ -29,15 +29,31 @@ First-time setup: `npm install && cp .env.example .env && npm run db:up && npm r
 ## Layout
 
 ```
-src/app/          routes; page.tsx renders <HeroSection /> + projects section
-src/components/   hero/ — HeroSection (GSAP), HeroScene (R3F), HeroStaticFallback
-src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts
+src/app/          routes — /, /about, /contact, /projects, /projects/[slug]
+src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStaticFallback
+                  header/     — Header (client; reveals after the hero)
+                  home/       — ClientBand, PlaceholderSection
+                  projects/   — ProjectGrid, ProjectCard, Pagination, ProjectTabs
+src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
 src/db/           schema.ts, index.ts (client), queries.ts, seed.ts
+src/content/      projects/{slug}.md — long-form case studies, read via src/lib/content.ts
 drizzle/          generated migrations — COMMIT THESE, they are the applied-state source of truth
-content/          projects/{slug}.mdx — not yet created
 ```
 Config files (`next.config.ts`, `drizzle.config.ts`, `docker-compose.yml`, `eslint.config.mjs`) and
 `public/` stay at the repo root. `@/*` maps to `./src/*`.
+
+The home page renders, in order: `<HeroSection />` → `<ClientBand />` → About stub →
+projects section → Contact stub.
+
+`PlaceholderSection` is scaffolding, not a component to build on. It holds the slot and the
+anchor for the About and Contact sections until each gets a designed home-page layout, and is
+meant to be deleted outright at that point rather than grown. The full versions already live at
+`/about` and `/contact`.
+
+Section spacing follows one convention: **each section pads only its top**, and the last child
+of `<main>` owns the bottom. Padding does not collapse the way margins do, so two adjacent
+sections each carrying `6rem` would read as a `12rem` hole. This is why sections can be
+reordered without touching any spacing.
 
 ## Rules
 
@@ -100,16 +116,29 @@ spreads; that throws "not iterable". It can collapse once the project is on
 - Banned clichés: scanline overlays, grid-floor backgrounds, chromatic-aberration hovers.
 - One orchestrated "boot-up" moment on load (the hero). Do not scatter glitch effects elsewhere.
 
+## Built
+
+- **Project grid** — `ProjectGrid` / `ProjectCard`, featured-first on `/`, full list with
+  pagination on `/projects`.
+- **MDX pipeline** — `src/content/projects/{slug}.md` read through `src/lib/content.ts`
+  (`gray-matter` + `next-mdx-remote`). The seed imports from these files, so content is the
+  source of truth for titles and metadata and Postgres is the queryable index.
+- **`/projects/[slug]`** — full case study, prerendered via `generateStaticParams`.
+- **Nav chrome** — `Header` with mobile menu, revealing after the hero on `/` and present from
+  first paint elsewhere. `/about` and `/contact` exist as real pages.
+- **Client logo band** — `ClientBand` on the home page. See
+  `docs/superpowers/specs/2026-09-07-client-logo-band-design.md`; the transparency prerequisite
+  documented there is a real trap for anyone adding a logo.
+
 ## Not yet built — in order
 
-1. **Project grid** — `src/app/page.tsx` has a placeholder. Pull from `getPublishedProjects()`.
-   Asymmetric: featured project spans 2 columns with a glow border, the rest a tighter single-column
-   list with hover-reveal tags.
-2. **MDX pipeline** — `content/projects/{slug}.mdx` for the 4 seeded slugs, rendered with
-   `next-mdx-remote`. Frontmatter carries `slug` only; all other metadata comes from Postgres.
-3. **Nav / layout chrome** — header, mobile nav, footer.
-4. **`/projects/[slug]`** — full MDX case study via `getProjectBySlug()`.
-5. **Polish** — scroll-reveal on the grid, hover glow states, `@vercel/og` per-project OG images,
+1. **Footer** — the last piece of layout chrome. Note `PlaceholderSection.module.css` uses
+   `.section:last-child` for the Contact stub's bottom spacing, so adding a `<Footer />` inside
+   `<main>` will silently change that spacing. Make the dependency explicit rather than
+   discovering it.
+2. **Designed home-page About and Contact sections** — replacing the two `PlaceholderSection`
+   stubs. Delete the component once both are done.
+3. **Polish** — scroll-reveal on the grid, hover glow states, `@vercel/og` per-project OG images,
    `shiki`/`rehype-pretty-code` highlighting, reading time, last-updated from git metadata.
 
 ## Possible future additions

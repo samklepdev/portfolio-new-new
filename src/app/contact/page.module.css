@@ -1,0 +1,181 @@
+.page {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 6rem 2rem 8rem;
+}
+
+.back {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 200ms ease;
+}
+
+.back:hover,
+.back:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.heading {
+  margin-top: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.intro {
+  margin-top: 0.75rem;
+  margin-bottom: 3rem;
+  max-width: 40rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Pink leads inside the panel — it is the page's single call to action. */
+.panel {
+  position: relative;
+  overflow: hidden;
+  padding: 3.5rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  background-color: #12161f;
+  text-align: center;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -40% 20% auto;
+  height: 18rem;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 46, 151, 0.16),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .panel {
+    padding: 4.5rem 3rem;
+  }
+}
+
+.status {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0.3125rem 0.75rem;
+  border: 1px solid rgba(57, 255, 136, 0.28);
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--neon-green, #39ff88);
+}
+
+.statusDot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background-color: var(--neon-green, #39ff88);
+  box-shadow: 0 0 8px rgba(57, 255, 136, 0.8);
+}
+
+.cta {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1.75rem;
+  border: 1px solid var(--neon-pink, #ff2e97);
+  border-radius: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 1rem;
+  color: var(--neon-pink, #ff2e97);
+  overflow-wrap: anywhere;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+/* The email token is one unbreakable string, so fit-content floors at its full
+   width. Below ~400px the panel no longer offers enough room for that width
+   at the base padding/font-size, and .panel's overflow: hidden (plus
+   globals.css's overflow-x: hidden on html/body) hides the clip instead of
+   scrolling to it — so this has to be caught here, not left to the fallback
+   above. Smaller padding and type keep the button on one line down to 320px;
+   overflow-wrap: anywhere above is the last-resort safety net if a future
+   change (longer address, wider font) reopens the gap. */
+@media (max-width: 400px) {
+  .cta {
+    gap: 0.3125rem;
+    padding: 0.75rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+.cta:hover,
+.cta:focus-visible {
+  background-color: rgba(255, 46, 151, 0.1);
+  box-shadow: 0 0 28px rgba(255, 46, 151, 0.22);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--neon-pink, #ff2e97);
+  outline-offset: 3px;
+}
+
+.ctaArrow {
+  transition: transform 200ms ease;
+}
+
+.cta:hover .ctaArrow,
+.cta:focus-visible .ctaArrow {
+  transform: translateX(3px);
+}
+
+.links {
+  position: relative;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.75rem;
+  margin-top: 2.5rem;
+}
+
+.link {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 200ms ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--neon-turquoise, #00f0ff);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back,
+  .cta,
+  .ctaArrow,
+  .link {
+    transition: none;
+  }
+
+  .cta:hover .ctaArrow,
+  .cta:focus-visible .ctaArrow {
+    transform: none;
+  }
+}
