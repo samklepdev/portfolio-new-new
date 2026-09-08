@@ -28,6 +28,28 @@
   stroke-opacity: 0.15;
   transform-box: view-box;
   transform-origin: 250px 250px;
+  animation: ripple 2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 50ms);
+  animation-play-state: var(--ring-play-state, paused);
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
+  18.75% {
+    transform: scale(1.08);
+    stroke-opacity: 0.4;
+  }
+  37.5% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
+  100% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
 }
 
 .core {
@@ -43,4 +65,10 @@
     rgba(0, 240, 255, 0.04) 70%
   );
   box-shadow: 0 0 24px rgba(0, 240, 255, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
+  }
 }

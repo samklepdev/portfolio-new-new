@@ -48,6 +48,7 @@
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
     border-color: rgba(0, 240, 255, 0.28);
+    --ring-play-state: running;
   }
 }
 
