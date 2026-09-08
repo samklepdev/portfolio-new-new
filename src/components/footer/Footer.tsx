@@ -47,28 +47,31 @@ export function Footer() {
             ))}
           </ul>
 
-          <ul className={styles.links}>
+          {/* Icon-only. The label moves into visually-hidden text rather than
+              disappearing: without it these links would have no accessible
+              name at all, since the marks themselves are aria-hidden. */}
+          <ul className={styles.iconLinks}>
             {SOCIAL_LINKS.map((link) => {
               // Paired by id rather than by label, which is copy and may change.
               const Icon = SOCIAL_ICONS[link.id];
               return (
                 <li key={link.href}>
                   <a
-                    className={styles.link}
+                    className={styles.iconLink}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Icon className={styles.icon} />
-                    {link.label}
+                    <span className={styles.srOnly}>{link.label}</span>
                   </a>
                 </li>
               );
             })}
             <li>
-              <a className={styles.link} href={RESUME_URL} download>
+              <a className={styles.iconLink} href={RESUME_URL} download>
                 <DownloadIcon className={styles.icon} />
-                Resume
+                <span className={styles.srOnly}>Resume</span>
               </a>
             </li>
           </ul>
