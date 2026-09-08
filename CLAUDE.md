@@ -32,7 +32,8 @@ First-time setup: `npm install && cp .env.example .env && npm run db:up && npm r
 src/app/          routes — /, /about, /contact, /projects, /projects/[slug]
 src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStaticFallback
                   header/     — Header (client; reveals after the hero)
-                  home/       — ClientBand, PlaceholderSection
+                  home/       — ClientBand, AboutSection, ContactSection, ContactForm
+                  footer/     — Footer (site-wide, rendered outside <main>)
                   projects/   — ProjectGrid, ProjectCard, Pagination, ProjectTabs
 src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
 src/db/           schema.ts, index.ts (client), queries.ts, seed.ts
@@ -42,13 +43,8 @@ drizzle/          generated migrations — COMMIT THESE, they are the applied-st
 Config files (`next.config.ts`, `drizzle.config.ts`, `docker-compose.yml`, `eslint.config.mjs`) and
 `public/` stay at the repo root. `@/*` maps to `./src/*`.
 
-The home page renders, in order: `<HeroSection />` → `<ClientBand />` → About stub →
-projects section → Contact stub.
-
-`PlaceholderSection` is scaffolding, not a component to build on. It holds the slot and the
-anchor for the About and Contact sections until each gets a designed home-page layout, and is
-meant to be deleted outright at that point rather than grown. The full versions already live at
-`/about` and `/contact`.
+The home page renders, in order: `<HeroSection />` → `<ClientBand />` → `<AboutSection />` →
+projects section → `<ContactSection />`. `<Footer />` sits in `layout.tsx` outside `<main>`.
 
 Section spacing follows one convention: **each section pads only its top**, and the last child
 of `<main>` owns the bottom. Padding does not collapse the way margins do, so two adjacent
@@ -129,16 +125,31 @@ spreads; that throws "not iterable". It can collapse once the project is on
 - **Client logo band** — `ClientBand` on the home page. See
   `docs/superpowers/specs/2026-09-07-client-logo-band-design.md`; the transparency prerequisite
   documented there is a real trap for anyone adding a logo.
+- **Footer** — `Footer` in `layout.tsx`, full-bleed, outside `<main>` so it is a proper
+  `contentinfo` landmark. See `docs/superpowers/specs/2026-09-08-site-footer-design.md`.
+- **Home About and Contact sections** — `AboutSection` and `ContactSection`, replacing the old
+  `PlaceholderSection` stubs, which are deleted. Specs dated 2026-09-07.
+- **Contact form** — `ContactForm` → `submitContact` server action → Postgres
+  (`contact_submissions`) → Resend notification. Two traps live here:
+  - The honeypot field is named `referralCode`, deliberately. It was `company`, which is in
+    Chrome's autofill heuristic set — autofill could populate a hidden field and silently drop a
+    real person's message. Do not rename it to anything autofill recognises.
+  - A `toast()` call in the render body fires once *per render*, and React renders a
+    `useActionState` success four times in dev (StrictMode × the transition commit). Toasts belong
+    in an effect keyed on `state` — not on `state.status`, which never changes between two
+    consecutive successes and so silently skips the second one.
+- **Toasts** — `react-toastify`, `<ToastContainer />` in `layout.tsx`, themed in
+  `src/app/toast.css`. Next injects `ReactToastify.css` *after* that file, so equal-specificity
+  overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
+  load order; keep that prefix when adding rules.
 
 ## Not yet built — in order
 
-1. **Footer** — the last piece of layout chrome. Note `PlaceholderSection.module.css` uses
-   `.section:last-child` for the Contact stub's bottom spacing, so adding a `<Footer />` inside
-   `<main>` will silently change that spacing. Make the dependency explicit rather than
-   discovering it.
-2. **Designed home-page About and Contact sections** — replacing the two `PlaceholderSection`
-   stubs. Delete the component once both are done.
-3. **Polish** — scroll-reveal on the grid, hover glow states, `@vercel/og` per-project OG images,
+1. **Home services section** — `ServicesSection` between About and Projects, with a
+   hover-triggered concentric-ring graphic adapted from the Radiant template. Splits *what I
+   build* out of `AboutSection`, which currently doubles as both. See
+   `docs/superpowers/specs/2026-09-08-home-services-section-design.md`.
+2. **Polish** — scroll-reveal on the grid, hover glow states, `@vercel/og` per-project OG images,
    `shiki`/`rehype-pretty-code` highlighting, reading time, last-updated from git metadata.
 
 ## Possible future additions
