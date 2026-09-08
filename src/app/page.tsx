@@ -20,6 +20,10 @@ export default async function Home() {
     <main>
       <HeroSection />
 
+      {/* Proof first, before any claims are made: who trusted me, then who I
+          am, then the work. */}
+      <ClientBand />
+
       {/* Placeholders until each has a designed home-page layout. The full
           versions live at /about and /contact; these only reserve the slot and
           the anchor. */}
@@ -29,10 +33,6 @@ export default async function Home() {
         href="/about"
         linkLabel="More about me"
       />
-
-      {/* Proof between the introduction and the work: who I am, who trusted me,
-          then the work itself. */}
-      <ClientBand />
 
       {/* Project grid renders normally underneath — no 3D cost here,
           this section should stay fast/crawlable regardless of WebGL support */}

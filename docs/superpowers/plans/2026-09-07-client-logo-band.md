@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the old site's auto-scrolling client carousel with a static, monochrome band of twelve client logos, placed between the About section and Selected work on the home page.
+**Goal:** Replace the old site's auto-scrolling client carousel with a static, monochrome band of twelve client logos, placed directly below the hero and above the About section on the home page.
 
 **Architecture:** One server component (`ClientBand`) plus a colocated CSS module. The logo list is a hand-ordered constant inside the component — not a database table, because the logo set and the project set disagree in both directions. Logos are sized by height with a per-logo optical correction, and knocked out to a single white via a CSS filter so twelve brand palettes do not compete on a dark page. No JavaScript ships.
 
@@ -43,7 +43,7 @@ The verification cycle for every task is:
 **Files:**
 - Create: `src/components/home/ClientBand.tsx`
 - Create: `src/components/home/ClientBand.module.css`
-- Modify: `src/app/page.tsx` (add import; insert element between the About placeholder and the `.projects` section)
+- Modify: `src/app/page.tsx` (add import; insert element between `<HeroSection />` and the About placeholder)
 
 **Interfaces:**
 - Consumes: nothing from other tasks. Assets already exist in `public/images/logos/`.
@@ -311,23 +311,24 @@ In `src/app/page.tsx`, add the import alongside the existing component imports:
 import { ClientBand } from "@/components/home/ClientBand";
 ```
 
-Then insert the element between the About placeholder and the projects section, so the region reads:
+Then insert the element between the hero and the About placeholder, so the region reads:
 
 ```tsx
+      <HeroSection />
+
+      {/* Proof first, before any claims are made: who trusted me, then who I
+          am, then the work. */}
+      <ClientBand />
+
+      {/* Placeholders until each has a designed home-page layout. The full
+          versions live at /about and /contact; these only reserve the slot and
+          the anchor. */}
       <PlaceholderSection
         id="about"
         title="About"
         href="/about"
         linkLabel="More about me"
       />
-
-      {/* Proof between the introduction and the work: who I am, who trusted me,
-          then the work itself. */}
-      <ClientBand />
-
-      {/* Project grid renders normally underneath — no 3D cost here,
-          this section should stay fast/crawlable regardless of WebGL support */}
-      <section className={styles.projects} id="projects">
 ```
 
 Leave the rest of `page.tsx` unchanged — `export const revalidate = 60`, the `getFeaturedProjects()` call, and the Contact placeholder all stay as they are.
@@ -348,7 +349,7 @@ Pass criteria:
 - Hovering one logo lifts its opacity (it brightens) while staying knocked
   out to white — it must not restore the logo's brand colour.
 - The label reads `BUSINESSES I'VE BUILT FOR` in uppercase mono, not in the Space Grotesk display face.
-- The band sits between the About heading and "Selected work".
+- The band sits directly below the hero, above the About heading.
 - Nothing is clickable — the logos are not links.
 
 Note: on a cold dev server the first request through the image optimizer is slow and logos may appear blank for a few seconds. Wait and reload before treating a blank logo as a failure.
@@ -410,7 +411,7 @@ If logos are too small to recognise at 375px, raise `--logo-height` inside the `
 
 - [ ] **Step 5: Check the vertical rhythm**
 
-Confirm the band does not read as a full-weight section competing with About and Selected work. It should feel subordinate — a quiet strip between two sections.
+Confirm the band does not read as a full-weight section competing with About and Selected work. It should feel subordinate — a quiet strip below the hero.
 
 If it reads too loud, reduce `.section` top padding from `6rem` to `5rem`, and/or drop `.heading` colour from `rgba(255, 255, 255, 0.4)` to `0.32`. Do not add a border or background to separate it; the palette rules keep this band quiet.
 

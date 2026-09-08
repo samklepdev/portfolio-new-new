@@ -20,13 +20,18 @@ it is not one.
 
 ## Decision
 
-A static, non-animated band of monochrome client logos, placed between the About
-section and Selected work on the home page. No carousel, no marquee, no
-JavaScript.
+A static, non-animated band of monochrome client logos, placed directly below the
+hero and above the About section. No carousel, no marquee, no JavaScript.
 
-Reading order becomes an argument: who I am → who trusted me → the work itself.
-The band is the hinge that earns the grid beneath it, and it stays clear of the
-pinned GSAP hero, which owns the only orchestrated motion on the page.
+Reading order becomes an argument, and proof leads it: who trusted me → who I am
+→ the work itself. The visitor meets the client names before any claim is made in
+the first person.
+
+The tradeoff is that the band arrives the moment the pinned GSAP hero releases,
+instead of sitting clear of it. That is acceptable precisely because the band is
+static: it introduces no motion to compete with the hero's boot-up, and knocked
+back to 55% white it reads as texture during the handoff rather than as a second
+event demanding attention.
 
 ## Non-goals
 
@@ -171,8 +176,8 @@ opacity: 0.55;
 
 Twelve client logos in twelve brand palettes on `#0B0E14` is a ransom note. The
 knockout flattens all of them to a single white, so the band reads as one texture
-and stays subordinate to the work below it — which is the point of putting it
-above the grid rather than in it.
+and stays subordinate to everything below it — which is the point of putting it
+outside the grid rather than in it.
 
 **Hover lifts opacity to 1 and keeps the knockout.** It does not restore brand
 color. Restoring color was the original design and it does not survive contact
@@ -231,6 +236,6 @@ unlinked logo is an affordance lie — was settled by the assets themselves; see
 |---|---|
 | `src/components/home/ClientBand.tsx` | new |
 | `src/components/home/ClientBand.module.css` | new |
-| `src/app/page.tsx` | import and place between About and Selected work |
+| `src/app/page.tsx` | import and place between the hero and the About section |
 
 No new dependencies, no schema change, no migration, no client-side JavaScript.
