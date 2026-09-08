@@ -21,6 +21,8 @@ async function notify(row: {
   id: number;
   name: string;
   email: string;
+  budget: string;
+  website: string;
   message: string;
 }): Promise<string | null> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -35,7 +37,17 @@ async function notify(row: {
       to: process.env.CONTACT_TO_EMAIL || "hello@samklep.dev",
       replyTo: row.email,
       subject: `Portfolio contact from ${row.name}`,
-      text: `${row.name} <${row.email}>\n\n${row.message}\n\n— submission #${row.id}`,
+      text: [
+        `${row.name} <${row.email}>`,
+        row.budget ? `Budget: ${row.budget}` : null,
+        row.website ? `Website: ${row.website}` : null,
+        "",
+        row.message,
+        "",
+        `— submission #${row.id}`,
+      ]
+        .filter((line) => line !== null)
+        .join("\n"),
     });
     return error ? error.message : null;
   } catch (cause) {
@@ -50,6 +62,8 @@ export async function submitContact(
   const values = {
     name: String(formData.get("name") ?? ""),
     email: String(formData.get("email") ?? ""),
+    budget: String(formData.get("budget") ?? ""),
+    website: String(formData.get("website") ?? ""),
     message: String(formData.get("message") ?? ""),
   };
 
@@ -80,7 +94,12 @@ export async function submitContact(
   try {
     [inserted] = await db
       .insert(contactSubmissions)
-      .values(result.data)
+      .values({
+        ...result.data,
+        // Empty optional fields are absent, not blank.
+        budget: result.data.budget || null,
+        website: result.data.website || null,
+      })
       .returning({ id: contactSubmissions.id });
   } catch (cause) {
     console.error("contact: insert failed", cause);

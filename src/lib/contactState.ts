@@ -14,7 +14,13 @@ export type ContactState = {
   /** Only set when the whole submission failed, not for per-field problems. */
   formError?: string;
   /** Echoed back so a rejected form does not lose what the visitor typed. */
-  values?: { name: string; email: string; message: string };
+  values?: {
+    name: string;
+    email: string;
+    budget: string;
+    website: string;
+    message: string;
+  };
 };
 
 export const initialContactState: ContactState = { status: "idle" };

@@ -6,6 +6,71 @@ import { initialContactState } from "@/lib/contactState";
 import { LIMITS } from "@/lib/contactValidation";
 import styles from "./ContactForm.module.css";
 
+type FieldProps = {
+  name: string;
+  label: string;
+  maxLength: number;
+  error?: string;
+  defaultValue?: string;
+  type?: string;
+  autoComplete?: string;
+  /** Renders a textarea spanning both columns instead of a single-line input. */
+  multiline?: boolean;
+  optional?: boolean;
+};
+
+/**
+ * One field, one shape. Five near-identical label/input/error blocks would be
+ * five places to forget an aria-describedby.
+ */
+function Field({
+  name,
+  label,
+  maxLength,
+  error,
+  defaultValue,
+  type = "text",
+  autoComplete,
+  multiline = false,
+  optional = false,
+}: FieldProps) {
+  const id = `contact-${name}`;
+  const errorId = `${id}-error`;
+
+  const shared = {
+    id,
+    name,
+    maxLength,
+    defaultValue,
+    autoComplete,
+    required: !optional,
+    className: styles.input,
+    "aria-invalid": error ? (true as const) : undefined,
+    "aria-describedby": error ? errorId : undefined,
+  };
+
+  return (
+    <div className={multiline ? styles.fieldFull : styles.field}>
+      <label htmlFor={id} className={styles.label}>
+        {label}
+        {optional && <span className={styles.optional}> (optional)</span>}
+      </label>
+
+      {multiline ? (
+        <textarea {...shared} rows={6} className={`${styles.input} ${styles.textarea}`} />
+      ) : (
+        <input {...shared} type={type} />
+      )}
+
+      {error && (
+        <p id={errorId} className={styles.error}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 type ContactFormProps = {
   /**
    * When the form was rendered, used by the server's "submitted impossibly
@@ -42,8 +107,7 @@ export function ContactForm({ renderedAt }: ContactFormProps) {
       <input type="hidden" name="renderedAt" value={renderedAt} />
 
       {/* Honeypot. Moved offscreen rather than display:none — some bots skip
-          undisplayed fields — and kept out of the tab order and the a11y tree
-          so nobody using a keyboard or screen reader can land on it. */}
+          undisplayed fields — and kept out of the tab order and the a11y tree. */}
       <div className={styles.honeypot} aria-hidden="true">
         <label htmlFor="contact-company">Company</label>
         <input
@@ -55,81 +119,49 @@ export function ContactForm({ renderedAt }: ContactFormProps) {
         />
       </div>
 
-      {/* Input before label so the floating-label CSS can use a sibling
-          selector; the visual order is restored in the stylesheet. */}
-      <div className={styles.field}>
-        <input
-          id="contact-name"
+      <div className={styles.grid}>
+        <Field
           name="name"
-          type="text"
-          className={styles.input}
-          placeholder=" "
-          autoComplete="name"
+          label="Name"
           maxLength={LIMITS.name}
-          required
+          autoComplete="name"
+          error={state.errors?.name}
           defaultValue={state.values?.name}
-          aria-invalid={state.errors?.name ? true : undefined}
-          aria-describedby={state.errors?.name ? "contact-name-error" : undefined}
         />
-        <label htmlFor="contact-name" className={styles.label}>
-          Name
-        </label>
-        {state.errors?.name && (
-          <p id="contact-name-error" className={styles.error}>
-            {state.errors.name}
-          </p>
-        )}
-      </div>
-
-      <div className={styles.field}>
-        <input
-          id="contact-email"
+        <Field
           name="email"
+          label="Email"
           type="email"
-          className={styles.input}
-          placeholder=" "
-          autoComplete="email"
           maxLength={LIMITS.email}
-          required
+          autoComplete="email"
+          error={state.errors?.email}
           defaultValue={state.values?.email}
-          aria-invalid={state.errors?.email ? true : undefined}
-          aria-describedby={
-            state.errors?.email ? "contact-email-error" : undefined
-          }
         />
-        <label htmlFor="contact-email" className={styles.label}>
-          Email
-        </label>
-        {state.errors?.email && (
-          <p id="contact-email-error" className={styles.error}>
-            {state.errors.email}
-          </p>
-        )}
-      </div>
-
-      <div className={styles.field}>
-        <textarea
-          id="contact-message"
+        <Field
+          name="budget"
+          label="Budget"
+          optional
+          maxLength={LIMITS.budget}
+          error={state.errors?.budget}
+          defaultValue={state.values?.budget}
+        />
+        <Field
+          name="website"
+          label="Website"
+          optional
+          maxLength={LIMITS.website}
+          autoComplete="url"
+          error={state.errors?.website}
+          defaultValue={state.values?.website}
+        />
+        <Field
           name="message"
-          className={`${styles.input} ${styles.textarea}`}
-          placeholder=" "
-          rows={5}
+          label="Message"
+          multiline
           maxLength={LIMITS.message}
-          required
+          error={state.errors?.message}
           defaultValue={state.values?.message}
-          aria-invalid={state.errors?.message ? true : undefined}
-          aria-describedby={
-            state.errors?.message ? "contact-message-error" : undefined
-          }
         />
-        <label htmlFor="contact-message" className={styles.label}>
-          Message
-        </label>
-        {state.errors?.message && (
-          <p id="contact-message-error" className={styles.error}>
-            {state.errors.message}
-          </p>
-        )}
       </div>
 
       {state.formError && (
@@ -139,10 +171,7 @@ export function ContactForm({ renderedAt }: ContactFormProps) {
       )}
 
       <button type="submit" className={styles.submit} disabled={pending}>
-        {pending ? "Sending…" : "Send message"}
-        <span className={styles.submitArrow} aria-hidden="true">
-          &rarr;
-        </span>
+        {pending ? "Sending…" : "Let’s talk"}
       </button>
     </form>
   );

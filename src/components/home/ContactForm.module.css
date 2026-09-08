@@ -1,7 +1,6 @@
 .form {
   display: grid;
   gap: 2rem;
-  max-width: 32rem;
 }
 
 /* Offscreen rather than display:none — some bots skip undisplayed fields — and
@@ -15,67 +14,77 @@
   overflow: hidden;
 }
 
-.field {
-  position: relative;
+.grid {
+  display: grid;
+  gap: 1.5rem;
 }
 
-/* No box. A transparent field over a single hairline, so the input appears to
-   float on the page rather than sit inside a container. */
+/* Two columns only once there is room for them. Below this the short fields
+   stack, which is better than two cramped inputs sharing 320px. */
+@media (min-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  min-width: 0; /* lets a grid column shrink instead of forcing overflow */
+}
+
+.fieldFull {
+  min-width: 0;
+  grid-column: 1 / -1;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.optional {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+}
+
 .input {
+  display: block;
   width: 100%;
-  padding: 1.5rem 0 0.625rem;
-  border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0; /* iOS rounds inputs by default */
-  background: transparent;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.03);
   color: #ffffff;
   font: inherit;
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
-/* Because there is no box, the focus state has to be unmistakable: the rule
-   both changes colour and thickens (via box-shadow, so nothing reflows), and
-   the label goes turquoise at the same time. The native outline is only
-   dropped because something more visible replaces it. */
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* The ring replaces the native outline rather than removing it — a 1px border
+   change alone is too quiet to serve as the only focus indicator. */
 .input:focus {
   outline: none;
-  border-bottom-color: var(--neon-turquoise, #00f0ff);
-  box-shadow: 0 1px 0 0 var(--neon-turquoise, #00f0ff);
+  border-color: var(--neon-turquoise, #00f0ff);
+  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.15);
 }
 
 .input[aria-invalid="true"] {
-  border-bottom-color: var(--neon-pink, #ff2e97);
+  border-color: var(--neon-pink, #ff2e97);
+}
+
+.input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgba(255, 46, 151, 0.15);
 }
 
 .textarea {
   resize: vertical;
-  min-height: 7rem;
+  min-height: 9rem;
   line-height: 1.6;
-}
-
-/* Sits inside the empty field, then lifts above it. Pure CSS: placeholder=" "
-   on the input makes :placeholder-shown mean "empty". */
-.label {
-  position: absolute;
-  top: 1.5rem;
-  left: 0;
-  transform-origin: left top;
-  color: rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-  transition: transform 180ms ease, color 180ms ease;
-}
-
-.input:focus + .label,
-.input:not(:placeholder-shown) + .label {
-  transform: translateY(-1.4rem) scale(0.75);
-}
-
-.input:focus + .label {
-  color: var(--neon-turquoise, #00f0ff);
-}
-
-.input[aria-invalid="true"]:not(:focus) + .label {
-  color: var(--neon-pink, #ff2e97);
 }
 
 /* Pink carries both errors and the submit button. The palette has no dedicated
@@ -97,27 +106,25 @@
   color: var(--neon-pink, #ff2e97);
 }
 
+/* Filled, full width — this is the section's single call to action. Dark text
+   on pink rather than white: white on #FF2E97 lands around 2.5:1, which fails
+   contrast, while #0B0E14 on it clears 8:1. */
 .submit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.625rem;
-  width: fit-content;
-  padding: 0.875rem 1.75rem;
-  border: 1px solid var(--neon-pink, #ff2e97);
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  border: 1px solid transparent;
   border-radius: 0.5rem;
-  background: transparent;
+  background-color: var(--neon-pink, #ff2e97);
   font-family: var(--font-mono, monospace);
   font-size: 0.9375rem;
-  color: var(--neon-pink, #ff2e97);
+  color: #0b0e14;
   cursor: pointer;
   transition: background-color 200ms ease, box-shadow 200ms ease;
 }
 
-.submit:hover:not(:disabled),
-.submit:focus-visible {
-  background-color: rgba(255, 46, 151, 0.1);
-  box-shadow: 0 0 28px rgba(255, 46, 151, 0.22);
+.submit:hover:not(:disabled) {
+  background-color: #ff4ea8;
+  box-shadow: 0 0 32px rgba(255, 46, 151, 0.28);
 }
 
 .submit:focus-visible {
@@ -130,21 +137,12 @@
   cursor: progress;
 }
 
-.submitArrow {
-  transition: transform 200ms ease;
-}
-
-.submit:hover:not(:disabled) .submitArrow {
-  transform: translateX(3px);
-}
-
 /* Green is reserved for status indicators, and a delivery confirmation is one. */
 .success {
   padding: 2rem;
   border: 1px solid rgba(57, 255, 136, 0.28);
   border-radius: 0.75rem;
   background-color: #12161f;
-  max-width: 32rem;
 }
 
 .successTitle {
@@ -174,13 +172,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .input,
-  .label,
-  .submit,
-  .submitArrow {
+  .submit {
     transition: none;
-  }
-
-  .submit:hover:not(:disabled) .submitArrow {
-    transform: none;
   }
 }

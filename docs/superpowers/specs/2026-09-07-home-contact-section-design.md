@@ -1,7 +1,7 @@
 # Home-page Contact section — design
 
 Replaces the Contact `PlaceholderSection` stub with a working contact form on the
-left and a "what happens next" panel on the right.
+left and a brief statement of what to expect on the right.
 
 This is the first section on the site with a backend. Everything before it was
 static markup; this one writes to Postgres and sends mail.
@@ -28,6 +28,8 @@ export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
+  budget: text("budget"),   // optional
+  website: text("website"), // optional
   message: text("message").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   // Delivery bookkeeping. The row is the durable record; email is best-effort,
@@ -70,7 +72,13 @@ three fields do not justify adding one.
 |---|---|
 | `name` | required, trimmed, ≤ 100 chars |
 | `email` | required, ≤ 200 chars, must contain a single `@` with text either side and a dot in the domain |
+| `budget` | optional, ≤ 100 chars |
+| `website` | optional, ≤ 200 chars, **no format check** |
 | `message` | required, trimmed, ≤ 5000 chars |
+
+No format check on the website on purpose: `acme.com`, `www.acme.com` and a full
+URL are all reasonable things to type, and guessing which is wrong would reject
+valid input to buy nothing.
 
 Errors return per-field so the form can mark the offending input. Validation runs
 on the server; the client does not gate submission on its own checks.
@@ -119,20 +127,36 @@ Two components, so the client boundary stays as small as it can be:
 Two columns at `≥900px`, form left and panel right; one column below. The form
 column is the wider of the two.
 
-### Floating inputs
+### Fields
 
-No boxes. Each field is a transparent input with a single hairline beneath it, so
-it appears to float on the page rather than sit in a container — consistent with
-the no-chrome approach the About section established directly above.
+Modelled on a Tailwind UI contact layout the site owner supplied as reference.
+The visual design is matched; **Tailwind itself is not introduced** — this is
+CSS Modules, as the project requires.
 
-The label sits inside the empty field and lifts above it on focus or when the
-field has content. This is pure CSS: `placeholder=" "` on the input, then
-`:focus` and `:not(:placeholder-shown)` drive the transition. No JavaScript.
+Labels sit **above** boxed inputs. Short fields pair into two columns at
+`≥560px` and stack below it; the message spans both columns; the submit button
+is full-width and filled.
 
-**Focus visibility needs care precisely because there is no box.** Focus changes
-both the underline colour and the label colour to turquoise; the browser outline
-is not removed without that replacement being clearly visible. The transition is
-disabled under `prefers-reduced-motion`.
+| Field | Required |
+|---|---|
+| Name | yes |
+| Email | yes |
+| Budget | no |
+| Website | no |
+| Message | yes |
+
+Budget and Website are optional by deliberate choice. Requiring a budget
+disqualifies people who genuinely do not know it yet, and the form exists to
+start a conversation rather than qualify a lead. Empty optional fields are
+normalised to `NULL` rather than stored as empty strings.
+
+The reference's "I agree to the privacy policy" line is **not** reproduced —
+this site has no privacy policy, so the link would go nowhere.
+
+Focus replaces the native outline with a turquoise border plus a 3px ring; a 1px
+border change alone is too quiet to be the only focus indicator. The submit
+button uses dark text on pink, not white: white on `#FF2E97` lands around 2.5:1
+and fails contrast, while `#0B0E14` on it clears 8:1.
 
 ### States
 
@@ -155,19 +179,17 @@ Not a testimonial. There are none in the repo, the old site had none, and writin
 one would be fabricated social proof — the same rule `CLAUDE.md` already applies
 to metrics.
 
-Instead, content that is true today: the green "available for work" pill reused
-from `/contact`, a "What happens next" heading, and three numbered rows matching
-the About section's `01/02/03` treatment so the two sections share a visual
-language:
+Instead, a brief statement of what to expect: the green "available for work" pill
+reused from `/contact`, a "What to expect" heading, one short paragraph, and a
+fallback line offering the direct email.
 
-1. Every message is read personally.
-2. A reply within two business days.
-3. Rough scope and budget help but are not required.
-
-Then a fallback line: prefer email? `hello@samklep.dev`.
-
-The two-business-day figure is a commitment the site owner confirmed, not an
+The paragraph covers that messages are read personally, that a reply comes within
+two business days, and that scope and budget help but are not required. The
+two-business-day figure is a commitment the site owner confirmed, not an
 invention.
+
+No surface and no border on this column. The form beside it already carries the
+section's only boxes, and a panel here would compete with them.
 
 ## Retiring `PlaceholderSection`
 
@@ -188,6 +210,7 @@ child of `<main>`, which a future `<Footer />` would silently break.
 | `drizzle/00XX_*.sql` | generated migration, committed |
 | `src/app/actions/contact.ts` | new server action |
 | `src/lib/contactValidation.ts` | new — pure validation, no React or DB imports |
+| `src/lib/contactState.ts` | new — action state type and initial value |
 | `src/components/home/ContactSection.tsx` | new |
 | `src/components/home/ContactSection.module.css` | new |
 | `src/components/home/ContactForm.tsx` | new, client |
@@ -200,6 +223,12 @@ child of `<main>`, which a future `<Footer />` would silently break.
 Validation lives in its own module with no React and no database imports, so it
 can be reasoned about — and later tested — independently of both.
 
+The action state lives in `src/lib/contactState.ts` rather than beside the
+action, because **a `"use server"` module may only export async functions**.
+Exporting a plain `initialContactState` from it fails at runtime with "A 'use
+server' file can only export async functions" — found by testing, not by
+reading.
+
 ## Verification
 
 `npm run build` (type-checks and lints) plus manual checks against a running dev
@@ -208,13 +237,15 @@ server and database:
 | Case | Expected |
 |---|---|
 | Valid submission | row in `contact_submissions`, success state shown |
+| Optional fields blank | row written with `budget` and `website` as **NULL**, not `""` |
+| Optional fields filled | both stored verbatim, including a bare domain |
 | Invalid email | field error, **no row written** |
 | Empty required field | field error, no row |
 | Honeypot filled | success shown, **no row written** |
 | Submitted under 2s | success shown, no row written |
 | `RESEND_API_KEY` unset | row written, `email_error` recorded, no crash |
-| Keyboard only | every field reachable, focus clearly visible without boxes |
-| 375 / 768 / 1024 px | no horizontal overflow |
+| Keyboard only | every field reachable, focus ring clearly visible |
+| 320 / 375 / 559 / 560 / 900 px | no horizontal overflow; fields stack below 560px, pair above it |
 
 The narrow-width check is not optional: `globals.css` sets `overflow-x: hidden`,
 so an overflowing field produces no scrollbar and no visible symptom. Assert

@@ -8,6 +8,24 @@
   padding: 6rem 2rem 8rem;
 }
 
+.header {
+  margin-bottom: 3rem;
+}
+
+.heading {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.intro {
+  margin-top: 1rem;
+  max-width: 38rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 .inner {
   display: grid;
   gap: 3rem;
@@ -16,33 +34,28 @@
 @media (min-width: 900px) {
   .inner {
     /* The form is the point of the section, so it gets the wider column. */
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
     gap: 4rem;
     align-items: start;
   }
 }
 
-.heading {
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 600;
-  color: #ffffff;
+.formColumn {
+  min-width: 0;
 }
 
-.intro {
-  margin-top: 1rem;
-  margin-bottom: 2.5rem;
-  max-width: 34rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.6);
+/* No surface and no border. The fields beside it already carry the section's
+   only boxes, and a second panel would compete with them. */
+.aside {
+  min-width: 0;
 }
 
-/* The one surface in the section. The form beside it is deliberately bare, so
-   the panel reads as a distinct aside rather than a second form. */
-.panel {
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-  background-color: #12161f;
+@media (min-width: 900px) {
+  .aside {
+    /* Aligns the aside's first line with the top of the first input rather
+       than its label, so the two columns read as one row. */
+    padding-top: 0.25rem;
+  }
 }
 
 .status {
@@ -66,44 +79,24 @@
   box-shadow: 0 0 8px rgba(57, 255, 136, 0.8);
 }
 
-/* globals.css puts h3 on the display face, which is right here — this is a real
-   heading, not a label. */
-.panelHeading {
-  margin-top: 1.5rem;
+.asideHeading {
+  margin-top: 1.75rem;
   font-size: 1.125rem;
   font-weight: 600;
   color: #ffffff;
 }
 
-/* Numbered rows matching the About section's 01/02/03 treatment, so the two
-   sections speak the same visual language. */
-.steps {
-  list-style: none;
-  margin-top: 1.25rem;
-}
-
-.step {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.stepNumber {
-  font-family: var(--font-mono, monospace);
-  font-size: 1rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.15);
-}
-
-.stepText {
+.asideText {
+  margin-top: 0.875rem;
   font-size: 0.9375rem;
-  line-height: 1.6;
+  line-height: 1.75;
   color: rgba(255, 255, 255, 0.6);
 }
 
 .fallback {
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-family: var(--font-mono, monospace);
   font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.4);

@@ -114,6 +114,11 @@ export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
+  // Both optional and nullable. Asking for a budget as a hard requirement loses
+  // enquiries from people who genuinely do not know it yet, and the point of
+  // the form is to start a conversation rather than qualify a lead.
+  budget: text("budget"),
+  website: text("website"),
   message: text("message").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()

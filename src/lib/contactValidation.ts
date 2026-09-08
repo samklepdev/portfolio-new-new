@@ -8,6 +8,12 @@
 export type ContactFields = {
   name: string;
   email: string;
+  /** Optional. Empty string is normalised to null before it reaches the DB. */
+  budget: string;
+  /** Optional. Stored as typed — no protocol is prepended and no format is
+   *  enforced, because rejecting an oddly-written URL costs an enquiry and
+   *  buys nothing. */
+  website: string;
   message: string;
 };
 
@@ -16,6 +22,8 @@ export type ContactErrors = Partial<Record<keyof ContactFields, string>>;
 export const LIMITS = {
   name: 100,
   email: 200,
+  budget: 100,
+  website: 200,
   message: 5000,
 } as const;
 
@@ -31,14 +39,20 @@ export type ValidationResult =
   | { ok: true; data: ContactFields }
   | { ok: false; errors: ContactErrors };
 
+const str = (value: unknown) => (typeof value === "string" ? value.trim() : "");
+
 export function validateContact(input: {
   name: unknown;
   email: unknown;
+  budget?: unknown;
+  website?: unknown;
   message: unknown;
 }): ValidationResult {
-  const name = typeof input.name === "string" ? input.name.trim() : "";
-  const email = typeof input.email === "string" ? input.email.trim() : "";
-  const message = typeof input.message === "string" ? input.message.trim() : "";
+  const name = str(input.name);
+  const email = str(input.email);
+  const budget = str(input.budget);
+  const website = str(input.website);
+  const message = str(input.message);
 
   const errors: ContactErrors = {};
 
@@ -56,6 +70,17 @@ export function validateContact(input: {
     errors.email = "That doesn't look like an email address.";
   }
 
+  // Optional fields: only ever too long, never missing. No format check on the
+  // website — "acme.com", "www.acme.com" and a full URL are all fine, and
+  // guessing which is wrong would reject valid input.
+  if (budget.length > LIMITS.budget) {
+    errors.budget = `Please keep this under ${LIMITS.budget} characters.`;
+  }
+
+  if (website.length > LIMITS.website) {
+    errors.website = `Please keep this under ${LIMITS.website} characters.`;
+  }
+
   if (!message) {
     errors.message = "Please add a message.";
   } else if (message.length > LIMITS.message) {
@@ -63,5 +88,5 @@ export function validateContact(input: {
   }
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
-  return { ok: true, data: { name, email, message } };
+  return { ok: true, data: { name, email, budget, website, message } };
 }
