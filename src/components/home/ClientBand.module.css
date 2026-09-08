@@ -41,10 +41,11 @@
   height: var(--logo-height);
 }
 
-/* Sized by height, never by width. The set spans 3.00 (FHA, a wide wordmark) to
-   0.96 (WealthGuard, taller than wide); matching on width would render FHA as a
-   hairline and WealthGuard as a slab. Setting height AND width together also
-   keeps next/image from warning about a single modified dimension.
+/* Sized by height, never by width. The set spans 4.08 (BuildOn, a wide
+   wordmark) to 0.96 (WealthGuard, taller than wide); matching on width would
+   render BuildOn as a hairline and WealthGuard as a slab. Setting height AND
+   width together also keeps next/image from warning about a single modified
+   dimension.
 
    The knockout is what lets twelve brand palettes sit on #0B0E14 without
    becoming a ransom note — they flatten to one white and read as one texture. */
@@ -65,9 +66,16 @@
    colour, and reads as texture rather than as "this is a link".
 
    Hover only — there is no focus state to style, because the logos are not
-   links and must not be made focusable. */
-.logo:hover {
-  opacity: 1;
+   links and must not be made focusable.
+
+   Guarded to real hover devices: iOS Safari applies :hover on tap and holds
+   it until the next tap elsewhere, which would otherwise strand one logo at
+   full opacity and defeat the point of the twelve marks reading as one even
+   texture. */
+@media (hover: hover) {
+  .logo:hover {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 639px) {

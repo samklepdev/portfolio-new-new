@@ -125,7 +125,7 @@ Each logo renders inside a fixed-height box, sized by height and never by width:
 ```
 height: 2.5rem      (1.75rem below 640px)
 width: auto
-max-width: 9rem
+max-width: 10rem
 object-fit: contain
 ```
 
@@ -133,16 +133,30 @@ Sizing by height is the whole trick. The set spans 4.08 (BuildOn, a wide
 wordmark) to 0.96 (WealthGuard, taller than wide); matching on width would render
 BuildOn as a hairline and WealthGuard as a slab.
 
-Height alone is not sufficient either. At equal height a square badge carries far
-more ink than a wordmark and reads as louder. The optional `scale` corrects this
-per logo — roughly `0.85` for the square and near-square marks (Edge196,
-Winfield's, WealthGuard, DeLeon, Becks, Baylor, Gulf Winds), unset for the wide
-ones (BuildOn, Melissa Hawkins, PsycTech, FHA, Ultra Demolition). Values are tuned
-by eye against the rendered band, not computed.
+Height alone is not sufficient either. At a given height, a solid mass of ink
+reads louder than a hairline mark of the same height, whether it sits in a badge
+or a wordmark — shape alone does not predict weight. The optional `scale`
+corrects this per logo, knocking back the heaviest marks: BuildOn (`0.92` — the
+boldest wordmark in the set, and the only one that hit the `max-width` ceiling),
+FHA (`0.85` — the largest unbroken ink mass, a solid house) and DeLeon (`0.85`),
+Becks and WealthGuard (`0.8` each), and Gulf Winds and Edge196 (`0.78` each, the
+two smallest square badges). Hairline marks run unscaled even when square or
+near-square — Baylor's stacked serif and Winfield's monogram are lighter than
+some of the scaled marks even at full size — as do the wide marks that are
+already light on the page: PsycTech, Melissa Hawkins, and Ultra Demolition.
+Values are tuned by eye against the rendered band, not computed.
 
-The container is a centered `flex-wrap` row, `gap: 2.5rem 3.5rem`, tightening to
+The container is a centered `flex-wrap` row, `gap: 2.5rem 4rem`, tightening to
 `2rem 2.5rem` below 640px so the band lands about three marks per row on a phone
 instead of two.
+
+The column gap is load-bearing rather than cosmetic. With a fixed 960px content
+box the band only wraps after the sixth mark if the first row is nearly full, so
+how evenly the rows *can* balance is bounded by how much of the row is
+whitespace — 3.5rem produced a lopsided 919/527 split where 4rem gives 783/713.
+That balance holds at the ≥1024px viewport it was tuned against; between 640px
+and 1024px `flex-wrap` re-breaks the band at widths nobody tuned, which is
+inherent to flex and not worth a grid to fix.
 
 Spacing follows the `PlaceholderSection` convention already established on this
 page: padding on one side of the section only. Every neighbouring section brings

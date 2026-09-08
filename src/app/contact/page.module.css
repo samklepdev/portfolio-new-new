@@ -88,6 +88,7 @@
   position: relative;
   display: flex;
   width: fit-content;
+  max-width: 100%;
   margin: 0 auto;
   align-items: center;
   gap: 0.625rem;
@@ -97,7 +98,24 @@
   font-family: var(--font-mono, monospace);
   font-size: 1rem;
   color: var(--neon-pink, #ff2e97);
+  overflow-wrap: anywhere;
   transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+/* The email token is one unbreakable string, so fit-content floors at its full
+   width. Below ~400px the panel no longer offers enough room for that width
+   at the base padding/font-size, and .panel's overflow: hidden (plus
+   globals.css's overflow-x: hidden on html/body) hides the clip instead of
+   scrolling to it — so this has to be caught here, not left to the fallback
+   above. Smaller padding and type keep the button on one line down to 320px;
+   overflow-wrap: anywhere above is the last-resort safety net if a future
+   change (longer address, wider font) reopens the gap. */
+@media (max-width: 400px) {
+  .cta {
+    gap: 0.3125rem;
+    padding: 0.75rem 0.75rem;
+    font-size: 0.75rem;
+  }
 }
 
 .cta:hover,

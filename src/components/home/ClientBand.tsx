@@ -148,6 +148,7 @@ export function ClientBand() {
               alt={client.name}
               width={client.width}
               height={client.height}
+              sizes="(max-width: 639px) 120px, 160px"
               unoptimized={client.unoptimized}
               // Per-logo optical correction, read by .logo in the CSS module.
               // A custom property is not in CSSProperties, hence the cast.

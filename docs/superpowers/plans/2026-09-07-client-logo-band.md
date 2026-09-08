@@ -345,7 +345,8 @@ Run `npm run dev` and open `http://localhost:3000`. Scroll past the hero to the 
 Pass criteria:
 - All twelve logos render — no broken images, no missing files.
 - Every logo is white/monochrome, not in its brand colours. In particular, no logo renders as a filled white rectangle — that means its source lacks an alpha channel.
-- Hovering one logo restores its full colour.
+- Hovering one logo lifts its opacity (it brightens) while staying knocked
+  out to white — it must not restore the logo's brand colour.
 - The label reads `BUSINESSES I'VE BUILT FOR` in uppercase mono, not in the Space Grotesk display face.
 - The band sits between the About heading and "Selected work".
 - Nothing is clickable — the logos are not links.
