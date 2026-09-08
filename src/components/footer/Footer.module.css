@@ -1,12 +1,18 @@
-/* Pages already end with 6–8rem of their own bottom padding, which supplies the
-   gap above this rule. The footer's own top padding is deliberately modest so
-   the two do not add up to a hole — padding does not collapse the way margins
-   would. */
+/* Full-bleed, so the top rule runs edge to edge like the Header's border-bottom
+   rather than stopping at the content column. */
 .footer {
-  margin: 0 auto;
-  max-width: 64rem;
-  padding: 2.5rem 2rem 3rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Mirrors .nav in Header.module.css — same 78rem cap and 1.5rem gutter, so the
+   footer logo sits directly beneath the header logo.
+   Pages already end with 6–8rem of their own bottom padding, which supplies the
+   gap above the rule. The top padding here is deliberately modest so the two do
+   not add up to a hole — padding does not collapse the way margins would. */
+.container {
+  margin: 0 auto;
+  max-width: 78rem;
+  padding: 2.5rem 1.5rem 3rem;
 }
 
 .inner {

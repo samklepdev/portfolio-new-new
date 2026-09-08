@@ -19,72 +19,77 @@ export function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.inner}>
-        <Link href="/" className={styles.logo} aria-label="Sam Klepper — home">
-          {/* The "-dark" file is the light-artwork variant, i.e. the one meant
-              to sit on a dark background. unoptimized because the optimizer
-              refuses SVG without dangerouslyAllowSVG. */}
-          <Image
-            src="/images/sbk-logo-dark.svg"
-            alt=""
-            width={52}
-            height={38}
-            unoptimized
-          />
-        </Link>
+      {/* The <footer> spans the viewport so its top rule runs edge to edge like
+          the Header's; this container constrains the content to the same 78rem
+          and 1.5rem gutter the Header's nav uses, so the two logos line up. */}
+      <div className={styles.container}>
+        <div className={styles.inner}>
+          <Link href="/" className={styles.logo} aria-label="Sam Klepper — home">
+            {/* The "-dark" file is the light-artwork variant, i.e. the one
+                meant to sit on a dark background. unoptimized because the
+                optimizer refuses SVG without dangerouslyAllowSVG. */}
+            <Image
+              src="/images/sbk-logo-dark.svg"
+              alt=""
+              width={52}
+              height={38}
+              unoptimized
+            />
+          </Link>
 
-        {/* Labelled because the Header already contributes a navigation
-            landmark; two unlabelled ones are indistinguishable to a screen
-            reader. */}
-        <nav className={styles.nav} aria-label="Footer">
-          <ul className={styles.links}>
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className={styles.link}>
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {/* Icon-only. The label moves into visually-hidden text rather than
-              disappearing: without it these links would have no accessible
-              name at all, since the marks themselves are aria-hidden. */}
-          <ul className={styles.iconLinks}>
-            {SOCIAL_LINKS.map((link) => {
-              // Paired by id rather than by label, which is copy and may change.
-              const Icon = SOCIAL_ICONS[link.id];
-              return (
+          {/* Labelled because the Header already contributes a navigation
+              landmark; two unlabelled ones are indistinguishable to a screen
+              reader. */}
+          <nav className={styles.nav} aria-label="Footer">
+            <ul className={styles.links}>
+              {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a
-                    className={styles.iconLink}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Icon className={styles.icon} />
-                    <span className={styles.srOnly}>{link.label}</span>
-                  </a>
+                  <Link href={link.href} className={styles.link}>
+                    {link.label}
+                  </Link>
                 </li>
-              );
-            })}
-            <li>
-              <a className={styles.iconLink} href={RESUME_URL} download>
-                <DownloadIcon className={styles.icon} />
-                <span className={styles.srOnly}>Resume</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+              ))}
+            </ul>
 
-      <div className={styles.baseline}>
-        <p className={styles.copyright}>
-          &copy; {year} SbK. All rights reserved.
-        </p>
-        <a className={styles.email} href={`mailto:${EMAIL}`}>
-          {EMAIL}
-        </a>
+            {/* Icon-only. The label moves into visually-hidden text rather than
+                disappearing: without it these links would have no accessible
+                name at all, since the marks themselves are aria-hidden. */}
+            <ul className={styles.iconLinks}>
+              {SOCIAL_LINKS.map((link) => {
+                // Paired by id, not label — the label is copy and may change.
+                const Icon = SOCIAL_ICONS[link.id];
+                return (
+                  <li key={link.href}>
+                    <a
+                      className={styles.iconLink}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Icon className={styles.icon} />
+                      <span className={styles.srOnly}>{link.label}</span>
+                    </a>
+                  </li>
+                );
+              })}
+              <li>
+                <a className={styles.iconLink} href={RESUME_URL} download>
+                  <DownloadIcon className={styles.icon} />
+                  <span className={styles.srOnly}>Resume</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <div className={styles.baseline}>
+          <p className={styles.copyright}>
+            &copy; {year} SbK. All rights reserved.
+          </p>
+          <a className={styles.email} href={`mailto:${EMAIL}`}>
+            {EMAIL}
+          </a>
+        </div>
       </div>
     </footer>
   );
