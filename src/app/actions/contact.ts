@@ -8,8 +8,6 @@ import { validateContact } from "@/lib/contactValidation";
 import type { ContactState } from "@/lib/contactState";
 import { EMAIL } from "@/lib/siteLinks";
 
-const MIN_FILL_MS = 2000;
-
 async function notify(row: {
   id: number;
   name: string;
@@ -58,12 +56,12 @@ export async function submitContact(
     message: String(formData.get("message") ?? ""),
   };
 
-  const honeypot = String(formData.get("company") ?? "").trim();
-  if (honeypot) return { status: "success" };
-
-  const renderedAt = Number(formData.get("renderedAt"));
-  if (Number.isFinite(renderedAt) && renderedAt > 0) {
-    if (Date.now() - renderedAt < MIN_FILL_MS) return { status: "success" };
+  const honeypot = String(formData.get("referralCode") ?? "").trim();
+  if (honeypot) {
+    console.warn("contact: honeypot tripped, dropping submission", {
+      email: values.email,
+    });
+    return { status: "success" };
   }
 
   const result = validateContact(values);

@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { submitContact } from "@/app/actions/contact";
 import { initialContactState } from "@/lib/contactState";
 import { LIMITS } from "@/lib/contactValidation";
 import styles from "./ContactForm.module.css";
+import { toast } from "react-toastify";
 
 type FieldProps = {
   name: string;
@@ -66,39 +67,29 @@ function Field({
   );
 }
 
-type ContactFormProps = {
-  renderedAt: number;
-};
-
-export function ContactForm({ renderedAt }: ContactFormProps) {
+export function ContactForm() {
+  const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, pending] = useActionState(
     submitContact,
     initialContactState
   );
 
-  if (state.status === "success") {
-    return (
-      <div className={styles.success} role="status">
-        <p className={styles.successTitle}>
-          <span className={styles.successDot} aria-hidden="true" />
-          Message received
-        </p>
-        <p className={styles.successText}>
-          Thanks &mdash; I&rsquo;ll get back to you within two business days.
-        </p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (state.status === "success") {
+      toast.success(
+        "Message received — I’ll get back to you within two business days."
+      );
+      formRef.current?.reset();
+    }
+  }, [state]);
 
   return (
-    <form action={formAction} className={styles.form} noValidate>
-      <input type="hidden" name="renderedAt" value={renderedAt} />
-
+    <form ref={formRef} action={formAction} className={styles.form} noValidate>
       <div className={styles.honeypot} aria-hidden="true">
-        <label htmlFor="contact-company">Company</label>
+        <label htmlFor="contact-referral">Referral code</label>
         <input
-          id="contact-company"
-          name="company"
+          id="contact-referral"
+          name="referralCode"
           type="text"
           tabIndex={-1}
           autoComplete="off"

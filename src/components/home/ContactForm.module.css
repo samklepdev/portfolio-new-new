@@ -124,38 +124,6 @@
   cursor: progress;
 }
 
-.success {
-  padding: 2rem;
-  border: 1px solid rgba(57, 255, 136, 0.28);
-  border-radius: 0.75rem;
-  background-color: #12161f;
-}
-
-.successTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.875rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--neon-green, #39ff88);
-}
-
-.successDot {
-  width: 0.4375rem;
-  height: 0.4375rem;
-  border-radius: 50%;
-  background-color: var(--neon-green, #39ff88);
-  box-shadow: 0 0 8px rgba(57, 255, 136, 0.8);
-}
-
-.successText {
-  margin-top: 0.75rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.6);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .input,
   .submit {

@@ -14,8 +14,6 @@ const TESTIMONIAL = {
 };
 
 export function ContactSection() {
-  const renderedAt = Date.now();
-
   return (
     <section
       className={styles.section}
@@ -34,7 +32,7 @@ export function ContactSection() {
 
       <div className={styles.inner}>
         <div className={styles.formColumn}>
-          <ContactForm renderedAt={renderedAt} />
+          <ContactForm />
         </div>
 
         <aside className={styles.aside}>

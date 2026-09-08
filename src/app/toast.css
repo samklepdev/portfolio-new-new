@@ -1,0 +1,137 @@
+/* Toast chrome. Global, not a CSS Module, because these are react-toastify's own
+   class names. Every value here is borrowed from an existing surface: the hairline
+   border and glowing dot come from the "Available for work" pill in ContactSection,
+   the radius and focus glow from the contact form's inputs and submit button. */
+
+.Toastify {
+  --toastify-toast-width: 22rem;
+  --toastify-toast-shadow: none;
+  --toastify-font-family: var(--font-sans), system-ui, sans-serif;
+  --toastify-z-index: 60;
+}
+
+.Toastify .Toastify__toast {
+  /* Accent per status. Green is reserved for status indicators system-wide, and a
+     delivery confirmation is one. Turquoise is the neutral default. */
+  --toast-accent: var(--neon-turquoise, #00f0ff);
+  --toast-line: rgba(0, 240, 255, 0.28);
+  --toast-glow: rgba(0, 240, 255, 0.8);
+  --toast-ambient: rgba(0, 240, 255, 0.14);
+
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 0;
+  /* Extra right padding keeps the message clear of the absolutely-positioned close button. */
+  padding: 1rem 2.25rem 1rem 1.125rem;
+  border: 1px solid var(--toast-line);
+  border-radius: 0.5rem;
+  background-color: #12161f;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 32px var(--toast-ambient), 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.Toastify .Toastify__toast--success {
+  --toast-accent: var(--neon-green, #39ff88);
+  --toast-line: rgba(57, 255, 136, 0.28);
+  --toast-glow: rgba(57, 255, 136, 0.8);
+  --toast-ambient: rgba(57, 255, 136, 0.14);
+}
+
+.Toastify .Toastify__toast--error {
+  --toast-accent: var(--neon-pink, #ff2e97);
+  --toast-line: rgba(255, 46, 151, 0.28);
+  --toast-glow: rgba(255, 46, 151, 0.8);
+  --toast-ambient: rgba(255, 46, 151, 0.14);
+}
+
+/* The status dot replaces the stock icon: same 7px dot and glow as the
+   "Available for work" pill, so a toast reads as part of the same family. */
+.Toastify .Toastify__toast-icon {
+  flex: 0 0 auto;
+  width: auto;
+  margin: 0;
+}
+
+.Toastify .Toastify__toast-icon svg {
+  display: none;
+}
+
+.Toastify .Toastify__toast-icon::after {
+  content: "";
+  display: block;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background-color: var(--toast-accent);
+  box-shadow: 0 0 8px var(--toast-glow);
+}
+
+/* Quiet enough that the status dot stays the brightest thing in the toast. */
+.Toastify .Toastify__close-button {
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+  transition: color 180ms ease;
+}
+
+.Toastify .Toastify__close-button > svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.Toastify .Toastify__close-button:hover,
+.Toastify .Toastify__close-button:focus-visible {
+  color: var(--toast-accent);
+}
+
+.Toastify .Toastify__close-button:focus-visible {
+  outline: 1px solid var(--toast-accent);
+  outline-offset: 2px;
+}
+
+/* A hairline on the bottom edge rather than the stock 5px slab — one accent mass
+   per toast, and it matches the border weight. */
+.Toastify .Toastify__progress-bar--wrp {
+  height: 1px;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.Toastify .Toastify__progress-bar--bg {
+  background-color: rgba(255, 255, 255, 0.06);
+  opacity: 1;
+}
+
+.Toastify .Toastify__progress-bar {
+  background: var(--toast-accent);
+  opacity: 0.45;
+}
+
+/* The library goes edge-to-edge and square below 480px. Keep it a card — everything
+   else on the site reads as a card floating on the dark field. */
+@media only screen and (max-width: 480px) {
+  .Toastify .Toastify__toast-container {
+    width: 100vw;
+    padding: 0.75rem;
+  }
+
+  .Toastify .Toastify__toast {
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Toastify .Toastify__toast,
+  .Toastify .Toastify__toast-icon {
+    animation: none !important;
+  }
+
+  .Toastify .Toastify__close-button {
+    transition: none;
+  }
+}
