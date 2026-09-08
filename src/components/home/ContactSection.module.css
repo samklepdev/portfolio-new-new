@@ -79,18 +79,55 @@
   box-shadow: 0 0 8px rgba(57, 255, 136, 0.8);
 }
 
-.asideHeading {
+.testimonial {
   margin-top: 1.75rem;
-  font-size: 1.125rem;
+}
+
+/* Same knockout as the client band: a client's brand colours would otherwise
+   compete with the page's own accent. Sized larger and brighter than in the
+   band, though — there it is background texture in a row of twelve, here it is
+   a single focal mark, and DeLeon's seal carries fine detail that turns to mud
+   at band size. */
+.testimonialLogo {
+  height: 3.25rem;
+  width: auto;
+  max-width: 10rem;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+.rating {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.quote {
+  margin-top: 0.75rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.attribution {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-top: 1.25rem;
+}
+
+.attributionName {
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #ffffff;
 }
 
-.asideText {
-  margin-top: 0.875rem;
-  font-size: 0.9375rem;
-  line-height: 1.75;
-  color: rgba(255, 255, 255, 0.6);
+.attributionRole {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .fallback {

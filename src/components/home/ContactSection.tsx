@@ -1,7 +1,26 @@
+import Image from "next/image";
 import { ContactForm } from "./ContactForm";
 import styles from "./ContactSection.module.css";
 
 const EMAIL = "hello@samklep.dev";
+
+/**
+ * A real client testimonial from the old samklep.dev, quoted verbatim.
+ *
+ * The other one on record — Xavier Chavaria, Owner/Operator, Ultra Demolition —
+ * is kept in the design spec. Swapping is a matter of changing this constant and
+ * the logo beside it; do not paraphrase either, and do not add a portrait, since
+ * no photograph of either person exists here.
+ */
+const TESTIMONIAL = {
+  quote:
+    "I approached Sam with only a rough idea in mind and he helped me bring my idea to fruition. Sam helped with a logo, unique design & functional contact forms to keep up with customer demands.",
+  name: "Martha DeLeon",
+  title: "CEO",
+  company: "DeLeon Safety Solutions",
+  rating: 5,
+  logo: { src: "/images/logos/dss-logo.png", width: 400, height: 340 },
+};
 
 export function ContactSection() {
   // Rendered on the server so the "submitted impossibly fast" check still works
@@ -31,24 +50,44 @@ export function ContactSection() {
           <ContactForm renderedAt={renderedAt} />
         </div>
 
-        {/* Not a testimonial. There are none in the repo and the old site had
-            none; writing one would be fabricated social proof. This says what
-            is true instead, which does the same job — it lowers the cost of
-            sending the first message. */}
         <aside className={styles.aside}>
           <p className={styles.status}>
             <span className={styles.statusDot} aria-hidden="true" />
             Available for work
           </p>
 
-          <h3 className={styles.asideHeading}>What to expect</h3>
+          <figure className={styles.testimonial}>
+            {/* Knocked back to one white like the logo band, so a client's brand
+                colours do not compete with the page's own accent. */}
+            <Image
+              className={styles.testimonialLogo}
+              src={TESTIMONIAL.logo.src}
+              alt={TESTIMONIAL.company}
+              width={TESTIMONIAL.logo.width}
+              height={TESTIMONIAL.logo.height}
+              sizes="140px"
+            />
 
-          <p className={styles.asideText}>
-            Every message reaches me directly &mdash; no inbox filter, no
-            assistant. You&rsquo;ll hear back within two business days, usually
-            sooner. A rough budget and timeline help, but nothing is required to
-            start a conversation.
-          </p>
+            <p
+              className={styles.rating}
+              aria-label={`${TESTIMONIAL.rating} out of 5 stars`}
+            >
+              <span aria-hidden="true">
+                {"★".repeat(TESTIMONIAL.rating)}
+              </span>
+            </p>
+
+            <blockquote className={styles.quote}>
+              <p>&ldquo;{TESTIMONIAL.quote}&rdquo;</p>
+            </blockquote>
+
+            <figcaption className={styles.attribution}>
+              <span className={styles.attributionName}>{TESTIMONIAL.name}</span>
+              <span className={styles.attributionRole}>
+                {TESTIMONIAL.title}, {TESTIMONIAL.company}
+              </span>
+            </figcaption>
+          </figure>
 
           <p className={styles.fallback}>
             Prefer email?{" "}

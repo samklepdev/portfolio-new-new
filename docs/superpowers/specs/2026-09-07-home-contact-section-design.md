@@ -1,7 +1,7 @@
 # Home-page Contact section — design
 
 Replaces the Contact `PlaceholderSection` stub with a working contact form on the
-left and a brief statement of what to expect on the right.
+left and a real client testimonial on the right.
 
 This is the first section on the site with a backend. Everything before it was
 static markup; this one writes to Postgres and sends mail.
@@ -173,20 +173,43 @@ text; they never appear in the same position, so the overlap is not ambiguous in
 practice. Naming it here so it is a recorded decision rather than a silent
 overload.
 
-### Right-hand panel
+### Right-hand column
 
-Not a testimonial. There are none in the repo, the old site had none, and writing
-one would be fabricated social proof — the same rule `CLAUDE.md` already applies
-to metrics.
+The green "available for work" pill reused from `/contact`, a real client
+testimonial, and a fallback line offering the direct email.
 
-Instead, a brief statement of what to expect: the green "available for work" pill
-reused from `/contact`, a "What to expect" heading, one short paragraph, and a
-fallback line offering the direct email.
+**The testimonials are real and quoted verbatim.** They come from the old
+samklep.dev and were supplied by the site owner. Nothing here is written or
+paraphrased — an invented or reworded quote attributed to a named person is
+fabricated social proof, which is the same rule `CLAUDE.md` applies to metrics,
+only with someone else's name attached.
 
-The paragraph covers that messages are read personally, that a reply comes within
-two business days, and that scope and budget help but are not required. The
-two-business-day figure is a commitment the site owner confirmed, not an
-invention.
+Currently shown:
+
+> "I approached Sam with only a rough idea in mind and he helped me bring my idea
+> to fruition. Sam helped with a logo, unique design & functional contact forms
+> to keep up with customer demands."
+>
+> — Martha DeLeon, CEO, DeLeon Safety Solutions. 5 out of 5 stars.
+
+Also on record, kept here so it is not lost. Swapping is a matter of changing the
+`TESTIMONIAL` constant and the logo path beside it:
+
+> "When we needed a website fast, Sam delivered what we needed in the time we
+> needed it. From start to finish, all the features we needed to manage our
+> social media presence were met."
+>
+> — Xavier Chavaria, Owner/Operator, Ultra Demolition. 5 out of 5 stars.
+
+**No portrait.** The layout this was modelled on pairs each quote with a
+photograph of the speaker. No photograph of either person exists in this repo,
+and substituting a stock face for a real named client would misrepresent them.
+The company logo carries the visual weight instead — knocked back to one white
+with the same treatment as the client band, so a client's brand colours do not
+compete with the page's accent.
+
+The rating renders as five star glyphs with an `aria-label` carrying "5 out of 5
+stars", so it is not decoration-only to a screen reader.
 
 No surface and no border on this column. The form beside it already carries the
 section's only boxes, and a panel here would compete with them.
