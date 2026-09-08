@@ -1,8 +1,12 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/footer/Footer";
 import { Header } from "@/components/header/Header";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import "./toast.css";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -41,6 +45,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <ToastContainer theme="dark" position="bottom-right" />
       </body>
     </html>
   );
