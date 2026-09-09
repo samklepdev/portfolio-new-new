@@ -44,6 +44,7 @@ export function ContactSection() {
 
             <p
               className={styles.rating}
+              role="img"
               aria-label={`${TESTIMONIAL.rating} out of 5 stars`}
             >
               <span aria-hidden="true">

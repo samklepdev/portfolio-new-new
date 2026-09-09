@@ -5,9 +5,10 @@ export type Testimonial = {
   title: string;
   company: string;
   /**
-   * Out of 5. Rendered as stars on the home page only — `/about` shows the
-   * quotes unadorned, where two five-star ratings would read as decoration
-   * rather than information.
+   * Out of 5. Always rendered as stars right beside its quote, never on its
+   * own — the previous version of this site showed a bare "5 out of 5
+   * stars" while the actual quotes were hidden behind a tab. No aggregate
+   * rating badge belongs anywhere on the site.
    */
   rating: number;
   logo: { src: string; width: number; height: number };

@@ -9,6 +9,7 @@ export function Testimonials() {
         <figure key={testimonial.id} className={styles.card}>
           <p
             className={styles.rating}
+            role="img"
             aria-label={`${testimonial.rating} out of 5 stars`}
           >
             <span aria-hidden="true">{"★".repeat(testimonial.rating)}</span>
