@@ -1,18 +1,11 @@
 import Image from "next/image";
 import { EMAIL } from "@/lib/siteLinks";
 import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
+import { getTestimonial } from "@/lib/testimonials";
 import { ContactForm } from "./ContactForm";
 import styles from "./ContactSection.module.css";
 
-const TESTIMONIAL = {
-  quote:
-    "I approached Sam with only a rough idea in mind and he helped me bring my idea to fruition. Sam helped with a logo, unique design & functional contact forms to keep up with customer demands.",
-  name: "Martha DeLeon",
-  title: "CEO",
-  company: "DeLeon Safety Solutions",
-  rating: 5,
-  logo: { src: "/images/logos/dss-logo.png", width: 400, height: 340 },
-};
+const TESTIMONIAL = getTestimonial("deleon");
 
 export function ContactSection() {
   return (
@@ -48,15 +41,6 @@ export function ContactSection() {
               height={TESTIMONIAL.logo.height}
               sizes="140px"
             />
-
-            <p
-              className={styles.rating}
-              aria-label={`${TESTIMONIAL.rating} out of 5 stars`}
-            >
-              <span aria-hidden="true">
-                {"★".repeat(TESTIMONIAL.rating)}
-              </span>
-            </p>
 
             <blockquote className={styles.quote}>
               <p>&ldquo;{TESTIMONIAL.quote}&rdquo;</p>
