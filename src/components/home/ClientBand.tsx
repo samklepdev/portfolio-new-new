@@ -97,31 +97,33 @@ const CLIENTS: ClientLogo[] = [
 
 export function ClientBand() {
   return (
-    <section className={styles.section} aria-labelledby="clients-heading">
-      <h2 id="clients-heading" className={styles.heading}>
-        Businesses I&rsquo;ve built for
-      </h2>
+    <div className={styles.riser}>
+      <section className={styles.section} aria-labelledby="clients-heading">
+        <h2 id="clients-heading" className={styles.heading}>
+          Businesses I&rsquo;ve built for
+        </h2>
 
-      <ul className={styles.list}>
-        {CLIENTS.map((client) => (
-          <li key={client.src} className={styles.item}>
-            <Image
-              className={styles.logo}
-              src={client.src}
-              alt={client.name}
-              width={client.width}
-              height={client.height}
-              sizes="(max-width: 639px) 120px, 160px"
-              unoptimized={client.unoptimized}
-              style={
-                client.scale
-                  ? ({ "--logo-scale": client.scale } as CSSProperties)
-                  : undefined
-              }
-            />
-          </li>
-        ))}
-      </ul>
-    </section>
+        <ul className={styles.list}>
+          {CLIENTS.map((client) => (
+            <li key={client.src} className={styles.item}>
+              <Image
+                className={styles.logo}
+                src={client.src}
+                alt={client.name}
+                width={client.width}
+                height={client.height}
+                sizes="(max-width: 639px) 120px, 160px"
+                unoptimized={client.unoptimized}
+                style={
+                  client.scale
+                    ? ({ "--logo-scale": client.scale } as CSSProperties)
+                    : undefined
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
   );
 }
