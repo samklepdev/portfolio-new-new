@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EMAIL, RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
+import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -21,10 +22,7 @@ export default function ContactPage() {
       </p>
 
       <div className={styles.panel}>
-        <p className={styles.status}>
-          <span className={styles.statusDot} aria-hidden="true" />
-          Available for work
-        </p>
+        <AvailabilityStatus className={styles.status} />
 
         <a className={styles.cta} href={`mailto:${EMAIL}`}>
           {EMAIL}

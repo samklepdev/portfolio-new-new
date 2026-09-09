@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { EMAIL } from "@/lib/siteLinks";
+import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
 import { ContactForm } from "./ContactForm";
 import styles from "./ContactSection.module.css";
 
@@ -36,10 +37,7 @@ export function ContactSection() {
         </div>
 
         <aside className={styles.aside}>
-          <p className={styles.status}>
-            <span className={styles.statusDot} aria-hidden="true" />
-            Available for work
-          </p>
+          <AvailabilityStatus />
 
           <figure className={styles.testimonial}>
             <Image
