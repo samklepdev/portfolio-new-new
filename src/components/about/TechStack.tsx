@@ -20,7 +20,7 @@ export function TechStack() {
         <div key={group.label} className={styles.group}>
           <dt className={styles.label}>{group.label}</dt>
           <dd>
-            <ul className={styles.chips}>
+            <ul className={styles.chips} role="list">
               {group.items.map((item) => (
                 <li key={item} className={styles.chip}>
                   {item}

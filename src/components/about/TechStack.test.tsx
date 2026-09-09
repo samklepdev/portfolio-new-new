@@ -1,12 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import { TechStack } from "@/components/about/TechStack";
 
-describe("TechStack", () => {
-  it("renders all fifteen technologies", () => {
-    const { container } = render(<TechStack />);
-    expect(container.querySelectorAll("dd li")).toHaveLength(15);
-  });
+const EXPECTED: Record<string, readonly string[]> = {
+  Languages: ["TypeScript", "JavaScript", "C#", "HTML", "CSS"],
+  Frontend: ["React", "Next.js", "Redux"],
+  Backend: ["Node.js", "Express", ".NET"],
+  Data: ["PostgreSQL", "MongoDB"],
+  Tooling: ["Git", "Heroku"],
+};
 
+describe("TechStack", () => {
   it("groups them under five headings", () => {
     render(<TechStack />);
     for (const group of [
@@ -20,11 +23,26 @@ describe("TechStack", () => {
     }
   });
 
-  it("names the technologies the spec lists", () => {
-    render(<TechStack />);
-    for (const tech of ["TypeScript", "React", "Next.js", "C#", ".NET", "PostgreSQL"]) {
-      expect(screen.getByText(tech)).toBeInTheDocument();
+  it("maps each group to its exact set of technologies, in order", () => {
+    const { container } = render(<TechStack />);
+    const groupEls = container.querySelectorAll("dl > div");
+
+    const actual: Record<string, string[]> = {};
+    let total = 0;
+    for (const groupEl of groupEls) {
+      const label = groupEl.querySelector("dt")?.textContent ?? "";
+      const items = Array.from(groupEl.querySelectorAll("dd li")).map(
+        (li) => li.textContent ?? "",
+      );
+      actual[label] = items;
+      total += items.length;
     }
+
+    expect(Object.keys(actual)).toEqual(Object.keys(EXPECTED));
+    for (const [label, items] of Object.entries(EXPECTED)) {
+      expect(actual[label]).toEqual(items);
+    }
+    expect(total).toBe(15);
   });
 
   it("renders no images", () => {

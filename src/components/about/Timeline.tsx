@@ -32,7 +32,7 @@ const ROLES: readonly Role[] = [
 
 export function Timeline() {
   return (
-    <ol className={styles.list}>
+    <ol className={styles.list} role="list">
       {ROLES.map((role) => (
         <li key={role.employer} className={styles.item}>
           <span className={styles.node} aria-hidden="true" />
