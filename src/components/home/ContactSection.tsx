@@ -42,6 +42,15 @@ export function ContactSection() {
               sizes="140px"
             />
 
+            <p
+              className={styles.rating}
+              aria-label={`${TESTIMONIAL.rating} out of 5 stars`}
+            >
+              <span aria-hidden="true">
+                {"★".repeat(TESTIMONIAL.rating)}
+              </span>
+            </p>
+
             <blockquote className={styles.quote}>
               <p>&ldquo;{TESTIMONIAL.quote}&rdquo;</p>
             </blockquote>

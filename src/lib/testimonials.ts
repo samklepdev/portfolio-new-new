@@ -4,6 +4,12 @@ export type Testimonial = {
   name: string;
   title: string;
   company: string;
+  /**
+   * Out of 5. Rendered as stars on the home page only — `/about` shows the
+   * quotes unadorned, where two five-star ratings would read as decoration
+   * rather than information.
+   */
+  rating: number;
   logo: { src: string; width: number; height: number };
 };
 
@@ -15,6 +21,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     name: "Xavier Chavaria",
     title: "Owner/Operator",
     company: "Ultra Demolition",
+    rating: 5,
     logo: { src: "/images/logos/ud.png", width: 185, height: 111 },
   },
   {
@@ -24,6 +31,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     name: "Martha DeLeon",
     title: "CEO",
     company: "DeLeon Safety Solutions",
+    rating: 5,
     logo: { src: "/images/logos/dss-logo.png", width: 400, height: 340 },
   },
 ] as const;

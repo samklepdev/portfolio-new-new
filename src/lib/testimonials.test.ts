@@ -23,9 +23,11 @@ describe("testimonials", () => {
     expect(() => getTestimonial("nope")).toThrow();
   });
 
-  it("carries no rating field", () => {
+  it("carries a rating in range for the home page star row", () => {
     for (const testimonial of TESTIMONIALS) {
-      expect(testimonial).not.toHaveProperty("rating");
+      expect(testimonial.rating).toBeGreaterThanOrEqual(1);
+      expect(testimonial.rating).toBeLessThanOrEqual(5);
+      expect(Number.isInteger(testimonial.rating)).toBe(true);
     }
   });
 });
