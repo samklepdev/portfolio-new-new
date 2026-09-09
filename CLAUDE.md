@@ -169,6 +169,11 @@ spreads; that throws "not iterable". It can collapse once the project is on
     and ~304px wide, so a width-relative field renders the same rings at ~13px and ~6px
     spacing — the four boxes visibly disagree. Do not "simplify" it back to a percentage
     width; it looks equivalent on a uniform grid and breaks the moment spans differ.
+  - `.card::after` is a card-relative horizontal fade, and it is not decoration. The ring
+    field's own radial mask fades relative to the 624px field, so narrow cards would cut
+    the rings off hard at their edges while wide cards faded. This gradient's stops are
+    percentages of *card* width, so both spans fade identically. It is
+    `pointer-events: none` and sits below `.body`'s `z-index: 1`.
   See `docs/superpowers/specs/2026-09-08-home-services-section-design.md` for the section
   and `docs/superpowers/specs/2026-09-08-home-services-bento-design.md` for the bento.
 

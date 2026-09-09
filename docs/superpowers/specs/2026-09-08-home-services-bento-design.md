@@ -110,6 +110,33 @@ existing radial mask.
 Do not restore a width-relative size here. It looks equivalent on a uniform grid
 and silently breaks the moment spans differ.
 
+### And the edge fade must be card-relative
+
+Fixing the spacing moves the inconsistency rather than removing it. `.rings` carries
+its own radial mask, but that mask fades relative to the **field**, not the card. A
+632px card reveals almost all of the 624px field and reaches near-zero alpha at its
+edge; a 304px card reveals only the middle, where alpha is still ~0.66, so the rings
+are cut off hard at both sides. No single fade radius fixes both — the half-widths
+differ by 2x.
+
+`.card::after` therefore carries a horizontal gradient to the card background, with
+its stops expressed as **percentages of card width**, so the fade is proportional and
+identical at any span:
+
+```css
+background: linear-gradient(
+  to right,
+  #12161f 0%,
+  rgba(18, 22, 31, 0) 14%,
+  rgba(18, 22, 31, 0) 86%,
+  #12161f 100%
+);
+```
+
+It is `pointer-events: none` so it cannot intercept the card hover, and it sits at
+`z-index: 0` — above `.graphic` in tree order, below `.body`'s `z-index: 1` — so it
+veils the rings without touching the copy.
+
 ## Accepted costs
 
 Four ring fields is 168 animated SVG circles, up from 84. Hover still animates
