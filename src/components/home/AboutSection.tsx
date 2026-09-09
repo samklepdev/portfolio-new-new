@@ -37,13 +37,13 @@ export function AboutSection() {
 
         <div className={styles.content}>
           <h2 id="about-heading" className={styles.heading}>
-            What I do
+            How I work
           </h2>
 
           <p className={styles.intro}>
-            Knowing what it takes to get your business online is half the
-            battle. From responsive layout to SEO optimization, social media to
-            Google Analytics &mdash; I&rsquo;ve got you covered.
+            Every project runs the same way: understand the business first, then
+            build only what serves it. No templates dressed up as custom work,
+            and nothing you&rsquo;ll need a developer to update.
           </p>
 
           <ol className={styles.list}>

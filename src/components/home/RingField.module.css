@@ -1,0 +1,75 @@
+.field {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+/* Sized off the graphic's height, never its width. The graphic slot is 13rem in
+   every card, but bento spans make cards 632px and 304px wide — a width-relative
+   field would render the same rings at ~13px and ~6px spacing in the two sizes.
+   One fixed square keeps one scale everywhere; wide cards just reveal more of it.
+   39rem is 3x the 13rem graphic slot — if that slot changes, change this to match.
+   Stated explicitly rather than as height:300% + width:auto + aspect-ratio:1, because
+   that form leans on aspect-ratio filling an auto axis, which is untested here outside
+   Chrome and silently reverts to the width-relative bug if width ever resolves. */
+.rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 39rem;
+  width: 39rem;
+  transform: translate(-50%, -50%);
+  mask-image:
+    linear-gradient(to bottom, #000 90%, transparent),
+    radial-gradient(circle, #000 0%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 90%, transparent),
+    radial-gradient(circle, #000 0%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+
+.ring {
+  stroke: var(--neon-turquoise, #00f0ff);
+  stroke-opacity: 0.15;
+  transform-box: view-box;
+  transform-origin: 250px 250px;
+  animation-name: var(--ring-animation, none);
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: calc(var(--i) * 50ms);
+}
+
+/* The ripple keyframes deliberately live in ServicesSection.module.css, not here.
+   The hover target (.card) is in that file and hands the animation over through
+   --ring-animation, switching between the keyframe name and `none` so the rings
+   drop back to rest on mouse-out instead of freezing mid-ripple.
+   css-loader scopes @keyframes names AND the value of --ring-animation into the
+   namespace of whichever file declares them, so the two only resolve to the same
+   identifier when they are declared together. Defining the keyframes here and
+   referencing them from there silently emits no keyframes at all — the build
+   still succeeds and the animation just never runs. Keep them co-located. */
+
+.core {
+  position: relative;
+  z-index: 1;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 240, 255, 0.25) 0%,
+    rgba(0, 240, 255, 0.04) 70%
+  );
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation-name: none;
+  }
+}

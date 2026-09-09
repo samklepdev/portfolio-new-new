@@ -1,0 +1,134 @@
+.section {
+  padding: 6rem 0 0;
+}
+
+.inner {
+  margin: 0 auto;
+  max-width: 64rem;
+  padding: 0 2rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.heading {
+  margin-top: 0.75rem;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  list-style: none;
+}
+
+/* Spans apply only above the breakpoint. Below it every card is full width, so
+   .wide and .narrow must not resolve to a grid-column at all. */
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .wide {
+    grid-column: span 4;
+  }
+
+  .narrow {
+    grid-column: span 2;
+  }
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background-color: #12161f;
+  transition: border-color 240ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: rgba(0, 240, 255, 0.28);
+    --ring-animation: serviceRingRipple;
+  }
+}
+
+/* Consumed by .ring in RingField.module.css via the --ring-animation handoff
+   above. Declared here on purpose — see the note in RingField.module.css. */
+@keyframes serviceRingRipple {
+  0% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
+  18.75% {
+    transform: scale(1.08);
+    stroke-opacity: 0.4;
+  }
+  37.5% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
+  100% {
+    transform: scale(1);
+    stroke-opacity: 0.15;
+  }
+}
+
+/* Card-relative edge fade. The ring field is a fixed 624px square, so its own radial
+   mask fades relative to the field, not the card — a 632px card reveals almost all of
+   it and fades out by its edge, while a 304px card reveals only the middle and would
+   cut the rings off hard. This gradient is a percentage of card width, so both spans
+   fade identically. It sits above .graphic and below .body (z-index: 1), so it veils
+   the rings without touching the copy. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    #12161f 0%,
+    rgba(18, 22, 31, 0) 14%,
+    rgba(18, 22, 31, 0) 86%,
+    #12161f 100%
+  );
+}
+
+.graphic {
+  position: relative;
+  height: 13rem;
+}
+
+.body {
+  position: relative;
+  z-index: 1;
+  padding: 0 1.75rem 1.75rem;
+}
+
+.cardTitle {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.cardText {
+  margin-top: 0.625rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

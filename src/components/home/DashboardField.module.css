@@ -1,0 +1,73 @@
+.field {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1.75rem;
+}
+
+.tiles {
+  display: flex;
+  gap: 0.625rem;
+  width: 100%;
+  max-width: 21rem;
+}
+
+.tile {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.4375rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid rgba(0, 240, 255, 0.16);
+  border-radius: 0.375rem;
+  background-color: rgba(0, 240, 255, 0.03);
+}
+
+.tileLabel {
+  width: 42%;
+  height: 0.25rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.tileValue {
+  height: 0.4375rem;
+  border-radius: 999px;
+  background-color: rgba(0, 240, 255, 0.3);
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.3125rem;
+  width: 100%;
+  max-width: 21rem;
+  height: 3.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid rgba(0, 240, 255, 0.16);
+  border-radius: 0.375rem;
+  background-color: rgba(0, 240, 255, 0.03);
+}
+
+.bar {
+  flex: 1;
+  height: var(--h);
+  border-radius: 1px;
+  background-color: rgba(0, 240, 255, 0.22);
+}
+
+/* One bar carries the accent, the way the ring field has a single lit core —
+   it gives the chart a focal point instead of reading as even texture. Kept
+   below full turquoise on purpose: at full strength it outshines the ring
+   cores, and the ripple is meant to be the section's brightest moment. */
+.barPeak {
+  flex: 1;
+  height: var(--h);
+  border-radius: 1px;
+  background-color: rgba(0, 240, 255, 0.62);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+}
