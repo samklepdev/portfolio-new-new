@@ -1,0 +1,64 @@
+.list {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.card {
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background-color: #12161f;
+}
+
+.rating {
+  margin-bottom: 0.875rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.quote {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.quote::before {
+  content: "\201C";
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.quote::after {
+  content: "\201D";
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.attribution {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo {
+  flex: none;
+  width: auto;
+  height: 2.25rem;
+  object-fit: contain;
+}
+
+.name {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.role,
+.company {
+  display: block;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.55);
+}
