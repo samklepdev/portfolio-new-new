@@ -22,7 +22,8 @@
   - Green `var(--neon-green, #39ff88)` — `AvailabilityStatus` only.
 - **No GSAP, no WebGL, no scroll-triggered animation on this page.** CSS hover transitions only. The orchestrated motion moment belongs to the hero.
 - **All transitions disabled** under `@media (prefers-reduced-motion: reduce)`.
-- **Never invent content.** No star ratings, no metrics, no per-role job descriptions. Every string on the page traces to the spec.
+- **Never invent content.** No metrics, no per-role job descriptions, no testimonials beyond the two that exist. Every string on the page traces to the spec.
+- **Star ratings ARE shown**, beside their quotes, matching the home page. A rating must never appear without the quote it belongs to — the old site's failure was a bare "5 out of 5 stars" shown while the quotes hid behind a tab. No aggregate rating badge anywhere.
 - **Exact job title for all four timeline roles:** `Software Engineer`.
 - **Exact availability label:** `Available for work`.
 - External links use `target="_blank" rel="noopener noreferrer"`.
@@ -368,6 +369,7 @@ export type Testimonial = {
   name: string;
   title: string;
   company: string;
+  rating: number;
   logo: { src: string; width: number; height: number };
 };
 
@@ -407,15 +409,18 @@ describe("testimonials", () => {
     expect(() => getTestimonial("nope")).toThrow();
   });
 
-  it("carries no rating field", () => {
+  it("carries a rating in range for the home page star row", () => {
     for (const testimonial of TESTIMONIALS) {
-      expect(testimonial).not.toHaveProperty("rating");
+      expect(testimonial.rating).toBeGreaterThanOrEqual(1);
+      expect(testimonial.rating).toBeLessThanOrEqual(5);
+      expect(Number.isInteger(testimonial.rating)).toBe(true);
     }
   });
 });
 ```
 
-The last assertion is deliberate. The old site rendered five stars from a `rating` field; the spec drops ratings, and this keeps them from creeping back.
+The integer assertion is load-bearing, not pedantry: both call sites render the row with
+`"★".repeat(rating)`, and `String.prototype.repeat` throws on a fractional count.
 
 - [ ] **Step 2: Run the test to verify it fails**
 
@@ -433,6 +438,7 @@ export type Testimonial = {
   name: string;
   title: string;
   company: string;
+  rating: number;
   logo: { src: string; width: number; height: number };
 };
 
@@ -444,6 +450,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     name: "Xavier Chavaria",
     title: "Owner/Operator",
     company: "Ultra Demolition",
+    rating: 5,
     logo: { src: "/images/logos/ud.png", width: 185, height: 111 },
   },
   {
@@ -453,6 +460,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     name: "Martha DeLeon",
     title: "CEO",
     company: "DeLeon Safety Solutions",
+    rating: 5,
     logo: { src: "/images/logos/dss-logo.png", width: 400, height: 340 },
   },
 ] as const;
@@ -483,7 +491,7 @@ import { getTestimonial } from "@/lib/testimonials";
 const TESTIMONIAL = getTestimonial("deleon");
 ```
 
-Every existing `TESTIMONIAL.*` reference in the file keeps working unchanged — the shape is identical minus `rating`. If the JSX references `TESTIMONIAL.rating` anywhere, delete that markup; the spec drops ratings.
+Every existing `TESTIMONIAL.*` reference in the file keeps working unchanged — the shape is identical, `rating` included. Leave the star-row markup exactly as it is.
 
 - [ ] **Step 6: Verify build and tests**
 
@@ -965,10 +973,13 @@ describe("Testimonials", () => {
     }
   });
 
-  it("renders no star rating", () => {
+  it("renders a star row beside each quote", () => {
     render(<Testimonials />);
-    expect(screen.queryByText(/out of 5/i)).toBeNull();
-    expect(screen.queryByText("★")).toBeNull();
+    const ratings = screen.getAllByLabelText(/out of 5 stars/i);
+    expect(ratings).toHaveLength(2);
+    for (const rating of ratings) {
+      expect(rating.textContent).toBe("★★★★★");
+    }
   });
 });
 ```
@@ -990,6 +1001,13 @@ export function Testimonials() {
     <div className={styles.list}>
       {TESTIMONIALS.map((testimonial) => (
         <figure key={testimonial.id} className={styles.card}>
+          <p
+            className={styles.rating}
+            aria-label={`${testimonial.rating} out of 5 stars`}
+          >
+            <span aria-hidden="true">{"★".repeat(testimonial.rating)}</span>
+          </p>
+
           <blockquote className={styles.quote}>
             {testimonial.quote}
           </blockquote>
@@ -1029,6 +1047,13 @@ Title and company are **separate elements on purpose.** Combining them into one 
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0.75rem;
   background-color: #12161f;
+}
+
+.rating {
+  margin-bottom: 0.875rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  color: var(--neon-turquoise, #00f0ff);
 }
 
 .quote {

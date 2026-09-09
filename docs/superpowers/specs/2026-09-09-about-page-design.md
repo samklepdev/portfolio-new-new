@@ -109,9 +109,15 @@ client logo already in `public/images/logos/`.
 | Xavier Chavaria | Owner/Operator | Ultra Demolition | `ud.png` |
 | Martha DeLeon | CEO | DeLeon Safety Solutions | `dss-logo.png` |
 
-**No star ratings.** Two five-star reviews render as decoration rather than information, the
-quotes are stronger unadorned, and omitting them avoids reprising the old page's contentless
-rating badge.
+**Star ratings are shown**, matching the home page's testimonial card. This reverses an earlier
+decision in this spec to drop them; the owner chose consistent treatment sitewide.
+
+The distinction that still matters, and the reason the old page failed: a rating must never
+appear *without* the quote it belongs to. The old site rendered a screen-reader-only "5 out of
+5 stars" to every visitor while the actual quotes sat behind a tab
+(`portfolio-1/pages/about.tsx:322-332`) — a bare number standing in for evidence. Stars beside
+an attributed quote are fine. Stars alone are not, and no aggregate rating badge goes anywhere
+on this site.
 
 Two testimonials sit in the narrower right column, where a stacked pair reads as a natural
 count. A full-bleed testimonial band would look underfilled at n=2.
