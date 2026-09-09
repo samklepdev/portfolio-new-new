@@ -23,6 +23,34 @@
   animation-delay: 300ms;
 }
 
+.logo:hover .letterS,
+.logo:hover .letterB,
+.logo:hover .letterK {
+  animation: sbkLetterHop 420ms;
+}
+
+.logo:hover .letterB {
+  animation-delay: 110ms;
+}
+
+.logo:hover .letterK {
+  animation-delay: 220ms;
+}
+
+@keyframes sbkLetterHop {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.3, 0.85, 0.4, 1);
+  }
+  40% {
+    transform: translateY(-24px);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.35);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 @keyframes sbkRingPulse {
   0% {
     transform: scale(1);
@@ -41,7 +69,10 @@
 @media (prefers-reduced-motion: reduce) {
   .logo:hover .ringInner,
   .logo:hover .ringMid,
-  .logo:hover .ringOuter {
+  .logo:hover .ringOuter,
+  .logo:hover .letterS,
+  .logo:hover .letterB,
+  .logo:hover .letterK {
     animation: none;
   }
 }

@@ -41,6 +41,7 @@ export function SbkLogo({ width, height }: SbkLogoProps) {
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB5AQMAAADI9nc0AAAAAXNSR0IB2cksfwAAAAZQTFRFAAAA////pdmf3QAAAAJ0Uk5TAP9bkSK1AAABj0lEQVR4nM2VsW7EIAyGjRgYeYPyIqfklTreEDV5tDxKtq4ZGaqjDsZgTHXSqapUbskn7N+GMzbAj8unU6JNKe2CZ+QvwelaW0WH3lIhPC6f5pCObMRo6KsKOLKcD3YnJR85OqViWXBl2SL3YDsStOwXyM9xYo4CeD5ZMQychyl51LxJ+KMyBY6VQ/Zq5/aXkm3s9hY1Bzxk+GLqt8omsmhZF0+Cly4d2lsUR8FBMcYyp+JDMCZsNe+CcdNp3gSjuNcMcmmO3XEB7vD2lJfuOgBu+HuFp+66ANXvf8oe3hWf/4x1fjr/nsOv70fff8/Ti//nTdXDMtSPrq+e41ifm0CsX13fXf2b8T1078eO72l4f4qH97s84QnG/jALvhpabW9A2rLfnADyADlX1xLOn6Kf5dZlRP/bOAgtCt0aFH3NNSBZBg5Y+q/ngKVR135dNmrfL3MAuN/zHFgpQJsD5OfYrwySwLqWDFfOw+RZZ9tAm/M9sRx64pZJ7dw4Hj+7Able87AhDsOU5P8I/bZY39eosN/AZWbpAAAAAElFTkSuQmCC"
       />
       <image
+        className={styles.letterS}
         x="4"
         y="78"
         width="87"
@@ -48,6 +49,7 @@ export function SbkLogo({ width, height }: SbkLogoProps) {
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFcAAABEAQMAAADORDsaAAAAAXNSR0IB2cksfwAAAAZQTFRFIx8g////ZmNHKAAAAAJ0Uk5TAP9bkSK1AAAA5UlEQVR4nG3SsRHDIAwFUPkoKD0Co7BKNgmjeRRGoKTgUEBCSORM9XI4CH0EMJbHBGt5RGzMC+fK5JvcyV/cG/wJb9zL+AAE4ygeNfDNesy0M/bCfnqXaqd32cpO81/sSjcsZGopsp9pl9XwIRcJJKBsyPnFmH9I3WRiaDaSZO5fTI/N9N5tDmnHfGaYzaH2oKrvslrVW8hG00ddT3xJYWowsos8eIery2fDaxKm3ZoENmXgpj3fMEzva45a1uHVVVs8XDSGcbL60fEZWanNDDSTeQWdt2ziSf+J3Ot0kECqzEFk/gCRr/unJIonjQAAAABJRU5ErkJggg=="
       />
       <image
+        className={styles.letterB}
         x="104"
         y="78"
         width="85"
@@ -55,6 +57,7 @@ export function SbkLogo({ width, height }: SbkLogoProps) {
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFUAAABEAQMAAADKsesnAAAAAXNSR0IB2cksfwAAAAZQTFRFIx8g////ZmNHKAAAAAJ0Uk5TAP9bkSK1AAAAnklEQVR4nJXTwQ2AIAwF0BoPHh2BURxNR2MURuDIgVBTCvqjqUFOL5FI/w8Q0cZcqK6d6/JipX5p5gDOYD7AARzBGVzAjD4M+wEHcSLXLaPPYIl32YFXw7hn07P6P5v3r5mNvNnox4PJ6DP97fDVj5eEkKsOcWe/vMhhzbNh3ONuT6zuZyWYAR0HHIwsAz0no0O4qwV6juDnW6j59I2cNlNRnO3qAMAAAAAASUVORK5CYII="
       />
       <image
+        className={styles.letterK}
         x="202"
         y="78"
         width="88"
