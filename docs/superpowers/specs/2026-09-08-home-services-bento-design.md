@@ -95,13 +95,18 @@ square field off that constant instead:
 
 ```css
 .rings {
-  height: 300%;
-  width: auto;
-  aspect-ratio: 1;
+  height: 39rem;
+  width: 39rem;
 }
 ```
 
-`300%` of `13rem` is `39rem` (624px), giving one scale of ~1.25 and ~10px ring
+`39rem` is 3x the `13rem` graphic slot — stated explicitly rather than as
+`height: 300%; width: auto; aspect-ratio: 1`, because that form depends on
+`aspect-ratio` filling an auto axis (verified only in Chrome) and would silently
+revert to the width-relative bug if `width` ever resolved. If the graphic slot
+changes, change this to match.
+
+At 624px the field gives one scale of ~1.25 and ~10px ring
 spacing in all four cards — near the ~9.6px the two-card version shipped with.
 Wide cards simply reveal more of the same field horizontally; narrow cards clip
 more of it. Both are already handled by the card's `overflow: hidden` and the
