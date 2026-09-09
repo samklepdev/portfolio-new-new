@@ -1,0 +1,94 @@
+.logo {
+  overflow: visible;
+}
+
+.ringInner,
+.ringMid,
+.ringOuter {
+  transform-box: view-box;
+  transform-origin: 144px 108px;
+}
+
+.logo:hover .ringInner,
+.logo:hover .ringMid,
+.logo:hover .ringOuter,
+.logo[data-pulse="on"] .ringInner,
+.logo[data-pulse="on"] .ringMid,
+.logo[data-pulse="on"] .ringOuter {
+  animation: sbkRingPulse 500ms ease-in-out;
+}
+
+.logo:hover .ringMid,
+.logo[data-pulse="on"] .ringMid {
+  animation-delay: 150ms;
+}
+
+.logo:hover .ringOuter,
+.logo[data-pulse="on"] .ringOuter {
+  animation-delay: 300ms;
+}
+
+.logo:hover .letterS,
+.logo:hover .letterB,
+.logo:hover .letterK,
+.logo[data-pulse="on"] .letterS,
+.logo[data-pulse="on"] .letterB,
+.logo[data-pulse="on"] .letterK {
+  animation: sbkLetterHop 420ms;
+}
+
+.logo:hover .letterB,
+.logo[data-pulse="on"] .letterB {
+  animation-delay: 110ms;
+}
+
+.logo:hover .letterK,
+.logo[data-pulse="on"] .letterK {
+  animation-delay: 220ms;
+}
+
+@keyframes sbkLetterHop {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.3, 0.85, 0.4, 1);
+  }
+  40% {
+    transform: translateY(-24px);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0.35);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes sbkRingPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.09);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo:hover .ringInner,
+  .logo:hover .ringMid,
+  .logo:hover .ringOuter,
+  .logo:hover .letterS,
+  .logo:hover .letterB,
+  .logo:hover .letterK,
+  .logo[data-pulse="on"] .ringInner,
+  .logo[data-pulse="on"] .ringMid,
+  .logo[data-pulse="on"] .ringOuter,
+  .logo[data-pulse="on"] .letterS,
+  .logo[data-pulse="on"] .letterB,
+  .logo[data-pulse="on"] .letterK {
+    animation: none;
+  }
+}

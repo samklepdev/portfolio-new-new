@@ -62,3 +62,25 @@
     transition: none;
   }
 }
+
+/* The band slides up over the tail of the pinned hero rather than waiting for
+   it to scroll away. ScrollTrigger's pin-spacer reserves hero height + pin
+   distance, so once the pin releases there is a full viewport of emptied-out
+   hero left to scroll past. Pulling the band up covers that stretch.
+
+   The background is what does the covering — .section is a max-width container,
+   so a background on it would leave the hero's particle canvas visible down
+   both sides. This wrapper is full-bleed. No 100vw here on purpose: that
+   overflows by the scrollbar width, and html/body no longer clip overflow-x. */
+.riser {
+  position: relative;
+  z-index: 1;
+  background-color: var(--background, #0b0e14);
+}
+
+/* Only overlap when the hero really pinned — HeroSection sets this once a
+   timeline exists. Without the guard, a hero that never pinned would sit half
+   covered by the band. */
+:global(html[data-hero-pinned="true"]) .riser {
+  margin-top: -50dvh;
+}

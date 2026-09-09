@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeroLogoFlight } from "@/components/hero/HeroLogoFlight";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { AboutSection } from "@/components/home/AboutSection";
 import { ClientBand } from "@/components/home/ClientBand";
@@ -16,6 +17,7 @@ export default async function Home() {
   return (
     <main>
       <HeroSection />
+      <HeroLogoFlight />
       <ClientBand />
       <AboutSection />
       <ServicesSection />
