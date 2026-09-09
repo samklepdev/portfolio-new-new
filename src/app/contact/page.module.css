@@ -61,6 +61,7 @@
 }
 
 .status {
+  position: relative;
   margin-bottom: 2rem;
 }
 
