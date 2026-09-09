@@ -282,18 +282,12 @@ Replace lines 39-42:
 with:
 
 ```tsx
-          <AvailabilityStatus className={styles.status} />
+          <AvailabilityStatus />
 ```
 
-Then in `src/components/home/ContactSection.module.css`, replace the whole `.status` rule (lines 53-63) with just its spacing, and **delete the `.statusDot` rule** (lines 65-71) entirely:
+No `className` is passed here. Verified: `ContactSection.module.css` `.status` carries **no `margin-bottom`** — its spacing comes entirely from the `.aside` flow — so the shared component's own styles are already a complete match.
 
-```css
-.status {
-  margin-bottom: 2rem;
-}
-```
-
-Note: the original `.status` here had no `margin-bottom` — check the file. If it has none, use `margin-bottom: 0` or omit the class from the JSX. Preserve whatever vertical spacing the rendered page currently has.
+Then in `src/components/home/ContactSection.module.css`, **delete both the `.status` rule (lines 52-63) and the `.statusDot` rule (lines 65-71)** outright. Nothing replaces them.
 
 - [ ] **Step 7: Refactor the contact page call site**
 
@@ -325,6 +319,8 @@ In `src/app/contact/page.module.css`, replace `.status` (lines 63-76) with only 
   margin-bottom: 2rem;
 }
 ```
+
+This call site **does** keep a `className` — unlike `ContactSection`, the contact page's pill carries `margin-bottom: 2rem`, which is exactly the spacing the shared component deliberately does not own. The two call sites differing here is correct, not an oversight.
 
 - [ ] **Step 8: Verify no orphaned references remain**
 
@@ -448,7 +444,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
     name: "Xavier Chavaria",
     title: "Owner/Operator",
     company: "Ultra Demolition",
-    logo: { src: "/images/logos/ud.png", width: 400, height: 340 },
+    logo: { src: "/images/logos/ud.png", width: 185, height: 111 },
   },
   {
     id: "deleon",
@@ -470,7 +466,7 @@ export function getTestimonial(id: string): Testimonial {
 }
 ```
 
-Note: `ud.png` dimensions are a placeholder-free guess only if verified. Run `node -e "console.log(require('fs').statSync('public/images/logos/ud.png').size)"` to confirm the file exists, then check its real intrinsic size with `sips -g pixelWidth -g pixelHeight public/images/logos/ud.png` and use those exact numbers.
+Both logos' dimensions are the verified intrinsic sizes — `ud.png` is 185×111 and `dss-logo.png` is 400×340, confirmed with `sips`. They differ; do not normalise them to a single pair. `next/image` needs the true intrinsic ratio or the logo renders distorted.
 
 - [ ] **Step 4: Run the test to verify it passes**
 
@@ -1007,9 +1003,8 @@ export function Testimonials() {
             />
             <span>
               <span className={styles.name}>{testimonial.name}</span>
-              <span className={styles.role}>
-                {testimonial.title}, {testimonial.company}
-              </span>
+              <span className={styles.role}>{testimonial.title}</span>
+              <span className={styles.company}>{testimonial.company}</span>
             </span>
           </figcaption>
         </figure>
@@ -1019,12 +1014,7 @@ export function Testimonials() {
 }
 ```
 
-Note: the test asserts `getByText("Ultra Demolition")` matches. Because title and company render inside one element as `"Owner/Operator, Ultra Demolition"`, Testing Library's default exact-match will **fail**. Fix the component, not the test: render title and company in separate elements.
-
-```tsx
-              <span className={styles.role}>{testimonial.title}</span>
-              <span className={styles.company}>{testimonial.company}</span>
-```
+Title and company are **separate elements on purpose.** Combining them into one node as `"Owner/Operator, Ultra Demolition"` fails the test's exact-match `getByText("Ultra Demolition")`. If you find yourself reaching for a substring matcher to make the test pass, split the elements instead — the assertion is correct as written.
 
 - [ ] **Step 4: Create the stylesheet**
 
@@ -1528,7 +1518,14 @@ Checked against the spec:
 
 Deliberately **not** covered, matching the spec's out-of-scope section: per-role descriptions (field exists, unset), the Mar 2020 – Jul 2021 gap (unlabeled), migrating project `repo:` links off GitLab, and any third testimonial.
 
-Two things the implementer should expect to hit:
+Three defects found in a pre-flight pass and corrected in place before execution:
 
-1. **Task 2, Step 6** — the plan assumes `ContactSection.module.css` `.status` has a `margin-bottom`. It may not. Read the file and preserve whatever spacing exists rather than applying the snippet blindly.
-2. **Task 7, Step 3** — the first component listing renders title and company in one element, which fails the test's exact-match assertion. The fix is given inline: split them into two elements. Do not loosen the test.
+1. **Task 3** gave `ud.png` as 400×340, copied from `dss-logo.png`. Its real intrinsic size is
+   **185×111**; the wrong pair would have rendered the Ultra Demolition logo distorted. Both
+   logos now carry their verified `sips` dimensions, and the plan says explicitly not to
+   normalise them to one pair.
+2. **Task 2** assumed `ContactSection.module.css` `.status` carried a `margin-bottom`. It does
+   not — spacing comes from the `.aside` flow. That call site now passes no `className` and
+   deletes its rules outright; only the contact page keeps a spacing class.
+3. **Task 7** listed component code that failed its own test (title and company in one node
+   versus an exact-match `getByText`). The listing is now correct as written.
