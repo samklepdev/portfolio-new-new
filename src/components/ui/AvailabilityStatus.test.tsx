@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
+import '@testing-library/jest-dom/vitest';
 
 describe("AvailabilityStatus", () => {
   it("renders the availability label as text", () => {
