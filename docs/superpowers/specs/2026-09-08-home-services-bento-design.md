@@ -14,16 +14,28 @@ Four cards under the existing eyebrow `SERVICES` and heading **What I build**.
 The heading is unchanged and still fits: two cards are the offerings, and the two
 new ones are *how* that work gets delivered and *what it is built with*.
 
-| Span | Card | Ring field? | New? |
+| Span | Card | Graphic | New? |
 |---|---|---|---|
-| 4 | Design & build | no — solid | existing, copy unchanged |
-| 2 | Built with | yes | new |
-| 2 | From scope to launch | yes | new |
-| 4 | Custom applications | no — solid | existing, copy unchanged |
+| 4 | Design & build | `WireframeField` | existing, copy unchanged |
+| 2 | Built with | `RingField` | new |
+| 2 | From scope to launch | `RingField` | new |
+| 4 | Custom applications | `DashboardField` | new |
 
-Only the two narrow cards carry the ring field; the wide pair are solid surfaces.
+Each card has a graphic, but only the two narrow ones carry the ring field.
 Diagonally opposite ring cards give the block a balance that four identical ones
 did not, and the effect stays a signature rather than becoming wallpaper.
+
+**`RingField` is the only animated graphic.** `WireframeField` and
+`DashboardField` are static. That is what lets the wide cards carry artwork
+without competing with the ripple: the hierarchy is motion first, then the lit
+ring cores, then everything static. `DashboardField`'s highlighted bar is
+deliberately held below full turquoise for the same reason — at full strength it
+outshines the ring cores and inverts that order.
+
+The two wide graphics are abstractions, never screenshots. The projects section
+sits directly below this one and shows real client work; putting client UI in the
+service cards blurs the line between *what is offered* and *what was built*, and
+duplicates imagery a reader meets again a few hundred pixels later.
 
 **Every card still reserves the `13rem` graphic slot, ring field or not.** Only
 the graphic *inside* it is conditional. This is what keeps every card's title on
@@ -162,14 +174,18 @@ despite there now being four cards. Hover animates one card's 42 at a time, behi
 the fine-pointer guard. `stroke-opacity` is not compositor-animatable, so this
 remains the feature's one plausible weak-GPU risk, at the same surface as before.
 
-The solid cards carry a `13rem` block of empty surface above their copy. That is
-the cost of keeping titles aligned across a row, and it reads as a deliberately
-quiet card beside a busy one.
+Every card reserves the `13rem` slot, so all four titles sit on the same line
+across a row. The wide cards were briefly shipped with that slot empty and it read
+as unfinished rather than restrained — a 632x385 card holding two lines of copy
+needs something in it. Hence the two static graphics.
 
 ## Verification
 
 - `npm run build` passes — it type-checks and lints.
-- The two narrow cards show ring fields; the two wide cards are solid.
+- The two narrow cards show ring fields; the wide cards show the wireframe and
+  dashboard graphics respectively.
+- Nothing animates on load. The only animation in the section is the ring ripple,
+  and only while a ring card is hovered.
 - Every card's title sits on the same line as its row partner's — the check that
   fails if the `13rem` slot stops being reserved on solid cards.
 - The two ring fields show visibly the **same** ring spacing. Both ring cards are

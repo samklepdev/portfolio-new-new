@@ -144,9 +144,14 @@ spreads; that throws "not iterable". It can collapse once the project is on
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
 - **Home services section** — `ServicesSection` + `RingField` between About and Projects.
-  A four-card bento (spans 4/2/2/4 on a 6-column grid). The two narrow cards carry a
-  field of 42 concentric SVG rings that ripples outward on hover; the two wide cards are
-  solid. Which cards get rings is a `rings` flag on each `SERVICES` entry.
+  A four-card bento (spans 4/2/2/4 on a 6-column grid). Each card names its graphic via a
+  `graphic` field on its `SERVICES` entry: `RingField` (42 concentric SVG rings, ripples on
+  hover) on the two narrow cards, `WireframeField` and `DashboardField` on the wide pair.
+  Only `RingField` animates — the other two are static on purpose, so the ripple stays the
+  section's one moving element. `DashboardField`'s highlighted bar is held below full
+  turquoise for the same reason; at full strength it outshines the ring cores.
+  The wide graphics are abstractions, never client screenshots: the projects grid sits
+  directly below and would duplicate the imagery while blurring offering vs. work.
   Adapted from the Radiant template's `LinkedAvatars`, which is Tailwind + framer-motion;
   reimplemented as CSS Modules with no new dependency and no client JS. Four things here
   are load-bearing and look like mistakes if you don't know why:

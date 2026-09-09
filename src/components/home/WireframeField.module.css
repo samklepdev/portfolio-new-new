@@ -1,0 +1,81 @@
+.field {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 9.5rem;
+  padding: 0.875rem;
+  border-radius: 0.5rem;
+}
+
+.hero {
+  height: 2.75rem;
+  border-radius: 0.25rem;
+}
+
+.row {
+  height: 0.4375rem;
+  border-radius: 999px;
+}
+
+/* Left: the wireframe. Hairlines only, nothing filled. */
+.draft {
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+}
+
+.draft .hero,
+.draft .row {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* Right: the same layout built. Same geometry, filled and lit, so the pair
+   reads as one page in two states rather than two different pages. */
+.built {
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  background-color: rgba(0, 240, 255, 0.03);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.1);
+}
+
+.built .hero {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 240, 255, 0.34) 0%,
+    rgba(0, 240, 255, 0.12) 100%
+  );
+}
+
+.built .row {
+  background-color: rgba(0, 240, 255, 0.22);
+}
+
+.arrow {
+  position: relative;
+  width: 1.75rem;
+  height: 1px;
+  flex: 0 0 auto;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.16),
+    rgba(0, 240, 255, 0.45)
+  );
+}
+
+.arrow::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid rgba(0, 240, 255, 0.45);
+  border-right: 1px solid rgba(0, 240, 255, 0.45);
+  transform: rotate(45deg);
+}
