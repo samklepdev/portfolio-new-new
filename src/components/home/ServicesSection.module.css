@@ -25,14 +25,24 @@
 
 .grid {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
   margin-top: 2.5rem;
   list-style: none;
 }
 
+/* Spans apply only above the breakpoint. Below it every card is full width, so
+   .wide and .narrow must not resolve to a grid-column at all. */
 @media (min-width: 720px) {
   .grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .wide {
+    grid-column: span 4;
+  }
+
+  .narrow {
+    grid-column: span 2;
   }
 }
 
@@ -71,6 +81,27 @@
     transform: scale(1);
     stroke-opacity: 0.15;
   }
+}
+
+/* Card-relative edge fade. The ring field is a fixed 624px square, so its own radial
+   mask fades relative to the field, not the card — a 632px card reveals almost all of
+   it and fades out by its edge, while a 304px card reveals only the middle and would
+   cut the rings off hard. This gradient is a percentage of card width, so both spans
+   fade identically. It sits above .graphic and below .body (z-index: 1), so it veils
+   the rings without touching the copy. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    #12161f 0%,
+    rgba(18, 22, 31, 0) 14%,
+    rgba(18, 22, 31, 0) 86%,
+    #12161f 100%
+  );
 }
 
 .graphic {
