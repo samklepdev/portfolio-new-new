@@ -29,14 +29,22 @@ export function HeroSection() {
 
     const ctx = gsap.context(() => {
       // matchMedia lets mobile get a shorter, less scrubby scroll distance
-      // than desktop, rather than one timeline hand-tuned for one breakpoint
-      ScrollTrigger.matchMedia({
-        "(min-width: 768px)": () => buildTimeline(1.2),
-        "(max-width: 767px)": () => buildTimeline(0.7),
-      });
+      // than desktop, rather than one timeline hand-tuned for one breakpoint.
+      // This is gsap.matchMedia, not ScrollTrigger.matchMedia — the latter was
+      // removed from GSAP and is undefined in the installed 3.15, which threw
+      // here and left the hero with no pin, no scrub and no progress at all.
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 768px)", () => buildTimeline(1.15));
+      mm.add("(max-width: 767px)", () => buildTimeline(0.75));
 
       function buildTimeline(scrollDistanceMultiplier: number) {
         const distance = window.innerHeight * scrollDistanceMultiplier;
+
+        // Tells ClientBand it is safe to overlap the hero. Only set once a pin
+        // actually exists — without it the band would ride up over a hero that
+        // never pinned (JS disabled, or GSAP failing as it did with the removed
+        // ScrollTrigger.matchMedia) and cover its lower half.
+        document.documentElement.dataset.heroPinned = "true";
 
         return gsap.timeline({
           scrollTrigger: {
@@ -47,8 +55,11 @@ export function HeroSection() {
             pin: true,
             onUpdate: (self) => {
               setProgress(self.progress);
-              if (self.progress >= 0.98) setHeroDismissed(true);
-              else if (self.progress < 0.98) setHeroDismissed(false);
+              // Deliberately well before the end: the bar needs to be sliding
+              // down while the logo is still in flight, so the logo arrives
+              // into it rather than after it.
+              if (self.progress >= 0.7) setHeroDismissed(true);
+              else if (self.progress < 0.7) setHeroDismissed(false);
             },
           },
         }).to(hudRef.current, {
@@ -59,7 +70,10 @@ export function HeroSection() {
       }
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      delete document.documentElement.dataset.heroPinned;
+      ctx.revert();
+    };
   }, [setProgress, setHeroDismissed]);
 
   return (
