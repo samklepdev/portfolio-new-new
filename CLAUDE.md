@@ -144,8 +144,9 @@ spreads; that throws "not iterable". It can collapse once the project is on
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
 - **Home services section** — `ServicesSection` + `RingField` between About and Projects.
-  A four-card bento (spans 4/2/2/4 on a 6-column grid) over fields of 42 concentric SVG
-  rings that ripple outward on hover.
+  A four-card bento (spans 4/2/2/4 on a 6-column grid). The two narrow cards carry a
+  field of 42 concentric SVG rings that ripples outward on hover; the two wide cards are
+  solid. Which cards get rings is a `rings` flag on each `SERVICES` entry.
   Adapted from the Radiant template's `LinkedAvatars`, which is Tailwind + framer-motion;
   reimplemented as CSS Modules with no new dependency and no client JS. Four things here
   are load-bearing and look like mistakes if you don't know why:
@@ -169,6 +170,10 @@ spreads; that throws "not iterable". It can collapse once the project is on
     and ~304px wide, so a width-relative field renders the same rings at ~13px and ~6px
     spacing — the four boxes visibly disagree. Do not "simplify" it back to a percentage
     width; it looks equivalent on a uniform grid and breaks the moment spans differ.
+  - Every card reserves the `13rem` graphic slot even when it has no ring field; only the
+    graphic inside it is conditional. That is what aligns titles across a row. Drop the slot
+    on a solid card and its title sits flush against the card's top edge, because `.body`
+    has no top padding — the graphic is what provides it.
   - `.card::after` is a card-relative horizontal fade, and it is not decoration. The ring
     field's own radial mask fades relative to the 624px field, so narrow cards would cut
     the rings off hard at their edges while wide cards faded. This gradient's stops are

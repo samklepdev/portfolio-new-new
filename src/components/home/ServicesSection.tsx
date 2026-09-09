@@ -6,21 +6,25 @@ const SERVICES = [
     title: "Design & build",
     body: "Marketing sites taken from first wireframe to launch — responsive, fast, and structured so the people already searching for you actually land on you.",
     span: "wide",
+    rings: false,
   },
   {
     title: "Built with",
     body: "TypeScript and React on the front. C#/.NET or Node behind it. Postgres or SQL Server for the data.",
     span: "narrow",
+    rings: true,
   },
   {
     title: "From scope to launch",
     body: "Scope and estimate up front, design you sign off on, then build in visible increments. Working software early, not a reveal at the end.",
     span: "narrow",
+    rings: true,
   },
   {
     title: "Custom applications",
     body: "Dashboards, portals, and internal tools. The software that runs a business day to day, not just the site that describes it.",
     span: "wide",
+    rings: false,
   },
 ] as const;
 
@@ -43,9 +47,9 @@ export function ServicesSection() {
               key={service.title}
               className={`${styles.card} ${styles[service.span]}`}
             >
-              <div className={styles.graphic}>
-                <RingField />
-              </div>
+              {/* The slot is reserved on every card, ring field or not, so titles
+                  line up across a row. Only the graphic inside it is conditional. */}
+              <div className={styles.graphic}>{service.rings && <RingField />}</div>
               <div className={styles.body}>
                 <h3 className={styles.cardTitle}>{service.title}</h3>
                 <p className={styles.cardText}>{service.body}</p>

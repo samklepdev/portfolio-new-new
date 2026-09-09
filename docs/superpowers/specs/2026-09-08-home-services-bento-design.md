@@ -14,12 +14,22 @@ Four cards under the existing eyebrow `SERVICES` and heading **What I build**.
 The heading is unchanged and still fits: two cards are the offerings, and the two
 new ones are *how* that work gets delivered and *what it is built with*.
 
-| Span | Card | New? |
-|---|---|---|
-| 4 | Design & build | existing, copy unchanged |
-| 2 | Built with | new |
-| 2 | From scope to launch | new |
-| 4 | Custom applications | existing, copy unchanged |
+| Span | Card | Ring field? | New? |
+|---|---|---|---|
+| 4 | Design & build | no — solid | existing, copy unchanged |
+| 2 | Built with | yes | new |
+| 2 | From scope to launch | yes | new |
+| 4 | Custom applications | no — solid | existing, copy unchanged |
+
+Only the two narrow cards carry the ring field; the wide pair are solid surfaces.
+Diagonally opposite ring cards give the block a balance that four identical ones
+did not, and the effect stays a signature rather than becoming wallpaper.
+
+**Every card still reserves the `13rem` graphic slot, ring field or not.** Only
+the graphic *inside* it is conditional. This is what keeps every card's title on
+the same line across a row. Dropping the slot on solid cards puts their title
+flush against the card's top edge, because `.body` carries no top padding — the
+graphic is what provides that space.
 
 ```
 ┌──────────────────────────┬─────────────┐
@@ -84,11 +94,14 @@ unchanged.
 This is the one substantive change to `RingField.module.css`, and it is required
 by the varied spans rather than optional polish.
 
-`.rings` is currently `width: 130%` of its card. With equal columns that was
-fine. With 4/2 spans the cards are roughly 632px and 304px wide, so the same rule
-would render the field at scale 1.64 and 0.79 — **~13px ring spacing in the wide
-cards against ~6px in the narrow ones.** The four boxes would visibly disagree,
-which is the opposite of the intent.
+`.rings` was `width: 130%` of its card. With equal columns that was fine. With 4/2
+spans the cards are roughly 632px and 304px wide, so the same rule would render the
+field at scale 1.64 and 0.79 — **~13px ring spacing in the wide cards against ~6px
+in the narrow ones.**
+
+Both ring cards ended up narrow, so this no longer bites today. It is kept because
+it is the correct rule and because moving a ring field onto a wide card — a one-line
+change to a `rings` flag — would silently reintroduce the mismatch otherwise.
 
 The graphic slot is `13rem` tall in every card regardless of span. Sizing the
 square field off that constant instead:
@@ -117,12 +130,12 @@ and silently breaks the moment spans differ.
 
 ### And the edge fade must be card-relative
 
-Fixing the spacing moves the inconsistency rather than removing it. `.rings` carries
-its own radial mask, but that mask fades relative to the **field**, not the card. A
-632px card reveals almost all of the 624px field and reaches near-zero alpha at its
-edge; a 304px card reveals only the middle, where alpha is still ~0.66, so the rings
-are cut off hard at both sides. No single fade radius fixes both — the half-widths
-differ by 2x.
+`.rings` carries its own radial mask, but that mask fades relative to the **field**,
+not the card. A 304px card reveals only the middle of the 624px field, where alpha is
+still ~0.66, so without help the rings are cut off hard at both sides.
+
+Both ring cards are narrow and therefore the same width, so they at least fail
+identically — but they still fail. The fade below is what softens that cut.
 
 `.card::after` therefore carries a horizontal gradient to the card background, with
 its stops expressed as **percentages of card width**, so the fade is proportional and
@@ -144,21 +157,24 @@ veils the rings without touching the copy.
 
 ## Accepted costs
 
-Four ring fields is 168 animated SVG circles, up from 84. Hover still animates
-only one card's 42 at a time, behind the fine-pointer guard, and `stroke-opacity`
-is not compositor-animatable — so this remains the feature's one plausible
-weak-GPU risk, now with twice the surface. Recorded rather than mitigated,
-because the four-identical-graphics look is the requirement.
+Two ring fields is 84 animated SVG circles — unchanged from the two-card version,
+despite there now being four cards. Hover animates one card's 42 at a time, behind
+the fine-pointer guard. `stroke-opacity` is not compositor-animatable, so this
+remains the feature's one plausible weak-GPU risk, at the same surface as before.
 
-Repeating one graphic four times also spends the ripple's novelty. That was
-raised and accepted by the site owner; it is a deliberate choice, not an
-oversight.
+The solid cards carry a `13rem` block of empty surface above their copy. That is
+the cost of keeping titles aligned across a row, and it reads as a deliberately
+quiet card beside a busy one.
 
 ## Verification
 
 - `npm run build` passes — it type-checks and lints.
-- All four cards show ring fields at visibly the **same** ring spacing. This is
-  the check that would fail if the width-relative sizing came back.
+- The two narrow cards show ring fields; the two wide cards are solid.
+- Every card's title sits on the same line as its row partner's — the check that
+  fails if the `13rem` slot stops being reserved on solid cards.
+- The two ring fields show visibly the **same** ring spacing. Both ring cards are
+  now the same width, so this no longer proves the height-based sizing is working;
+  it would only fail if something else regressed.
 - Spans render 4/2/2/4 above 720px and a single full-width column below it.
 - Hovering any card ripples only that card; mouse-out resets it rather than
   freezing.
