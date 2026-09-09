@@ -26,7 +26,12 @@ const ROLES: readonly Role[] = [
   {
     employer: "WealthGuard Insurance Group",
     title: "Software Engineer",
-    dates: "Jul 2021 — Feb 2022",
+    dates: "Jan 2022 — Feb 2022",
+  },
+  {
+    employer: "Edge196",
+    title: "Software Engineer",
+    dates: "Jan 2021 — Dec 2021",
   },
 ];
 
