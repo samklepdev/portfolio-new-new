@@ -133,12 +133,31 @@ green strictly for status indicators and names "available for work" as the examp
 
 ## Data
 
-All content lives in module-level constants inside the components that render it, matching the
-existing `SERVICES` (`ServicesSection.tsx`) and `CAPABILITIES` (`AboutSection.tsx`) pattern.
+Bio copy, timeline entries, and the technology list live in module-level constants inside the
+components that render them, matching the existing `SERVICES` (`ServicesSection.tsx`) and
+`CAPABILITIES` (`AboutSection.tsx`) pattern.
+
+Testimonials are the exception — see below.
 
 **No schema changes, no migrations, no seed changes.** This is static biographical content.
 Routing it through Postgres would recreate the CMS the rebuild exists to avoid, and it is not
 queryable metadata.
+
+### Shared module: `src/lib/testimonials.ts`
+
+The Martha DeLeon testimonial is **already rendered on the home page** —
+`ContactSection.tsx:6-14` hardcodes the same quote, name, title, company, and logo this page
+needs. Duplicating it into an about-page constant would create a third source of truth for
+copy attributed to a real, named person, and the two would drift.
+
+Extract both testimonials into `src/lib/testimonials.ts` alongside `siteLinks.ts`, and have
+`ContactSection` and the about page both read from it. `ContactSection` continues to render
+only the DeLeon entry; the about page renders both.
+
+Consequence worth stating: Martha DeLeon's quote appears on both the home page and `/about`.
+That is acceptable — they are different pages serving different readers — and is preferable to
+dropping the site's only home-page social proof or padding `/about` with a third testimonial
+that does not exist.
 
 ## Styling
 
@@ -171,7 +190,15 @@ motion moment belongs to the hero. All transitions disabled under
 
 ## Dependencies
 
-None added.
+**No runtime dependencies added.** The page ships no new `dependencies` entries — notably not
+`react-icons`, which the old page required for the technology block.
+
+Test tooling is added as `devDependencies`, amending this spec's original "none added": the
+project currently has no test framework, no test script, and no test files, so the extractions
+above (`AvailabilityStatus`, `src/lib/testimonials.ts`) would ship with nothing guarding the
+call sites they refactor. Added: `vitest`, `@vitejs/plugin-react`, `jsdom`,
+`@testing-library/react`, `@testing-library/jest-dom`, plus a `vitest.config.ts` and an
+`npm test` script.
 
 ## Also in scope
 
@@ -202,8 +229,10 @@ point at GitLab.
    page source, none behind an interaction.
 2. Résumé and contact CTAs remain reachable at any scroll position on desktop.
 3. Availability status renders from a single shared component used by all three call sites.
-4. `npm run build` passes: type-check and lint clean.
-5. No new dependencies; no changes under `drizzle/` or to `src/db/`.
-6. Layout holds at 320px, 768px, 900px, and 1440px.
-7. Nothing on the page is unattributable — no ratings, metrics, or role descriptions that
+4. Both testimonials resolve from `src/lib/testimonials.ts`; no testimonial copy is duplicated
+   in a component.
+5. `npm run build` passes: type-check and lint clean. `npm test` passes.
+6. No new runtime dependencies; no changes under `drizzle/` or to `src/db/`.
+7. Layout holds at 320px, 768px, 900px, and 1440px.
+8. Nothing on the page is unattributable — no ratings, metrics, or role descriptions that
    cannot be traced to something Sam supplied.
