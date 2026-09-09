@@ -3,12 +3,14 @@ import styles from "./SbkLogo.module.css";
 type SbkLogoProps = {
   width: number;
   height: number;
+  pulse?: boolean;
 };
 
-export function SbkLogo({ width, height }: SbkLogoProps) {
+export function SbkLogo({ width, height, pulse = false }: SbkLogoProps) {
   return (
     <svg
       className={styles.logo}
+      data-pulse={pulse ? "on" : undefined}
       viewBox="0 0 296 217"
       width={width}
       height={height}

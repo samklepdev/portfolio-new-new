@@ -11,29 +11,39 @@
 
 .logo:hover .ringInner,
 .logo:hover .ringMid,
-.logo:hover .ringOuter {
+.logo:hover .ringOuter,
+.logo[data-pulse="on"] .ringInner,
+.logo[data-pulse="on"] .ringMid,
+.logo[data-pulse="on"] .ringOuter {
   animation: sbkRingPulse 500ms ease-in-out;
 }
 
-.logo:hover .ringMid {
+.logo:hover .ringMid,
+.logo[data-pulse="on"] .ringMid {
   animation-delay: 150ms;
 }
 
-.logo:hover .ringOuter {
+.logo:hover .ringOuter,
+.logo[data-pulse="on"] .ringOuter {
   animation-delay: 300ms;
 }
 
 .logo:hover .letterS,
 .logo:hover .letterB,
-.logo:hover .letterK {
+.logo:hover .letterK,
+.logo[data-pulse="on"] .letterS,
+.logo[data-pulse="on"] .letterB,
+.logo[data-pulse="on"] .letterK {
   animation: sbkLetterHop 420ms;
 }
 
-.logo:hover .letterB {
+.logo:hover .letterB,
+.logo[data-pulse="on"] .letterB {
   animation-delay: 110ms;
 }
 
-.logo:hover .letterK {
+.logo:hover .letterK,
+.logo[data-pulse="on"] .letterK {
   animation-delay: 220ms;
 }
 
@@ -72,7 +82,13 @@
   .logo:hover .ringOuter,
   .logo:hover .letterS,
   .logo:hover .letterB,
-  .logo:hover .letterK {
+  .logo:hover .letterK,
+  .logo[data-pulse="on"] .ringInner,
+  .logo[data-pulse="on"] .ringMid,
+  .logo[data-pulse="on"] .ringOuter,
+  .logo[data-pulse="on"] .letterS,
+  .logo[data-pulse="on"] .letterB,
+  .logo[data-pulse="on"] .letterK {
     animation: none;
   }
 }
