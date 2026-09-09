@@ -9,11 +9,15 @@ const HERO_WIDTH = 160;
 const HERO_HEIGHT = 117;
 const HEADER_WIDTH = 44;
 
-const FADE_IN_START = 0.32;
-const FADE_IN_END = 0.44;
-const PULSE_AT = 0.46;
-const FLIGHT_START = 0.55;
-const FLIGHT_END = 0.96;
+const FADE_IN_START = 0.1;
+const FADE_IN_END = 0.22;
+const PULSE_AT = 0.26;
+const FLIGHT_START = 0.3;
+// Where the logo arrives on the header's slot. The header's own logo unhides at
+// this point, and the flight lingers to HIDE_AT so the swap never leaves a gap —
+// both sit at identical position and size across that overlap, so it is invisible.
+const FLIGHT_END = 0.99;
+const HIDE_AT = 1;
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 const range = (value: number, from: number, to: number) =>
@@ -33,13 +37,19 @@ const easeInOut = (t: number) =>
 export function HeroLogoFlight() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [pulse, setPulse] = useState(false);
+  const setLogoLanded = useScrollStore((state) => state.setLogoLanded);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduced.matches) return;
+    if (reduced.matches) {
+      // No flight, so nothing will ever land — the header must not sit there
+      // with an empty logo slot forever.
+      setLogoLanded(true);
+      return;
+    }
 
     // Where the header's own logo will sit once the header is visible. The bar
     // is translateY(-100%) while hidden, so its own rect is off-screen —
@@ -65,7 +75,7 @@ export function HeroLogoFlight() {
       const appear = range(progress, FADE_IN_START, FADE_IN_END);
       const flight = easeInOut(range(progress, FLIGHT_START, FLIGHT_END));
 
-      if (progress < FADE_IN_START || progress >= FLIGHT_END) {
+      if (progress < FADE_IN_START || progress >= HIDE_AT) {
         wrapper.style.opacity = "0";
         wrapper.style.visibility = "hidden";
         return;
@@ -90,12 +100,23 @@ export function HeroLogoFlight() {
 
     // Subscribed imperatively, not through the hook: progress updates on every
     // scroll tick and a hook subscription would re-render this tree each time.
+    // Only written when it actually flips. Calling a store setter on every tick
+    // from inside the store's own subscriber re-enters the notification loop and
+    // blows the stack, which silently kills every other subscriber with it.
+    let landed = useScrollStore.getState().logoLanded;
+
     const unsubscribe = useScrollStore.subscribe((state) => {
       apply(state.progress);
       setPulse((current) => {
         const shouldPulse = state.progress >= PULSE_AT;
         return current === shouldPulse ? current : shouldPulse;
       });
+
+      const hasLanded = state.progress >= FLIGHT_END;
+      if (hasLanded !== landed) {
+        landed = hasLanded;
+        setLogoLanded(hasLanded);
+      }
     });
 
     window.addEventListener("resize", measure);
@@ -103,7 +124,7 @@ export function HeroLogoFlight() {
       unsubscribe();
       window.removeEventListener("resize", measure);
     };
-  }, []);
+  }, [setLogoLanded]);
 
   return (
     <div ref={wrapperRef} className={styles.wrapper} aria-hidden="true">

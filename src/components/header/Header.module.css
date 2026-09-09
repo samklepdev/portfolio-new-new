@@ -36,6 +36,10 @@
   transition: opacity 200ms ease;
 }
 
+.logo[data-hold="true"] {
+  visibility: hidden;
+}
+
 .logo:hover,
 .logo:focus-visible {
   opacity: 1;

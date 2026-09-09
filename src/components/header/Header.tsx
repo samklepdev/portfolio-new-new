@@ -12,10 +12,16 @@ import styles from "./Header.module.css";
 export function Header() {
   const pathname = usePathname();
   const heroDismissed = useScrollStore((state) => state.heroDismissed);
+  const logoLanded = useScrollStore((state) => state.logoLanded);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const gatedByHero = pathname === "/";
   const visible = !gatedByHero || heroDismissed;
+  // On the home page the bar slides down with an empty logo slot; the hero's
+  // flying logo fills it on arrival. Hidden with visibility rather than display
+  // so the slot keeps its layout — the flight measures this element to find
+  // where to land.
+  const holdLogo = gatedByHero && !logoLanded;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -41,7 +47,12 @@ export function Header() {
       inert={!visible}
     >
       <nav className={styles.nav} aria-label="Main">
-        <Link href="/" className={styles.logo} aria-label="Sam Klepper — home">
+        <Link
+          href="/"
+          className={styles.logo}
+          data-hold={holdLogo ? "true" : undefined}
+          aria-label="Sam Klepper — home"
+        >
           <SbkLogo width={44} height={32} />
         </Link>
 
