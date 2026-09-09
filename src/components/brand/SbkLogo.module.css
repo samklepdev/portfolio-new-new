@@ -1,0 +1,47 @@
+.logo {
+  overflow: visible;
+}
+
+.ringInner,
+.ringMid,
+.ringOuter {
+  transform-box: view-box;
+  transform-origin: 144px 108px;
+}
+
+.logo:hover .ringInner,
+.logo:hover .ringMid,
+.logo:hover .ringOuter {
+  animation: sbkRingPulse 500ms ease-in-out;
+}
+
+.logo:hover .ringMid {
+  animation-delay: 150ms;
+}
+
+.logo:hover .ringOuter {
+  animation-delay: 300ms;
+}
+
+@keyframes sbkRingPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.09);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo:hover .ringInner,
+  .logo:hover .ringMid,
+  .logo:hover .ringOuter {
+    animation: none;
+  }
+}

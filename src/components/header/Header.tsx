@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { SbkLogo } from "@/components/brand/SbkLogo";
 import { usePathname } from "next/navigation";
 import { useScrollStore } from "@/lib/scrollStore";
 import { NAV_LINKS, RESUME_URL } from "@/lib/siteLinks";
@@ -41,13 +42,7 @@ export function Header() {
     >
       <nav className={styles.nav} aria-label="Main">
         <Link href="/" className={styles.logo} aria-label="Sam Klepper — home">
-          <Image
-            src="/images/sbk-logo-dark.svg"
-            alt=""
-            width={44}
-            height={32}
-            unoptimized
-          />
+          <SbkLogo width={44} height={32} />
         </Link>
 
         <ul id="header-nav-links" className={styles.links} data-open={menuOpen}>

@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { SbkLogo } from "@/components/brand/SbkLogo";
 import {
   EMAIL,
   NAV_LINKS,
@@ -17,13 +17,7 @@ export function Footer() {
       <div className={styles.container}>
         <div className={styles.inner}>
           <Link href="/" className={styles.logo} aria-label="Sam Klepper — home">
-            <Image
-              src="/images/sbk-logo-dark.svg"
-              alt=""
-              width={52}
-              height={38}
-              unoptimized
-            />
+            <SbkLogo width={52} height={38} />
           </Link>
 
           <nav className={styles.nav} aria-label="Footer">
