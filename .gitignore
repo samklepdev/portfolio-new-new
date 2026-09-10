@@ -44,3 +44,6 @@ next-env.d.ts
 # Idea
 .idea
 
+
+# SDD scratch (progress ledger, task briefs, review packages)
+.superpowers/

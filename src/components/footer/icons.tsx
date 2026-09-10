@@ -63,5 +63,4 @@ export const SOCIAL_ICONS: Record<
 > = {
   linkedin: LinkedInIcon,
   github: GitHubIcon,
-  gitlab: GitLabIcon,
 };

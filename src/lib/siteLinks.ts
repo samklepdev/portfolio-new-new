@@ -12,7 +12,6 @@ export const SOCIAL_LINKS = [
     href: "https://www.linkedin.com/in/samuel-klepper-0435b5193/",
   },
   { id: "github", label: "GitHub", href: "https://github.com/samklepdev" },
-  { id: "gitlab", label: "GitLab", href: "https://gitlab.com/bklep" },
 ] as const;
 
 export type SocialId = (typeof SOCIAL_LINKS)[number]["id"];
