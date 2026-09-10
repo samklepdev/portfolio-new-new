@@ -28,8 +28,8 @@ reachable but does not compete for the page's centre of gravity. This is the mir
 
 ## Approach: split with dot field
 
-A full-bleed two-column split. The left column carries identity, contact methods, and proof on
-a tinted panel that bleeds to the viewport's left edge; the right column carries the form on
+A full-bleed two-column split. The left column carries identity and contact methods on a
+tinted panel that bleeds to the viewport's left edge; the right column carries the form on
 the plain page background. Below `1024px` the columns stack and the panel collapses to cover
 only the intro column.
 
@@ -47,10 +47,9 @@ project is not. It is rebuilt as CSS Modules with **no new dependency**.
 │  Get in touch             │   ┌─Message───────────┐   │
 │  intro copy…              │   └───────────────────┘   │
 │  ● Available for work     │            [ Let's talk ] │
-│  ✉ hello@samklep.dev      │                           │
+│  ✉ contact@samklep.dev    │                           │
 │  ⚲ Houston, TX            │                           │
 │  LinkedIn · GitHub · Résumé│                          │
-│  ❝ Ultra Demolition quote │                           │
 └───────────────────────────┴───────────────────────────┘
    dot panel bleeds to edge          plain #0B0E14
 ```
@@ -135,14 +134,17 @@ In order:
    author is available is the single most load-bearing fact.
 5. `<dl>` of contact methods — email and location, each with an inline outline SVG icon.
 6. Link row — LinkedIn, GitHub, Résumé.
-7. Testimonial — **Ultra Demolition** (`getTestimonial("ultra")`, Xavier Chavaria).
 
 **No phone number.** The reference lists one; this page deliberately does not. A `tel:` link on
 a public page is scraped, and the value is not worth that. The `<dl>` is two rows.
 
-**Ultra, not DeLeon.** The home page's `ContactSection` already uses `deleon`, and `/about`
-renders both. Using `ultra` here avoids showing the same quote twice to anyone who scrolls the
-home page and then clicks through.
+**No testimonial.** An earlier revision of this design closed the left column with the Ultra
+Demolition quote, chosen over DeLeon because the home page's `ContactSection` already uses
+DeLeon. It shipped, was reviewed in the browser, and was cut: it made the column busy and left
+the two columns badly unbalanced, since the quote pushed the left side well past the form. The
+page's job is the form, and proof already lives on `/about` and the home page. A test in
+`src/app/contact/page.test.tsx` asserts no `<figure>` or `<blockquote>` renders, so the
+removal is enforced rather than remembered.
 
 ### Right column
 
@@ -186,5 +188,7 @@ Icons are hand-written inline SVG at Heroicons' outline weight (24px, `stroke-wi
 ## Testing
 
 `src/app/contact/page.test.tsx`, following `src/app/about/page.test.tsx`. Assert the page
-renders one `<h1>`, the email `mailto:` link, the location, the résumé and social links, the
-testimonial attribution, and that the form's fields are present and labelled.
+renders one `<h1>`, the email `mailto:` link, the location, the résumé and social links, and
+that the form's fields are present and labelled. Two tests exist to enforce deliberate
+absences rather than presences — no `tel:` link, and no `<figure>`/`<blockquote>` — because
+both are decisions a later editor would otherwise read as oversights and "fix".

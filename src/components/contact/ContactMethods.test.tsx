@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { EMAIL, LOCATION } from "@/lib/siteLinks";
+import { CONTACT_EMAIL, LOCATION } from "@/lib/siteLinks";
 import { ContactMethods } from "./ContactMethods";
 
 describe("ContactMethods", () => {
   it("links the email address", () => {
     render(<ContactMethods />);
-    const link = screen.getByRole("link", { name: EMAIL });
-    expect(link).toHaveAttribute("href", `mailto:${EMAIL}`);
+    const link = screen.getByRole("link", { name: CONTACT_EMAIL });
+    expect(link).toHaveAttribute("href", `mailto:${CONTACT_EMAIL}`);
   });
 
   it("renders the location as plain text, not a link", () => {

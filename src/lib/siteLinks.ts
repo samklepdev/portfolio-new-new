@@ -18,6 +18,6 @@ export type SocialId = (typeof SOCIAL_LINKS)[number]["id"];
 
 export const RESUME_URL = "/images/documents/samuel-klepper-resume.pdf";
 
-export const EMAIL = "hello@samklep.dev";
+export const CONTACT_EMAIL = "contact@samklep.dev";
 
 export const LOCATION = "Houston, TX";

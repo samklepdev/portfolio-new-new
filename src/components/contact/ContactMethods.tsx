@@ -1,4 +1,4 @@
-import { EMAIL, LOCATION } from "@/lib/siteLinks";
+import { CONTACT_EMAIL, LOCATION } from "@/lib/siteLinks";
 import styles from "./ContactMethods.module.css";
 
 function EnvelopeIcon() {
@@ -53,8 +53,8 @@ export function ContactMethods() {
           <EnvelopeIcon />
         </dt>
         <dd className={styles.detail}>
-          <a className={styles.link} href={`mailto:${EMAIL}`}>
-            {EMAIL}
+          <a className={styles.link} href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL}
           </a>
         </dd>
       </div>

@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ContactMethods } from "@/components/contact/ContactMethods";
 import { ContactForm } from "@/components/home/ContactForm";
 import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
 import { RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
-import { getTestimonial } from "@/lib/testimonials";
 import styles from "./page.module.css";
-
-const TESTIMONIAL = getTestimonial("ultra");
 
 export const metadata: Metadata = {
   title: "Contact — Sam Klepper",
@@ -69,38 +65,6 @@ export default function ContactPage() {
                 </a>
               </li>
             </ul>
-
-            <figure className={styles.testimonial}>
-              <Image
-                className={styles.testimonialLogo}
-                src={TESTIMONIAL.logo.src}
-                alt={TESTIMONIAL.company}
-                width={TESTIMONIAL.logo.width}
-                height={TESTIMONIAL.logo.height}
-                sizes="140px"
-              />
-
-              <p
-                className={styles.rating}
-                role="img"
-                aria-label={`${TESTIMONIAL.rating} out of 5 stars`}
-              >
-                <span aria-hidden="true">{"★".repeat(TESTIMONIAL.rating)}</span>
-              </p>
-
-              <blockquote className={styles.quote}>
-                <p>&ldquo;{TESTIMONIAL.quote}&rdquo;</p>
-              </blockquote>
-
-              <figcaption className={styles.attribution}>
-                <span className={styles.attributionName}>
-                  {TESTIMONIAL.name}
-                </span>
-                <span className={styles.attributionRole}>
-                  {TESTIMONIAL.title}, {TESTIMONIAL.company}
-                </span>
-              </figcaption>
-            </figure>
           </div>
         </div>
 

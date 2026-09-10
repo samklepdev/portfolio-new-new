@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SbkLogo } from "@/components/brand/SbkLogo";
 import {
-  EMAIL,
+  CONTACT_EMAIL,
   NAV_LINKS,
   RESUME_URL,
   SOCIAL_LINKS,
@@ -62,8 +62,8 @@ export function Footer() {
           <p className={styles.copyright}>
             &copy; {year} SbK. All rights reserved.
           </p>
-          <a className={styles.email} href={`mailto:${EMAIL}`}>
-            {EMAIL}
+          <a className={styles.email} href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL}
           </a>
         </div>
       </div>

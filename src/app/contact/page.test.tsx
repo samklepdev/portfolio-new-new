@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import { EMAIL, LOCATION } from "@/lib/siteLinks";
+import { CONTACT_EMAIL, LOCATION } from "@/lib/siteLinks";
 
 vi.mock("@/app/actions/contact", () => ({
   submitContact: vi.fn(),
@@ -24,9 +24,9 @@ describe("ContactPage", () => {
 
   it("renders the contact methods", () => {
     render(<ContactPage />);
-    expect(screen.getByRole("link", { name: EMAIL })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: CONTACT_EMAIL })).toHaveAttribute(
       "href",
-      `mailto:${EMAIL}`,
+      `mailto:${CONTACT_EMAIL}`,
     );
     expect(screen.getByText(LOCATION)).toBeInTheDocument();
   });
@@ -49,9 +49,11 @@ describe("ContactPage", () => {
     expect(resume).toHaveAttribute("rel", "noopener noreferrer");
   });
 
-  it("shows the Ultra Demolition testimonial, not the one on the home page", () => {
-    render(<ContactPage />);
-    expect(screen.getByText("Xavier Chavaria")).toBeInTheDocument();
+  it("carries no testimonial — the page is deliberately kept lean", () => {
+    const { container } = render(<ContactPage />);
+    expect(container.querySelector("figure")).toBeNull();
+    expect(container.querySelector("blockquote")).toBeNull();
+    expect(screen.queryByText("Xavier Chavaria")).toBeNull();
     expect(screen.queryByText("Martha DeLeon")).toBeNull();
   });
 

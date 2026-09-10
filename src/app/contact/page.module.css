@@ -127,54 +127,6 @@
   color: var(--neon-turquoise, #00f0ff);
 }
 
-.testimonial {
-  margin: 3rem 0 0;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.testimonialLogo {
-  height: 3.25rem;
-  width: auto;
-  max-width: 10rem;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.7;
-}
-
-.rating {
-  margin-top: 1.25rem;
-  font-size: 0.875rem;
-  letter-spacing: 0.15em;
-  color: var(--neon-turquoise, #00f0ff);
-}
-
-.quote {
-  margin: 0.75rem 0 0;
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.attribution {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  margin-top: 1.25rem;
-}
-
-.attributionName {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.attributionRole {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.45);
-}
-
 .formColumn {
   padding: 4rem 1.5rem 6rem;
 }

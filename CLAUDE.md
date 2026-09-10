@@ -149,9 +149,10 @@ spreads; that throws "not iterable". It can collapse once the project is on
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
 - **`/contact` page** — a full-bleed two-column split: `ContactMethods` (email + location,
-  hand-written inline SVG icons), availability, socials/résumé, and the Ultra Demolition
-  testimonial on a tinted panel; `ContactForm` on the plain background beside it. Deliberately
-  uses the `ultra` testimonial because the home page's `ContactSection` already uses `deleon`.
+  hand-written inline SVG icons), availability, and socials/résumé on a tinted panel;
+  `ContactForm` on the plain background beside it. The left column carries **no testimonial**
+  — one shipped briefly and was cut for looking busy and unbalancing the two columns. Proof
+  lives on `/about` and the home page; this page's job is the form.
   There is **no phone number**, by choice — a `tel:` link on a public page gets scraped, and a
   test in both `ContactMethods.test.tsx` and `contact/page.test.tsx` asserts it stays absent.
   Adapted from a Tailwind UI reference; rebuilt as CSS Modules with no new dependency.
