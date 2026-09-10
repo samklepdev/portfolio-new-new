@@ -14,6 +14,8 @@ one would undo the point of the rebuild.
 ```bash
 npm run dev                # Next dev server
 npm run build              # production build (also type-checks and lints)
+npm run build:verify       # same build, into .next-verify — use this while dev is running
+npm run start:verify       # serve that build (add -p to avoid the dev server's port)
 npm run lint               # eslint
 
 npm run db:up              # start local Postgres container (docker compose up -d --wait)
@@ -36,6 +38,11 @@ src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStati
                                 ContactSection, ContactForm
                   footer/     — Footer (site-wide, rendered outside <main>)
                   projects/   — ProjectGrid, ProjectCard, Pagination, ProjectTabs
+                  about/      — TechStack, Testimonials, Timeline (the /about page)
+                  brand/      — SbkLogo, shared by Header, Footer, and HeroLogoFlight
+                  contact/    — ContactMethods (the /contact page)
+                  ui/         — AvailabilityStatus, shared by /about, /contact, and
+                                the home ContactSection
 src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
 src/db/           schema.ts, index.ts (client), queries.ts, seed.ts
 src/content/      projects/{slug}.md — long-form case studies, read via src/lib/content.ts
@@ -60,6 +67,17 @@ reordered without touching any spacing.
 - `tsconfig.json` needs `baseUrl: "."` *and* `paths`. Paths alone does not resolve `@/…` in the
   bundler, and `tsc` passes even when the build would break — verify alias changes with `next build`,
   not just a type-check.
+
+**Never run `npm run build` while `next dev` is running.** They share one output directory, so
+the build deletes the dev server's compiled `layout.css` — the root layout stylesheet carrying
+`globals.css`, the font variables and every base style. Every page imports it, so that single
+404 strips styling *site-wide* and reads as a CSS regression some commit caused. It is not one.
+The two servers then keep overwriting each other. Use `npm run build:verify`, which writes to
+`.next-verify` via `distDir: process.env.NEXT_DIST_DIR` in `next.config.ts`. If you hit the
+symptom, check `curl -o /dev/null -w '%{http_code}' localhost:3000/_next/static/css/app/layout.css`
+— a 404 confirms it. The fix is to stop both servers, delete the build dir and restart, never to
+touch the code. Builds also need the DB container up (`npm run db:up`); `/projects/[slug]`'s
+`generateStaticParams` queries Postgres and its ECONNREFUSED also looks like a code error.
 
 **Styling — CSS Modules, never Tailwind.** Tailwind was deliberately stripped from the
 create-next-app default. Do not reintroduce `@tailwind` directives, `tailwind.config.ts`, or
@@ -143,6 +161,39 @@ spreads; that throws "not iterable". It can collapse once the project is on
   `src/app/toast.css`. Next injects `ReactToastify.css` *after* that file, so equal-specificity
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
+- **`/contact` page** — a full-bleed two-column split: `ContactMethods` (email + location,
+  hand-written inline SVG icons), availability, and socials/résumé on a tinted panel;
+  `ContactForm` on the plain background beside it. The left column carries **no testimonial**
+  — one shipped briefly and was cut for looking busy and unbalancing the two columns. Proof
+  lives on `/about` and the home page; this page's job is the form.
+  There is **no phone number**, by choice — a `tel:` link on a public page gets scraped, and a
+  test in both `ContactMethods.test.tsx` and `contact/page.test.tsx` asserts it stays absent.
+  Adapted from a Tailwind UI reference; rebuilt as CSS Modules with no new dependency.
+  Three things are load-bearing and look like mistakes:
+  - **`.introColumn` is `position: static` at `min-width: 1024px`.** That is what makes the
+    panel bleed to the viewport edge: an unpositioned column is not a containing block, so
+    the absolutely positioned `.panel` resolves against `.page` and `width: 50%` means half
+    the *viewport* rather than half the column. Setting it back to `relative` silently
+    reverts the panel to a half-width block floating inside the column. Nothing between
+    `.page` and `.panel` may gain a `position`, `transform`, `filter`, `contain`, or
+    `will-change` either — any of those would become the containing block instead.
+  - **`.glow` (blur) and `.glowShape` (clip-path) must stay two elements.** CSS applies
+    `clip-path` after `filter`, so both on one element clips the blur back to hard polygon
+    edges and the ambient glow becomes a geometric shard. This shipped once, passed its unit
+    tests *and* a code review, and was caught only by loading the page — jsdom has no paint.
+  - The panel's texture is `ContourField` — **generated topographic contours**, not a grid
+    (banned above) and not dots (the previous site's motif). Each ring is a closed loop whose
+    radius is perturbed by three sine harmonics, with the centre drifting right and down as
+    rings grow. That drift is the whole point: without it these collapse into concentric
+    rings, which `RingField` on the home page already owns. The outermost rings deliberately
+    overflow the viewBox and clip, so it reads as a crop of a larger terrain rather than a
+    motif in a box — do not shrink the radii to "fit". It is pure deterministic maths, so it
+    stays a server component with no client JS and no dependency. One contour is turquoise,
+    the way a topo map indexes every nth elevation line; a second accent turns it into noise.
+    `vector-effect: non-scaling-stroke` is required — `preserveAspectRatio="slice"` would
+    otherwise scale the stroke and thicken the lines on a wide panel. The `mask-image` fade
+    from the top-right stays; keep the `-webkit-` prefix beside it.
+  See `docs/superpowers/specs/2026-09-10-contact-page-design.md`.
 - **Home services section** — `ServicesSection` + `RingField` between About and Projects.
   A four-card bento (spans 4/2/2/4 on a 6-column grid). Each card names its graphic via a
   `graphic` field on its `SERVICES` entry: `RingField` (42 concentric SVG rings, ripples on

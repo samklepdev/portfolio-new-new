@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { EMAIL } from "@/lib/siteLinks";
+import { CONTACT_EMAIL } from "@/lib/siteLinks";
 import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
 import { getTestimonial } from "@/lib/testimonials";
 import { ContactForm } from "./ContactForm";
@@ -66,8 +66,8 @@ export function ContactSection() {
 
           <p className={styles.fallback}>
             Prefer email?{" "}
-            <a className={styles.fallbackLink} href={`mailto:${EMAIL}`}>
-              {EMAIL}
+            <a className={styles.fallbackLink} href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
             </a>
           </p>
         </aside>

@@ -1,8 +1,8 @@
-import { EMAIL, RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
+import { CONTACT_EMAIL, RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
 
 describe("siteLinks", () => {
   it("exposes the samklep.dev address", () => {
-    expect(EMAIL).toBe("hello@samklep.dev");
+    expect(CONTACT_EMAIL).toBe("contact@samklep.dev");
   });
 
   it("points the resume at the committed PDF", () => {

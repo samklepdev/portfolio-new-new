@@ -6,7 +6,7 @@ import { db } from "@/db";
 import { contactSubmissions } from "@/db/schema";
 import { validateContact } from "@/lib/contactValidation";
 import type { ContactState } from "@/lib/contactState";
-import { EMAIL } from "@/lib/siteLinks";
+import { CONTACT_EMAIL } from "@/lib/siteLinks";
 
 async function notify(row: {
   id: number;
@@ -23,7 +23,7 @@ async function notify(row: {
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from: process.env.CONTACT_FROM_EMAIL || "contact@samklep.dev",
-      to: process.env.CONTACT_TO_EMAIL || EMAIL,
+      to: process.env.CONTACT_TO_EMAIL || CONTACT_EMAIL,
       replyTo: row.email,
       subject: `Portfolio contact from ${row.name}`,
       text: [
@@ -83,7 +83,7 @@ export async function submitContact(
     console.error("contact: insert failed", cause);
     return {
       status: "error",
-      formError: `Something went wrong saving your message. Please email ${EMAIL} instead.`,
+      formError: `Something went wrong saving your message. Please email ${CONTACT_EMAIL} instead.`,
       values,
     };
   }
