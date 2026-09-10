@@ -17,6 +17,11 @@ const eslintConfig = defineConfig([
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   globalIgnores([
     ".next/**",
+    // `npm run build:verify` writes here. `npm run lint` is a bare `eslint`, so
+    // it walks the cwd and will happily lint a build output directory unless it
+    // is named — 374 phantom errors from generated chunks, and one real warning
+    // buried under them.
+    ".next-verify/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
