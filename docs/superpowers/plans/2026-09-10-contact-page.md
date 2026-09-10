@@ -684,7 +684,9 @@ with:
 ```tsx
           <div className={styles.panel} aria-hidden="true">
             <div className={styles.dots} />
-            <div className={styles.glow} />
+            <div className={styles.glow}>
+              <div className={styles.glowShape} />
+            </div>
           </div>
 ```
 
@@ -728,14 +730,22 @@ with:
   mask-image: radial-gradient(100% 100% at top right, #000000, transparent);
 }
 
+/* The blur MUST live on this wrapper, not on .glowShape. CSS applies clip-path
+   after filter, so blurring the clipped element just re-clips the blur back to
+   hard polygon edges. The wrapper blurs an already-clipped child instead. */
 .glow {
   position: absolute;
   top: calc(100% - 13rem);
   left: -14rem;
   width: 72rem;
   aspect-ratio: 1155 / 678;
-  opacity: 0.2;
   filter: blur(64px);
+}
+
+.glowShape {
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
   background-image: linear-gradient(
     to bottom right,
     var(--neon-purple, #b026ff),
@@ -748,6 +758,12 @@ with:
   );
 }
 ```
+
+> **Corrected after browser verification.** This rule originally carried both
+> `filter: blur(64px)` and `clip-path` on a single `.glow` element. That renders the glow as
+> a hard-edged shard, because CSS applies `clip-path` after `filter`. The two must sit on
+> separate elements. The original version passed its unit tests and a code review — only
+> loading the page caught it.
 
 - [ ] **Step 3: Add the split media query**
 

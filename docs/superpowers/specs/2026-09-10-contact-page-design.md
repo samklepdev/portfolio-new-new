@@ -111,6 +111,14 @@ The reference's blurred `clip-path` blob is kept and recoloured from indigo to a
 purple → turquoise gradient at low opacity. Purple `#B026FF` is restricted by `CLAUDE.md` to
 "gradients and glow only", which is exactly this use and no other on the page.
 
+**The blur and the clip-path must live on two different elements.** CSS applies `clip-path`
+*after* `filter`, so putting both on one element clips the blurred result back to the
+polygon's hard edges and the glow renders as a hard-edged geometric shard. The reference
+separates them — blur on the parent, clip-path on the child — and that separation is the
+whole point, not incidental nesting. This was collapsed into a single rule during
+implementation, shipped, passed both a unit-test run and a code review, and was caught only
+by loading the page in a browser. jsdom has no paint; nothing but a real browser can catch it.
+
 Accent discipline: turquoise dominates, pink appears only on the form's submit button, green
 only inside `AvailabilityStatus`.
 

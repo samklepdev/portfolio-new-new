@@ -143,6 +143,29 @@ spreads; that throws "not iterable". It can collapse once the project is on
   `src/app/toast.css`. Next injects `ReactToastify.css` *after* that file, so equal-specificity
   overrides lose. Every rule there is scoped under `.Toastify` to win on specificity rather than
   load order; keep that prefix when adding rules.
+- **`/contact` page** — a full-bleed two-column split: `ContactMethods` (email + location,
+  hand-written inline SVG icons), availability, socials/résumé, and the Ultra Demolition
+  testimonial on a tinted panel; `ContactForm` on the plain background beside it. Deliberately
+  uses the `ultra` testimonial because the home page's `ContactSection` already uses `deleon`.
+  There is **no phone number**, by choice — a `tel:` link on a public page gets scraped, and a
+  test in both `ContactMethods.test.tsx` and `contact/page.test.tsx` asserts it stays absent.
+  Adapted from a Tailwind UI reference; rebuilt as CSS Modules with no new dependency.
+  Three things are load-bearing and look like mistakes:
+  - **`.introColumn` is `position: static` at `min-width: 1024px`.** That is what makes the
+    panel bleed to the viewport edge: an unpositioned column is not a containing block, so
+    the absolutely positioned `.panel` resolves against `.page` and `width: 50%` means half
+    the *viewport* rather than half the column. Setting it back to `relative` silently
+    reverts the panel to a half-width block floating inside the column. Nothing between
+    `.page` and `.panel` may gain a `position`, `transform`, `filter`, `contain`, or
+    `will-change` either — any of those would become the containing block instead.
+  - **`.glow` (blur) and `.glowShape` (clip-path) must stay two elements.** CSS applies
+    `clip-path` after `filter`, so both on one element clips the blur back to hard polygon
+    edges and the ambient glow becomes a geometric shard. This shipped once, passed its unit
+    tests *and* a code review, and was caught only by loading the page — jsdom has no paint.
+  - The panel's texture is a **dot matrix**, not a grid, because grid-floor backgrounds are
+    on the banned-clichés list above. It is a tiled `radial-gradient` plus a `mask-image`
+    fading from the top-right; keep the `-webkit-mask-image` alongside it.
+  See `docs/superpowers/specs/2026-09-10-contact-page-design.md`.
 - **Home services section** — `ServicesSection` + `RingField` between About and Projects.
   A four-card bento (spans 4/2/2/4 on a 6-column grid). Each card names its graphic via a
   `graphic` field on its `SERVICES` entry: `RingField` (42 concentric SVG rings, ripples on
