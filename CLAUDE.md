@@ -181,9 +181,18 @@ spreads; that throws "not iterable". It can collapse once the project is on
     `clip-path` after `filter`, so both on one element clips the blur back to hard polygon
     edges and the ambient glow becomes a geometric shard. This shipped once, passed its unit
     tests *and* a code review, and was caught only by loading the page — jsdom has no paint.
-  - The panel's texture is a **dot matrix**, not a grid, because grid-floor backgrounds are
-    on the banned-clichés list above. It is a tiled `radial-gradient` plus a `mask-image`
-    fading from the top-right; keep the `-webkit-mask-image` alongside it.
+  - The panel's texture is `ContourField` — **generated topographic contours**, not a grid
+    (banned above) and not dots (the previous site's motif). Each ring is a closed loop whose
+    radius is perturbed by three sine harmonics, with the centre drifting right and down as
+    rings grow. That drift is the whole point: without it these collapse into concentric
+    rings, which `RingField` on the home page already owns. The outermost rings deliberately
+    overflow the viewBox and clip, so it reads as a crop of a larger terrain rather than a
+    motif in a box — do not shrink the radii to "fit". It is pure deterministic maths, so it
+    stays a server component with no client JS and no dependency. One contour is turquoise,
+    the way a topo map indexes every nth elevation line; a second accent turns it into noise.
+    `vector-effect: non-scaling-stroke` is required — `preserveAspectRatio="slice"` would
+    otherwise scale the stroke and thicken the lines on a wide panel. The `mask-image` fade
+    from the top-right stays; keep the `-webkit-` prefix beside it.
   See `docs/superpowers/specs/2026-09-10-contact-page-design.md`.
 - **Home services section** — `ServicesSection` + `RingField` between About and Projects.
   A four-card bento (spans 4/2/2/4 on a 6-column grid). Each card names its graphic via a

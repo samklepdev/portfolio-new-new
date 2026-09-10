@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactMethods } from "@/components/contact/ContactMethods";
+import { ContourField } from "@/components/contact/ContourField";
 import { ContactForm } from "@/components/home/ContactForm";
 import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
 import { RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
@@ -18,7 +19,7 @@ export default function ContactPage() {
       <div className={styles.grid}>
         <div className={styles.introColumn}>
           <div className={styles.panel} aria-hidden="true">
-            <div className={styles.dots} />
+            <ContourField />
             <div className={styles.glow}>
               <div className={styles.glowShape} />
             </div>

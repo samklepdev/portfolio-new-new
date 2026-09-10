@@ -26,7 +26,7 @@ placed accordingly. The recruiter path — résumé, LinkedIn, GitHub — stays 
 reachable but does not compete for the page's centre of gravity. This is the mirror of
 `/about`, which is employer-leaning by the same reasoning.
 
-## Approach: split with dot field
+## Approach: split with contour field
 
 A full-bleed two-column split. The left column carries identity and contact methods on a
 tinted panel that bleeds to the viewport's left edge; the right column carries the form on
@@ -39,9 +39,9 @@ project is not. It is rebuilt as CSS Modules with **no new dependency**.
 
 ```
 ┌───────────────────────────┬───────────────────────────┐
-│ ·  ·  ·  ·  ·   ▒▒▒       │                           │
-│  ·  ·  ·  ·      ▒        │   ┌─Name──┐ ┌─Email─┐     │
-│ ·  ·  ·                   │   └───────┘ └───────┘     │
+│ ╭──────╮ ╭───╮  ▒▒▒       │                           │
+│╭╯ ╭──╮ ╰╮╰─╮ ╰╮  ▒        │   ┌─Name──┐ ┌─Email─┐     │
+││ ╭╯  ╰╮ ╰╮ ╰╮ │           │   └───────┘ └───────┘     │
 │                           │   ┌─Budget┐ ┌─Website┐    │
 │  ← Home                   │   └───────┘ └────────┘    │
 │  Get in touch             │   ┌─Message───────────┐   │
@@ -51,7 +51,7 @@ project is not. It is rebuilt as CSS Modules with **no new dependency**.
 │  ⚲ Houston, TX            │                           │
 │  LinkedIn · GitHub · Résumé│                          │
 └───────────────────────────┴───────────────────────────┘
-   dot panel bleeds to edge          plain #0B0E14
+   contour panel bleeds to edge       plain #0B0E14
 ```
 
 Two alternatives were rejected:
@@ -92,19 +92,35 @@ background. Do not "tidy" `.intro`'s `position: static` into `relative` — the 
 that column *not* establishing a containing block, and the layout silently reverts to a
 half-width panel floating inside the column.
 
-### Dot field
+### Contour field
 
 The reference's panel is a repeating SVG grid. `CLAUDE.md` bans grid-floor backgrounds, so it
-is replaced by a dot matrix, which is pure CSS — no SVG, no JS, no client component:
+was first replaced by a CSS dot matrix — and then by `ContourField`, once the owner pointed
+out that dots were the previous site's motif. The texture is now generated topographic
+contours.
+
+Each ring is a closed loop whose radius is perturbed by three sine harmonics, with the centre
+drifting right and down as the rings grow. **That drift is load-bearing.** Without it the
+rings are concentric, which is exactly what `RingField` on the home services cards already
+does; the drift is what makes this read as terrain instead. The outermost rings overflow the
+viewBox and clip on purpose, so the field reads as a crop of a larger landscape rather than a
+self-contained motif floating in a box.
+
+It is pure deterministic maths — no randomness, no client JS, no dependency — so it stays a
+server component. `vector-effect: non-scaling-stroke` is required: `preserveAspectRatio` is
+`slice`, which would otherwise scale stroke width with the viewBox and visibly thicken the
+lines on a wide panel.
+
+One contour is drawn in turquoise, the way a topographic map indexes every nth elevation
+line. Exactly one — a second accent stops reading as an index and starts reading as noise.
+
+The `mask-image` fade from the top-right is retained, widened to
+`135% 125% at top right, #000 28%, transparent 92%` so the contours carry across the full
+panel instead of dying in the upper corner. Keep `-webkit-mask-image` alongside it.
 
 ```css
-background-image: radial-gradient(circle, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
-background-size: 28px 28px;
-mask-image: radial-gradient(100% 100% at top right, #000, transparent);
+mask-image: radial-gradient(135% 125% at top right, #000 28%, transparent 92%);
 ```
-
-The mask reproduces the reference's fade from the top-right corner. Include
-`-webkit-mask-image` alongside it.
 
 The reference's blurred `clip-path` blob is kept and recoloured from indigo to a
 purple → turquoise gradient at low opacity. Purple `#B026FF` is restricted by `CLAUDE.md` to

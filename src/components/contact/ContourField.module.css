@@ -1,0 +1,39 @@
+.field {
+  position: absolute;
+  inset: 0;
+  /* Same fade the dot field used: strongest at the top-right corner, gone by
+     the lower-left, where the glow takes over. Keep the -webkit- prefix. */
+  -webkit-mask-image: radial-gradient(
+    135% 125% at top right,
+    #000000 28%,
+    transparent 92%
+  );
+  mask-image: radial-gradient(
+    135% 125% at top right,
+    #000000 28%,
+    transparent 92%
+  );
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.line,
+.accent {
+  fill: none;
+  stroke-width: 1;
+  /* The viewBox is scaled by `slice`, which would scale stroke width with it and
+     thicken the lines on a wide panel. This pins them to a true hairline. */
+  vector-effect: non-scaling-stroke;
+}
+
+.line {
+  stroke: rgba(255, 255, 255, 0.17);
+}
+
+.accent {
+  stroke: rgba(0, 240, 255, 0.3);
+}
