@@ -21,7 +21,50 @@
 }
 
 .panel {
-  /* Task 3: bleeding dot-field background */
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: -1;
+  width: 100%;
+  overflow: hidden;
+  background-color: #12161f;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.16) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(
+    100% 100% at top right,
+    #000000,
+    transparent
+  );
+  mask-image: radial-gradient(100% 100% at top right, #000000, transparent);
+}
+
+.glow {
+  position: absolute;
+  top: calc(100% - 13rem);
+  left: -14rem;
+  width: 72rem;
+  aspect-ratio: 1155 / 678;
+  opacity: 0.2;
+  filter: blur(64px);
+  background-image: linear-gradient(
+    to bottom right,
+    var(--neon-purple, #b026ff),
+    var(--neon-turquoise, #00f0ff)
+  );
+  clip-path: polygon(
+    74.1% 56.1%, 100% 38.6%, 97.5% 73.3%, 85.5% 100%, 80.7% 98.2%,
+    72.5% 67.7%, 60.2% 37.8%, 52.4% 32.2%, 47.5% 41.9%, 45.2% 65.8%,
+    27.5% 23.5%, 0.1% 35.4%, 17.9% 0.1%, 27.6% 23.5%, 76.1% 2.6%, 74.1% 56.1%
+  );
 }
 
 .back {
@@ -131,4 +174,41 @@
 .formInner {
   margin: 0 auto;
   max-width: 36rem;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Load-bearing: unsets the containing block so .panel resolves against
+     .page and bleeds to the viewport's left edge. Do not make this relative. */
+  .introColumn {
+    position: static;
+    padding: 8rem 2rem;
+  }
+
+  .introInner {
+    margin: 0 0 0 auto;
+    max-width: 32rem;
+  }
+
+  .panel {
+    width: 50%;
+    border-bottom: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glow {
+    top: calc(50% - 7rem);
+  }
+
+  .formColumn {
+    padding: 8rem 2rem;
+  }
+
+  .formInner {
+    margin: 0 auto 0 0;
+    max-width: 32rem;
+  }
 }

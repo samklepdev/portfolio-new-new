@@ -21,7 +21,10 @@ export default function ContactPage() {
     <main className={styles.page}>
       <div className={styles.grid}>
         <div className={styles.introColumn}>
-          <div className={styles.panel} aria-hidden="true" />
+          <div className={styles.panel} aria-hidden="true">
+            <div className={styles.dots} />
+            <div className={styles.glow} />
+          </div>
 
           <div className={styles.introInner}>
             <Link href="/" className={styles.back}>
