@@ -23,7 +23,9 @@ export default function ContactPage() {
         <div className={styles.introColumn}>
           <div className={styles.panel} aria-hidden="true">
             <div className={styles.dots} />
-            <div className={styles.glow} />
+            <div className={styles.glow}>
+              <div className={styles.glowShape} />
+            </div>
           </div>
 
           <div className={styles.introInner}>
