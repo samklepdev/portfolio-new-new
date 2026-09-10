@@ -36,6 +36,11 @@ src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStati
                                 ContactSection, ContactForm
                   footer/     — Footer (site-wide, rendered outside <main>)
                   projects/   — ProjectGrid, ProjectCard, Pagination, ProjectTabs
+                  about/      — TechStack, Testimonials, Timeline (the /about page)
+                  brand/      — SbkLogo, shared by Header, Footer, and HeroLogoFlight
+                  contact/    — ContactMethods (the /contact page)
+                  ui/         — AvailabilityStatus, shared by /about, /contact, and
+                                the home ContactSection
 src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
 src/db/           schema.ts, index.ts (client), queries.ts, seed.ts
 src/content/      projects/{slug}.md — long-form case studies, read via src/lib/content.ts

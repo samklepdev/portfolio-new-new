@@ -104,11 +104,17 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className={styles.formColumn}>
+        <section
+          className={styles.formColumn}
+          aria-labelledby="contact-form-heading"
+        >
+          <h2 id="contact-form-heading" className={styles.srOnly}>
+            Send a message
+          </h2>
           <div className={styles.formInner}>
             <ContactForm />
           </div>
-        </div>
+        </section>
       </div>
     </main>
   );
