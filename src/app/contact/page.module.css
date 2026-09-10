@@ -1,7 +1,27 @@
 .page {
+  position: relative;
+  isolation: isolate;
+}
+
+.grid {
   margin: 0 auto;
-  max-width: 64rem;
-  padding: 6rem 2rem 8rem;
+  max-width: 80rem;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.introColumn {
+  position: relative;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.introInner {
+  margin: 0 auto;
+  max-width: 36rem;
+}
+
+.panel {
+  /* Task 3: bleeding dot-field background */
 }
 
 .back {
@@ -18,113 +38,36 @@
 
 .heading {
   margin-top: 1.5rem;
-  font-size: 2.5rem;
+  font-size: clamp(2.5rem, 5vw, 3rem);
   font-weight: 600;
+  letter-spacing: -0.02em;
   color: #ffffff;
 }
 
 .intro {
-  margin-top: 0.75rem;
-  margin-bottom: 3rem;
-  max-width: 40rem;
+  margin-top: 1.5rem;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.6);
 }
 
-.panel {
-  position: relative;
-  overflow: hidden;
-  padding: 3.5rem 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-  background-color: #12161f;
-  text-align: center;
-}
-
-.panel::before {
-  content: "";
-  position: absolute;
-  inset: -40% 20% auto;
-  height: 18rem;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 46, 151, 0.16),
-    transparent 70%
-  );
-  pointer-events: none;
-}
-
-@media (min-width: 768px) {
-  .panel {
-    padding: 4.5rem 3rem;
-  }
-}
-
 .status {
-  position: relative;
-  margin-bottom: 2rem;
-}
-
-.cta {
-  position: relative;
-  display: flex;
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.875rem 1.75rem;
-  border: 1px solid var(--neon-pink, #ff2e97);
-  border-radius: 0.5rem;
-  font-family: var(--font-mono, monospace);
-  font-size: 1rem;
-  color: var(--neon-pink, #ff2e97);
-  overflow-wrap: anywhere;
-  transition: background-color 200ms ease, box-shadow 200ms ease;
-}
-
-@media (max-width: 400px) {
-  .cta {
-    gap: 0.3125rem;
-    padding: 0.75rem 0.75rem;
-    font-size: 0.75rem;
-  }
-}
-
-.cta:hover,
-.cta:focus-visible {
-  background-color: rgba(255, 46, 151, 0.1);
-  box-shadow: 0 0 28px rgba(255, 46, 151, 0.22);
-}
-
-.cta:focus-visible {
-  outline: 2px solid var(--neon-pink, #ff2e97);
-  outline-offset: 3px;
-}
-
-.ctaArrow {
-  transition: transform 200ms ease;
-}
-
-.cta:hover .ctaArrow,
-.cta:focus-visible .ctaArrow {
-  transform: translateX(3px);
+  margin-top: 2rem;
 }
 
 .links {
-  position: relative;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1.75rem;
-  margin-top: 2.5rem;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  padding: 0;
 }
 
 .link {
   font-family: var(--font-mono, monospace);
-  font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.5);
   transition: color 200ms ease;
 }
 
@@ -133,22 +76,59 @@
   color: var(--neon-turquoise, #00f0ff);
 }
 
-.link:focus-visible {
-  outline: 2px solid var(--neon-turquoise, #00f0ff);
-  outline-offset: 3px;
-  border-radius: 0.25rem;
+.testimonial {
+  margin: 3rem 0 0;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .back,
-  .cta,
-  .ctaArrow,
-  .link {
-    transition: none;
-  }
+.testimonialLogo {
+  height: 3.25rem;
+  width: auto;
+  max-width: 10rem;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
 
-  .cta:hover .ctaArrow,
-  .cta:focus-visible .ctaArrow {
-    transform: none;
-  }
+.rating {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.quote {
+  margin: 0.75rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.attribution {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-top: 1.25rem;
+}
+
+.attributionName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.attributionRole {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.formColumn {
+  padding: 4rem 1.5rem 6rem;
+}
+
+.formInner {
+  margin: 0 auto;
+  max-width: 36rem;
 }
