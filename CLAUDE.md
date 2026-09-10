@@ -14,6 +14,8 @@ one would undo the point of the rebuild.
 ```bash
 npm run dev                # Next dev server
 npm run build              # production build (also type-checks and lints)
+npm run build:verify       # same build, into .next-verify — use this while dev is running
+npm run start:verify       # serve that build (add -p to avoid the dev server's port)
 npm run lint               # eslint
 
 npm run db:up              # start local Postgres container (docker compose up -d --wait)
@@ -65,6 +67,17 @@ reordered without touching any spacing.
 - `tsconfig.json` needs `baseUrl: "."` *and* `paths`. Paths alone does not resolve `@/…` in the
   bundler, and `tsc` passes even when the build would break — verify alias changes with `next build`,
   not just a type-check.
+
+**Never run `npm run build` while `next dev` is running.** They share one output directory, so
+the build deletes the dev server's compiled `layout.css` — the root layout stylesheet carrying
+`globals.css`, the font variables and every base style. Every page imports it, so that single
+404 strips styling *site-wide* and reads as a CSS regression some commit caused. It is not one.
+The two servers then keep overwriting each other. Use `npm run build:verify`, which writes to
+`.next-verify` via `distDir: process.env.NEXT_DIST_DIR` in `next.config.ts`. If you hit the
+symptom, check `curl -o /dev/null -w '%{http_code}' localhost:3000/_next/static/css/app/layout.css`
+— a 404 confirms it. The fix is to stop both servers, delete the build dir and restart, never to
+touch the code. Builds also need the DB container up (`npm run db:up`); `/projects/[slug]`'s
+`generateStaticParams` queries Postgres and its ECONNREFUSED also looks like a code error.
 
 **Styling — CSS Modules, never Tailwind.** Tailwind was deliberately stripped from the
 create-next-app default. Do not reintroduce `@tailwind` directives, `tailwind.config.ts`, or
