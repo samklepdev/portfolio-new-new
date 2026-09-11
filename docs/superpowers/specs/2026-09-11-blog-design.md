@@ -102,8 +102,28 @@ and Contact. `Header`'s `isActive` already uses `startsWith`, so `/blog/*` highl
 Replaces the placeholder stub. Structure matches `/projects`: `.page` at `max-width: 78rem`
 with `6rem 2rem` padding, mono back-link to Home, `.heading` at 2.5rem, `.intro` beneath it.
 
-Then, in order: featured band (page 1 and no active tag filter only) → tag chips → post list →
-pagination.
+Then, in order: featured band → tag chips → post list → pagination.
+
+`POSTS_PER_PAGE = 6`.
+
+### When the featured band renders
+
+All four must hold:
+
+1. Page 1.
+2. No active tag filter.
+3. At least one published post is `featured`.
+4. **At least `FEATURED_MIN_POSTS = 6` published posts exist in total.**
+
+Condition 4 is the gate. The band's job is to surface a few picks out of a list too long to take
+in at once; below a page's worth of posts it does the opposite, re-printing cards the reader can
+already see immediately beneath them. That redundancy is what got the testimonial cut from
+`/contact`. Six is one full page, so the band appears exactly when the list stops fitting on one
+screen and a shortcut starts being worth its space.
+
+Both constants live beside each other in `src/app/blog/page.tsx`. They are deliberately equal and
+should be kept that way — if `POSTS_PER_PAGE` changes, `FEATURED_MIN_POSTS` follows it, because
+the rule being encoded is "once the list fills a page," not "once there are six posts."
 
 `?page=` and `?tag=` are untrusted. `page` is parsed exactly like `parsePage` in
 `src/app/projects/page.tsx` — anything that is not a positive integer is 1 — and a page past the
@@ -150,7 +170,8 @@ The blog ships with one post, so most of these are the normal case at launch rat
 cases.
 
 - No posts at all → "No posts yet."
-- Nothing featured → the band is omitted entirely, not rendered empty.
+- Fewer than `FEATURED_MIN_POSTS`, or nothing featured → the band is omitted entirely, not
+  rendered empty. At launch this is the live behaviour, not a fallback.
 - Under two pages → `Pagination` already returns `null`.
 - No tags → the chip row is omitted.
 
@@ -161,9 +182,16 @@ stylesheet covers: `h2`, `h3`, paragraphs, bold, inline code, a fenced code bloc
 lists, a blockquote, a horizontal rule, and a link. Its purpose is to verify the styling, so it
 makes no factual claims.
 
-It is marked `featured: true` and carries two tags, so the featured band and the filter chips
-render rather than shipping unverified. Pagination cannot be exercised by one post and is
-covered by a unit test instead.
+It carries two tags, so the filter chips render on the live page rather than shipping unverified.
+
+It is **not** marked `featured`. With the band now gated at `FEATURED_MIN_POSTS`, the flag would
+have no visible effect at one post, so setting it would only plant a claim about the post that
+nothing honours — and would quietly change the page the moment a sixth post landed.
+
+Two components therefore ship without appearing on the live page at launch: `PostCard` and
+`Pagination`. Both are covered by unit tests instead, including a test that asserts the band is
+absent below the threshold *and* present above it, so the gate itself is verified rather than
+merely being the reason nothing renders.
 
 ## Testing
 
@@ -173,6 +201,10 @@ query layer the way `contact/page.test.tsx` mocks the server action.
 
 - `PostCard`, `PostList`, `TagFilter` render tests.
 - `blog/page.test.tsx` — exactly one `h1`, rows render, chip hrefs carry the right `?tag=`.
+- The featured-band gate, as its own set of cases: absent below `FEATURED_MIN_POSTS`, absent at
+  or above it when nothing is featured, absent on page 2, absent under an active tag filter,
+  present when all four conditions hold. This is the one piece of logic on the page that cannot
+  be checked by looking at the site, since its default state at launch is "not rendered."
 - `Pagination` returns `null` under two pages.
 - `content.ts` — collections stay scoped to their own directory, and the slug regex rejects
   path traversal.
