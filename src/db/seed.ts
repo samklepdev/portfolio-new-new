@@ -33,7 +33,7 @@ type ImportedProject = {
 };
 
 async function readProjects(): Promise<ImportedProject[]> {
-  const slugs = await getContentSlugs();
+  const slugs = await getContentSlugs("projects");
   const parsed: ImportedProject[] = [];
 
   for (const slug of slugs.sort()) {

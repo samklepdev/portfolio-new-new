@@ -21,7 +21,7 @@ type PageProps = {
 export async function generateStaticParams() {
   const [projects, contentSlugs] = await Promise.all([
     getPublishedProjects(),
-    getContentSlugs(),
+    getContentSlugs("projects"),
   ]);
   const withContent = new Set(contentSlugs);
 
