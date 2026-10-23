@@ -1,6 +1,6 @@
-import { and, count, eq, asc, desc, sql } from "drizzle-orm";
+import { and, count, eq, asc, desc, inArray, sql } from "drizzle-orm";
 import { db } from "./index";
-import { projects } from "./schema";
+import { posts, postTags, projects, tags } from "./schema";
 
 const publishedOrder = [
   desc(projects.featured),
@@ -76,4 +76,100 @@ export async function getProjectBySlug(slug: string) {
       metrics: { orderBy: (metrics, { asc }) => [asc(metrics.sortOrder)] },
     },
   });
+}
+
+// Postgres sorts NULLs FIRST on DESC, so an undated post would otherwise lead
+// the blog. `nulls last` pushes it to the end; `id asc` is the stable tiebreak
+// for posts sharing a date.
+const postOrder = [
+  sql`${posts.publishedAt} desc nulls last`,
+  asc(posts.id),
+];
+
+const withPostTags = { postTags: { with: { tag: true } } } as const;
+
+/** Post ids carrying a tag with this exact name. */
+function postIdsWithTag(tagName: string) {
+  return db
+    .select({ id: postTags.postId })
+    .from(postTags)
+    .innerJoin(tags, eq(postTags.tagId, tags.id))
+    .where(eq(tags.name, tagName));
+}
+
+export async function getPublishedPosts() {
+  return db.query.posts.findMany({
+    where: eq(posts.status, "published"),
+    orderBy: postOrder,
+    with: withPostTags,
+  });
+}
+
+export type PublishedPost = Awaited<ReturnType<typeof getPublishedPosts>>[number];
+
+export async function getPublishedPostsPage(
+  page: number,
+  perPage: number,
+  tagName?: string
+) {
+  const where = tagName
+    ? and(eq(posts.status, "published"), inArray(posts.id, postIdsWithTag(tagName)))
+    : eq(posts.status, "published");
+
+  const [rows, [totals]] = await Promise.all([
+    db.query.posts.findMany({
+      where,
+      orderBy: postOrder,
+      limit: perPage,
+      offset: (page - 1) * perPage,
+      with: withPostTags,
+    }),
+    db.select({ value: count() }).from(posts).where(where),
+  ]);
+
+  const total = totals?.value ?? 0;
+
+  return {
+    posts: rows,
+    total,
+    // At least 1, so an empty blog renders "page 1 of 1" rather than 404ing on
+    // its own only valid page.
+    totalPages: Math.max(1, Math.ceil(total / perPage)),
+  };
+}
+
+export async function getFeaturedPosts(limit = 3) {
+  return db.query.posts.findMany({
+    where: and(eq(posts.status, "published"), eq(posts.featured, true)),
+    orderBy: postOrder,
+    limit,
+    with: withPostTags,
+  });
+}
+
+export async function getPostBySlug(slug: string) {
+  return db.query.posts.findFirst({
+    where: eq(posts.slug, slug),
+    with: withPostTags,
+  });
+}
+
+export async function getPublishedPostsCount(): Promise<number> {
+  const [row] = await db
+    .select({ value: count() })
+    .from(posts)
+    .where(eq(posts.status, "published"));
+  return row?.value ?? 0;
+}
+
+/** Distinct tag names used by published posts, alphabetical. */
+export async function getPostTagNames(): Promise<string[]> {
+  const rows = await db
+    .selectDistinct({ name: tags.name })
+    .from(postTags)
+    .innerJoin(tags, eq(postTags.tagId, tags.id))
+    .innerJoin(posts, eq(postTags.postId, posts.id))
+    .where(eq(posts.status, "published"))
+    .orderBy(asc(tags.name));
+  return rows.map((row) => row.name);
 }
