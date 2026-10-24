@@ -31,7 +31,7 @@ First-time setup: `npm install && cp .env.example .env && npm run db:up && npm r
 ## Layout
 
 ```
-src/app/          routes — /, /about, /contact, /projects, /projects/[slug]
+src/app/          routes — /, /about, /contact, /projects, /projects/[slug], /blog, /blog/[slug]
 src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStaticFallback
                   header/     — Header (client; reveals after the hero)
                   home/       — ClientBand, AboutSection, ServicesSection, RingField,
@@ -41,11 +41,13 @@ src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStati
                   about/      — TechStack, Testimonials, Timeline (the /about page)
                   brand/      — SbkLogo, shared by Header, Footer, and HeroLogoFlight
                   contact/    — ContactMethods (the /contact page)
+                  blog/       — PostCard, PostList, TagFilter
                   ui/         — AvailabilityStatus, shared by /about, /contact, and
                                 the home ContactSection
 src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
 src/db/           schema.ts, index.ts (client), queries.ts, seed.ts
-src/content/      projects/{slug}.md — long-form case studies, read via src/lib/content.ts
+src/content/      projects/{slug}.md, posts/{slug}.md — read via src/lib/content.ts
+src/styles/       prose.module.css — shared MDX body styling for both detail pages
 drizzle/          generated migrations — COMMIT THESE, they are the applied-state source of truth
 ```
 Config files (`next.config.ts`, `drizzle.config.ts`, `docker-compose.yml`, `eslint.config.mjs`) and
@@ -237,11 +239,35 @@ spreads; that throws "not iterable". It can collapse once the project is on
     `pointer-events: none` and sits below `.body`'s `z-index: 1`.
   See `docs/superpowers/specs/2026-09-08-home-services-section-design.md` for the section
   and `docs/superpowers/specs/2026-09-08-home-services-bento-design.md` for the bento.
+- **Blog** — `/blog` and `/blog/[slug]`, adapted from the Radiant Tailwind template's
+  Sanity-backed pages and rebuilt as CSS Modules with no new dependency. Posts follow the
+  projects pipeline: MDX in `src/content/posts/{slug}.md`, queryable metadata in the `posts`
+  table, joined by `slug`. `post_tags` reuses the shared `tags` table with `kind: 'topic'`.
+  Four things are load-bearing:
+  - **The seed's orphan-tag cleanup must check both `project_tags` and `post_tags`.** It
+    originally checked only `project_tags`; once posts existed that deleted every topic tag on
+    every `db:seed` run, and `post_tags.tag_id` is `ON DELETE CASCADE`, so it silently took the
+    post/tag links with it. The seed still succeeded and printed a cheerful count.
+  - **The featured band is gated at `FEATURED_MIN_POSTS`, which must stay equal to
+    `POSTS_PER_PAGE`.** The rule being encoded is "once the list fills a page", not "once there
+    are six posts" — below that the band re-prints cards already visible directly beneath it.
+    Its default state is *not rendered*, so only the tests in `blog/page.test.tsx` stand behind
+    it.
+  - **`PostCard`, `PostList` and `TagFilter` are synchronous on purpose.** `ProjectCard` is
+    `async` because it awaits `resolvePublicImage`; testing-library cannot resolve an async
+    child inside a rendered tree, so `/blog` resolves covers itself and passes `coverSrc` down.
+    Making any of the three async breaks `blog/page.test.tsx` in a way that reads as a mocking
+    problem.
+  - **Post dates are formatted with `Intl.DateTimeFormat` pinned to `timeZone: "UTC"`.**
+    `publishedAt` is date-only; formatting it in the server's zone and again in the visitor's
+    lands on different calendar days and trips a hydration mismatch.
+  See `docs/superpowers/specs/2026-09-11-blog-design.md`.
 
 ## Not yet built — in order
 
 1. **Polish** — scroll-reveal on the grid, hover glow states, `@vercel/og` per-project OG images,
-   `shiki`/`rehype-pretty-code` highlighting, reading time, last-updated from git metadata.
+   `shiki`/`rehype-pretty-code` highlighting, ~~reading time~~ (shipped with the blog),
+   last-updated from git metadata.
 
 ## Possible future additions
 

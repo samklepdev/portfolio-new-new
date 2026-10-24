@@ -15,13 +15,17 @@ import { resolvePublicImage } from "@/lib/content";
 import { tagSlug } from "@/lib/tagSlug";
 import styles from "./page.module.css";
 
-export const POSTS_PER_PAGE = 6;
+// Not exported: Next.js 15 validates a page file's exports against a fixed
+// set of recognised fields (default, metadata, generateStaticParams, ...),
+// and rejects anything else as an invalid page export. Nothing outside this
+// file needs these, so they stay module-local consts.
+const POSTS_PER_PAGE = 6;
 
 // The featured band's job is to surface picks out of a list too long to take in
 // at once. Below one page's worth it just re-prints cards the reader can
 // already see. Keep this equal to POSTS_PER_PAGE — the rule is "once the list
 // fills a page", not "once there are six posts".
-export const FEATURED_MIN_POSTS = 6;
+const FEATURED_MIN_POSTS = 6;
 
 type BlogPageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
