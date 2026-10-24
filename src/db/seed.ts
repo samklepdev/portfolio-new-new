@@ -1,8 +1,13 @@
 import "dotenv/config";
-import { eq, notInArray, sql } from "drizzle-orm";
+import { and, eq, notInArray, sql } from "drizzle-orm";
 import { client, db } from "./index";
-import { projects, tags, projectTags } from "./schema";
-import { getContentSlugs, getProjectContent } from "../lib/content";
+import { projects, tags, projectTags, posts, postTags } from "./schema";
+import {
+  getContentSlugs,
+  getProjectContent,
+  getPostContent,
+} from "../lib/content";
+import { readingMinutes } from "../lib/postFormat";
 
 const FEATURED_SLUGS = new Set(["build-on", "gulf-winds", "otc"]);
 
@@ -74,6 +79,55 @@ async function readProjects(): Promise<ImportedProject[]> {
   return parsed;
 }
 
+type ImportedPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  publishedAt: string | null;
+  coverImage: string | null;
+  featured: boolean;
+  status: string;
+  readingMinutes: number;
+  tags: string[];
+};
+
+async function readPosts(): Promise<ImportedPost[]> {
+  const slugs = await getContentSlugs("posts");
+  const parsed: ImportedPost[] = [];
+
+  for (const slug of slugs.sort()) {
+    const content = await getPostContent(slug);
+    if (!content) continue;
+
+    const fm = content.frontmatter;
+    const title = str(fm.title);
+    const excerpt = str(fm.excerpt);
+
+    if (!title || !excerpt) {
+      console.warn(`  skipping ${slug}: missing ${!title ? "title" : "excerpt"}`);
+      continue;
+    }
+
+    const postTagNames = Array.isArray(fm.tags)
+      ? fm.tags.map((tag) => str(tag)).filter((tag): tag is string => tag !== null)
+      : [];
+
+    parsed.push({
+      slug,
+      title,
+      excerpt,
+      publishedAt: str(fm.publishedAt),
+      coverImage: str(fm.coverImage),
+      featured: fm.featured === true,
+      status: str(fm.status) ?? "published",
+      readingMinutes: readingMinutes(content.body),
+      tags: postTagNames,
+    });
+  }
+
+  return parsed;
+}
+
 async function seed() {
   const imported = await readProjects();
 
@@ -84,6 +138,9 @@ async function seed() {
   }
 
   console.log(`Read ${imported.length} project files.`);
+
+  const importedPosts = await readPosts();
+  console.log(`Read ${importedPosts.length} post files.`);
 
   const techByName = new Map<string, string | null>();
   for (const project of imported) {
@@ -167,6 +224,96 @@ async function seed() {
   }
   console.log(`  ${linkCount} project/tag links`);
 
+  const topicNames = [...new Set(importedPosts.flatMap((post) => post.tags))];
+  const topicIdByName = new Map<string, number>();
+
+  if (topicNames.length > 0) {
+    const topicRows = await db
+      .insert(tags)
+      .values(topicNames.map((name) => ({ name, kind: "topic", iconUrl: null })))
+      .onConflictDoUpdate({
+        target: tags.name,
+        set: { kind: sql`excluded.kind` },
+      })
+      .returning();
+
+    for (const tag of topicRows) topicIdByName.set(tag.name, tag.id);
+    console.log(`  ${topicRows.length} topic tags`);
+  }
+
+  if (importedPosts.length > 0) {
+    const postRows = await db
+      .insert(posts)
+      .values(
+        importedPosts.map((post) => ({
+          slug: post.slug,
+          title: post.title,
+          excerpt: post.excerpt,
+          publishedAt: post.publishedAt,
+          coverImage: post.coverImage,
+          featured: post.featured,
+          status: post.status,
+          readingMinutes: post.readingMinutes,
+        }))
+      )
+      .onConflictDoUpdate({
+        target: posts.slug,
+        set: {
+          title: sql`excluded.title`,
+          excerpt: sql`excluded.excerpt`,
+          publishedAt: sql`excluded.published_at`,
+          coverImage: sql`excluded.cover_image`,
+          featured: sql`excluded.featured`,
+          status: sql`excluded.status`,
+          readingMinutes: sql`excluded.reading_minutes`,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+
+    const postIdBySlug = new Map(postRows.map((row) => [row.slug, row.id]));
+    console.log(`  ${postRows.length} posts`);
+
+    let postLinkCount = 0;
+    for (const post of importedPosts) {
+      const postId = postIdBySlug.get(post.slug);
+      if (!postId) continue;
+
+      await db.delete(postTags).where(eq(postTags.postId, postId));
+
+      const links = post.tags
+        .map((name) => topicIdByName.get(name))
+        .filter((tagId): tagId is number => tagId !== undefined)
+        .map((tagId) => ({ postId, tagId }));
+
+      if (links.length > 0) {
+        await db.insert(postTags).values(links).onConflictDoNothing();
+        postLinkCount += links.length;
+      }
+    }
+    console.log(`  ${postLinkCount} post/tag links`);
+  }
+
+  const removedPosts = await db
+    .delete(posts)
+    .where(
+      notInArray(
+        posts.slug,
+        importedPosts.length > 0
+          ? importedPosts.map((post) => post.slug)
+          : [""]
+      )
+    )
+    .returning({ slug: posts.slug });
+
+  if (removedPosts.length > 0) {
+    console.log(
+      `  removed ${removedPosts.length} stale post(s): ${removedPosts
+        .map((row) => row.slug)
+        .join(", ")}`
+    );
+  }
+
   const removed = await db
     .delete(projects)
     .where(
@@ -185,12 +332,16 @@ async function seed() {
     );
   }
 
+  // A tag is orphaned only when NEITHER projects NOR posts reference it.
+  // Checking project_tags alone would delete every topic tag on every run —
+  // and post_tags.tag_id is ON DELETE CASCADE, so it would silently take the
+  // post/tag links with it.
   const orphanTags = await db
     .delete(tags)
     .where(
-      notInArray(
-        tags.id,
-        db.select({ id: projectTags.tagId }).from(projectTags)
+      and(
+        notInArray(tags.id, db.select({ id: projectTags.tagId }).from(projectTags)),
+        notInArray(tags.id, db.select({ id: postTags.tagId }).from(postTags))
       )
     )
     .returning({ name: tags.name });
