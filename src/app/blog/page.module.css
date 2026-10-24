@@ -1,0 +1,68 @@
+.page {
+  margin: 0 auto;
+  max-width: 78rem;
+  padding: 6rem 2rem;
+}
+
+.back {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 200ms ease;
+}
+
+.back:hover,
+.back:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.heading {
+  margin-top: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.intro {
+  margin-top: 0.75rem;
+  margin-bottom: 3rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.featured {
+  margin-bottom: 3rem;
+}
+
+.featuredHeading {
+  margin-bottom: 1.25rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.featuredGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .featuredGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .featuredGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back {
+    transition: none;
+  }
+}
