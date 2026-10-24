@@ -10,6 +10,7 @@ import {
 } from "@/lib/content";
 import { ProjectTabs, type ProjectTab } from "@/components/projects/ProjectTabs";
 import styles from "./page.module.css";
+import prose from "@/styles/prose.module.css";
 
 export const revalidate = 60;
 
@@ -119,7 +120,7 @@ export default async function ProjectPage({ params }: PageProps) {
         )}
       </header>
 
-      <article className={styles.prose}>
+      <article className={prose.prose}>
         <MDXRemote source={content.body} />
       </article>
 

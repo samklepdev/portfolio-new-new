@@ -1,0 +1,86 @@
+/* Shared MDX body styling for /projects/[slug] and /blog/[slug].
+   Both detail pages render MDXRemote output into this container. Keep it here
+   rather than duplicating into each page module — two copies drift. */
+
+.prose {
+  margin-top: 3rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.prose h2 {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose h3 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose a {
+  color: var(--neon-turquoise, #00f0ff);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: 0.5rem;
+}
+
+.prose strong {
+  color: #ffffff;
+}
+
+.prose blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(0, 240, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prose code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.07);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875em;
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  background-color: #12161f;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
