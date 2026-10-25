@@ -2,22 +2,31 @@ import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 
-const CONTENT_DIR = path.join(process.cwd(), "src", "content", "projects");
+export type Collection = "projects" | "posts";
+
+const CONTENT_ROOT = path.join(process.cwd(), "src", "content");
 const CONTENT_EXT = ".md";
 
-export type ProjectContent = {
+export type ContentFile = {
   body: string;
   frontmatter: Record<string, unknown>;
 };
 
-export async function getProjectContent(
+function collectionDir(collection: Collection): string {
+  return path.join(CONTENT_ROOT, collection);
+}
+
+export async function getContent(
+  collection: Collection,
   slug: string
-): Promise<ProjectContent | null> {
+): Promise<ContentFile | null> {
+  // The slug reaches this from a URL segment. Anything outside [a-z0-9-]
+  // is rejected before it can become a path — no traversal, no absolute paths.
   if (!/^[a-z0-9-]+$/.test(slug)) return null;
 
   try {
     const raw = await readFile(
-      path.join(CONTENT_DIR, `${slug}${CONTENT_EXT}`),
+      path.join(collectionDir(collection), `${slug}${CONTENT_EXT}`),
       "utf8"
     );
     const { content, data } = matter(raw);
@@ -26,6 +35,14 @@ export async function getProjectContent(
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw error;
   }
+}
+
+export function getProjectContent(slug: string): Promise<ContentFile | null> {
+  return getContent("projects", slug);
+}
+
+export function getPostContent(slug: string): Promise<ContentFile | null> {
+  return getContent("posts", slug);
 }
 
 const PUBLIC_DIR = path.join(process.cwd(), "public");
@@ -46,9 +63,11 @@ export async function resolvePublicImage(
   }
 }
 
-export async function getContentSlugs(): Promise<string[]> {
+export async function getContentSlugs(
+  collection: Collection
+): Promise<string[]> {
   try {
-    const files = await readdir(CONTENT_DIR);
+    const files = await readdir(collectionDir(collection));
     return files
       .filter((file) => file.endsWith(CONTENT_EXT))
       .map((file) => file.slice(0, -CONTENT_EXT.length));

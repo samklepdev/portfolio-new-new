@@ -5,9 +5,15 @@ type PaginationProps = {
   page: number;
   totalPages: number;
   basePath: string;
+  label?: string;
 };
 
-export function Pagination({ page, totalPages, basePath }: PaginationProps) {
+export function Pagination({
+  page,
+  totalPages,
+  basePath,
+  label = "Projects pagination",
+}: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const href = (n: number) => (n === 1 ? basePath : `${basePath}?page=${n}`);
@@ -15,7 +21,7 @@ export function Pagination({ page, totalPages, basePath }: PaginationProps) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <nav className={styles.pagination} aria-label="Projects pagination">
+    <nav className={styles.pagination} aria-label={label}>
       {page > 1 ? (
         <Link href={href(page - 1)} rel="prev" className={styles.step}>
           <span aria-hidden="true">←</span> Prev

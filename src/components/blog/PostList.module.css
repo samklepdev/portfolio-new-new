@@ -1,0 +1,123 @@
+.list {
+  list-style: none;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.row:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: 14rem 1fr;
+    gap: 2rem;
+  }
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .meta {
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+}
+
+.date {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.reading {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.main {
+  max-width: 46rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Stretches the title's link over the whole row so the entire row is the hit
+   target, without nesting interactive elements. */
+.hit {
+  position: absolute;
+  inset: 0;
+}
+
+.link {
+  transition: color 200ms ease;
+}
+
+.link:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+  outline: 2px solid var(--neon-turquoise, #00f0ff);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .link {
+    color: var(--neon-turquoise, #00f0ff);
+  }
+}
+
+.excerpt {
+  margin-top: 0.625rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: var(--neon-pink, #ff2e97);
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .arrow {
+    transform: translateX(3px);
+  }
+}
+
+.empty {
+  padding: 2.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .arrow {
+    transition: none;
+  }
+
+  .row:hover .arrow {
+    transform: none;
+  }
+}
