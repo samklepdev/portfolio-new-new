@@ -1,0 +1,94 @@
+.header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-bottom: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background-color: #12161f;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Two elements on purpose: clip-path applies after filter, so blur + clip on one
+   element re-clips the blur back to hard polygon edges. The blur lives on the
+   wrapper; the clip on the child. Position is tuned for a wide, short band (the
+   contact panel's glow sits lower for a tall panel). */
+.glow {
+  position: absolute;
+  bottom: -18rem;
+  left: -8rem;
+  width: 56rem;
+  aspect-ratio: 1155 / 678;
+  filter: blur(64px);
+}
+
+.glowShape {
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+  background-image: linear-gradient(
+    to bottom right,
+    var(--neon-purple, #b026ff),
+    var(--neon-turquoise, #00f0ff)
+  );
+  clip-path: polygon(
+    74.1% 56.1%, 100% 38.6%, 97.5% 73.3%, 85.5% 100%, 80.7% 98.2%,
+    72.5% 67.7%, 60.2% 37.8%, 52.4% 32.2%, 47.5% 41.9%, 45.2% 65.8%,
+    27.5% 23.5%, 0.1% 35.4%, 17.9% 0.1%, 27.6% 23.5%, 76.1% 2.6%, 74.1% 56.1%
+  );
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding: 3rem 2rem;
+}
+
+.back {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 200ms ease;
+}
+
+.back:focus-visible {
+  color: var(--neon-turquoise, #00f0ff);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .back:hover {
+    color: var(--neon-turquoise, #00f0ff);
+  }
+}
+
+.title {
+  margin-top: 1.5rem;
+  font-size: clamp(2.5rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.subtitle {
+  margin-top: 1rem;
+  max-width: 46rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back {
+    transition: none;
+  }
+}

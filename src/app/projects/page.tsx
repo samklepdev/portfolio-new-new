@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Pagination } from "@/components/projects/Pagination";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { getPublishedProjectsPage } from "@/db/queries";
 import styles from "./page.module.css";
 
@@ -50,19 +50,21 @@ export default async function ProjectsPage({
 
   return (
     <main className={styles.page}>
-      <Link href="/" className={styles.back}>
-        <span aria-hidden="true">←</span> Home
-      </Link>
-      <h1 className={styles.heading}>Projects</h1>
-      <p className={styles.intro}>
-        Everything published, most recent first.
-        {total > PER_PAGE && (
-          <span className={styles.count}>
-            {" "}
-            Showing {first}–{last} of {total}.
-          </span>
-        )}
-      </p>
+      <PageHeader
+        title="Projects"
+        backLinkText="Home"
+        subtitle={
+          <>
+            Everything published, most recent first.
+            {total > PER_PAGE && (
+              <span className={styles.count}>
+                {" "}
+                Showing {first}–{last} of {total}.
+              </span>
+            )}
+          </>
+        }
+      />
       <ProjectGrid projects={projects} columns={3} />
       <Pagination page={page} totalPages={totalPages} basePath="/projects" />
     </main>

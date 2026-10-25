@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactMethods } from "@/components/contact/ContactMethods";
-import { ContourField } from "@/components/contact/ContourField";
+import { ContourField } from "@/components/ui/ContourField";
 import { ContactForm } from "@/components/home/ContactForm";
 import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
 import { RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";

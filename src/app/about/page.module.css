@@ -4,26 +4,6 @@
   padding: 6rem 2rem 8rem;
 }
 
-.back {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.5);
-  transition: color 200ms ease;
-}
-
-.back:hover,
-.back:focus-visible {
-  color: var(--neon-turquoise, #00f0ff);
-}
-
-.heading {
-  margin-top: 1.5rem;
-  margin-bottom: 3rem;
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: #ffffff;
-}
-
 .inner {
   display: flex;
   flex-direction: column;
@@ -190,7 +170,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .back,
   .resume,
   .contact,
   .social {
