@@ -28,7 +28,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
 
-  if (!project || project.status !== "published") {
+  if (!project || project.status !== "published" || !project.content) {
     return { title: "Not found — Sam Klepper" };
   }
 

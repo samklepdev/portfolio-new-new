@@ -234,7 +234,22 @@ async function run() {
   console.log("Import complete.");
 }
 
-run()
+async function main() {
+  if (process.env.IMPORT_CONFIRM !== "1") {
+    console.error(
+      "Refusing to run db:import.\n" +
+        "This is a ONE-TIME migration, not a sync: it overwrites every project/post's\n" +
+        "content and metadata from src/content/*.md and DELETES any project, post, or tag\n" +
+        "not backed by a file. Re-running it after go-live erases admin-authored content.\n" +
+        "If you are sure, set IMPORT_CONFIRM=1 to proceed."
+    );
+    process.exitCode = 1;
+    return;
+  }
+  await run();
+}
+
+main()
   .catch((err) => {
     console.error("Import failed:", err);
     process.exitCode = 1;

@@ -10,6 +10,7 @@ studies, blog posts) lives in the `content` column of `projects`/`posts`, alongs
 queryable metadata (tags, dates, status, links). The MDX files under `src/content/` were
 the original source and were migrated into the DB once via `npm run db:import`
 (`src/db/import-content/`); they are now a historical backup, not read at runtime.
+`npm run db:import` is one-directional and destructive: it is the one-time file→DB migration, requires `IMPORT_CONFIRM=1`, and re-running it overwrites DB content and deletes rows (including admin-authored ones) not present as files — never run it as a "sync".
 
 `npm run db:seed` is a **dev-only bootstrap** that inserts a couple of sample rows into a
 fresh local database. It is NOT the source of truth and must never be treated as one —
@@ -31,7 +32,8 @@ npm run db:down            # stop it; `docker compose down -v` also wipes the vo
 npm run db:generate        # ONLY after editing src/db/schema.ts — emits a new drizzle/*.sql
 npm run db:migrate         # apply pending migrations
 npm run db:seed            # dev-only bootstrap (sample rows); NOT the source of truth
-npm run db:import          # one-time: migrate src/content/*.md into the DB
+npm run db:import          # one-time migration; DESTRUCTIVE re-run (overwrites/deletes DB
+                           # rows not backed by a file) — requires IMPORT_CONFIRM=1
 npm run db:studio          # drizzle-kit studio
 ```
 

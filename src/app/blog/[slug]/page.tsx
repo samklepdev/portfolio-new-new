@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
-  if (!post || post.status !== "published") {
+  if (!post || post.status !== "published" || !post.content) {
     return { title: "Not found — Sam Klepper" };
   }
 
