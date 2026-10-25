@@ -5,6 +5,7 @@ import { Testimonials } from "@/components/about/Testimonials";
 import { TechStack } from "@/components/about/TechStack";
 import { Timeline } from "@/components/about/Timeline";
 import { AvailabilityStatus } from "@/components/ui/AvailabilityStatus";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { RESUME_URL, SOCIAL_LINKS } from "@/lib/siteLinks";
 import styles from "./page.module.css";
 
@@ -17,10 +18,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className={styles.page}>
-      <Link href="/" className={styles.back}>
-        <span aria-hidden="true">←</span> Home
-      </Link>
-      <h1 className={styles.heading}>About</h1>
+      <PageHeader title="About" backLinkText="Home" />
 
       <div className={styles.inner}>
         <aside className={styles.rail}>
