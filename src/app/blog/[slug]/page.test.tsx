@@ -5,8 +5,6 @@ import type { PublishedPost } from "@/db/queries";
 const mocks = vi.hoisted(() => ({
   getPostBySlug: vi.fn(),
   getPublishedPosts: vi.fn(),
-  getPostContent: vi.fn(),
-  getContentSlugs: vi.fn(),
   resolvePublicImage: vi.fn(),
 }));
 
@@ -16,8 +14,6 @@ vi.mock("@/db/queries", () => ({
 }));
 
 vi.mock("@/lib/content", () => ({
-  getPostContent: mocks.getPostContent,
-  getContentSlugs: mocks.getContentSlugs,
   resolvePublicImage: mocks.resolvePublicImage,
 }));
 
@@ -45,6 +41,7 @@ const post: PublishedPost = {
   publishedAt: "2026-09-11",
   coverImage: null,
   readingMinutes: 4,
+  content: "Body text.",
   createdAt: new Date(),
   updatedAt: new Date(),
   postTags: [{ tag: { id: 3, name: "Next", kind: "topic", iconUrl: null } }],
@@ -61,10 +58,7 @@ describe("BlogPostPage", () => {
 
   it("renders the post header and body", async () => {
     mocks.getPostBySlug.mockResolvedValue(post);
-    mocks.getPostContent.mockResolvedValue({ body: "Body text.", frontmatter: {} });
-
     await renderPage("hello-world");
-
     expect(screen.getByRole("heading", { level: 1, name: "Hello World" })).toBeInTheDocument();
     expect(screen.getByText(/September 11, 2026/)).toBeInTheDocument();
     expect(screen.getByText(/4 min read/)).toBeInTheDocument();
@@ -74,39 +68,32 @@ describe("BlogPostPage", () => {
 
   it("links back to the blog index", async () => {
     mocks.getPostBySlug.mockResolvedValue(post);
-    mocks.getPostContent.mockResolvedValue({ body: "x", frontmatter: {} });
-
     await renderPage("hello-world");
     expect(screen.getByRole("link", { name: /Blog/ })).toHaveAttribute("href", "/blog");
   });
 
   it("404s when the row is missing", async () => {
     mocks.getPostBySlug.mockResolvedValue(undefined);
-    mocks.getPostContent.mockResolvedValue({ body: "x", frontmatter: {} });
     await expect(renderPage("nope")).rejects.toThrow("NEXT_NOT_FOUND");
   });
 
   it("404s when the row is a draft", async () => {
     mocks.getPostBySlug.mockResolvedValue({ ...post, status: "draft" });
-    mocks.getPostContent.mockResolvedValue({ body: "x", frontmatter: {} });
     await expect(renderPage("hello-world")).rejects.toThrow("NEXT_NOT_FOUND");
   });
 
-  it("404s when the MDX file is missing", async () => {
-    mocks.getPostBySlug.mockResolvedValue(post);
-    mocks.getPostContent.mockResolvedValue(null);
+  it("404s when content is empty", async () => {
+    mocks.getPostBySlug.mockResolvedValue({ ...post, content: null });
     await expect(renderPage("hello-world")).rejects.toThrow("NEXT_NOT_FOUND");
   });
 });
 
 describe("generateStaticParams", () => {
-  it("only prerenders slugs that have both a row and a file", async () => {
+  it("prerenders only published slugs that have content", async () => {
     mocks.getPublishedPosts.mockResolvedValue([
-      { ...post, slug: "has-file" },
-      { ...post, slug: "row-only" },
+      { ...post, slug: "has-content" },
+      { ...post, slug: "no-content", content: null },
     ]);
-    mocks.getContentSlugs.mockResolvedValue(["has-file", "file-only"]);
-
-    expect(await generateStaticParams()).toEqual([{ slug: "has-file" }]);
+    expect(await generateStaticParams()).toEqual([{ slug: "has-content" }]);
   });
 });
