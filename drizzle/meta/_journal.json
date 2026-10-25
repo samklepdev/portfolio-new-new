@@ -36,6 +36,13 @@
       "when": 1792769589269,
       "tag": "0004_nasty_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792967565390,
+      "tag": "0005_bored_kree",
+      "breakpoints": true
     }
   ]
 }

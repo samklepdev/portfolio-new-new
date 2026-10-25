@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getPublishedPosts } from "@/db/queries";
-import { getContentSlugs, getPostContent, resolvePublicImage } from "@/lib/content";
+import { resolvePublicImage } from "@/lib/content";
 import { formatPostDate } from "@/lib/postFormat";
 import prose from "@/styles/prose.module.css";
 import styles from "./page.module.css";
@@ -17,16 +17,9 @@ type PageProps = {
 };
 
 export async function generateStaticParams() {
-  const [posts, contentSlugs] = await Promise.all([
-    getPublishedPosts(),
-    getContentSlugs("posts"),
-  ]);
-  const withContent = new Set(contentSlugs);
-
-  // A row without a file would prerender a dead page, so only the intersection
-  // is generated.
+  const posts = await getPublishedPosts();
   return posts
-    .filter((post) => withContent.has(post.slug))
+    .filter((post) => Boolean(post.content))
     .map((post) => ({ slug: post.slug }));
 }
 
@@ -34,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
-  if (!post || post.status !== "published") {
+  if (!post || post.status !== "published" || !post.content) {
     return { title: "Not found — Sam Klepper" };
   }
 
@@ -47,12 +40,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const [post, content] = await Promise.all([
-    getPostBySlug(slug),
-    getPostContent(slug),
-  ]);
+  const post = await getPostBySlug(slug);
 
-  if (!post || post.status !== "published" || !content) {
+  if (!post || post.status !== "published" || !post.content) {
     notFound();
   }
 
@@ -102,7 +92,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       )}
 
       <article className={prose.prose}>
-        <MDXRemote source={content.body} />
+        <MDXRemote source={post.content} />
       </article>
     </main>
   );

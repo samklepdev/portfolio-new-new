@@ -4,10 +4,19 @@
 
 Personal portfolio. **Next.js 15 (App Router) + React 19 + TypeScript + PostgreSQL + MDX.**
 
-Replaces an earlier Express/Sequelize CMS (`port-new`). The governing decision: **no build-your-own
-CMS.** Long-form content lives in MDX files in this repo; Postgres holds only queryable metadata
-(tags, dates, status, links). The two are joined by `slug`. There is no admin CRUD app and adding
-one would undo the point of the rebuild.
+Replaces an earlier Express/Sequelize CMS (`port-new`). **Postgres is the source of
+truth**, and `/admin` is the CMS that writes to it: long-form content (project case
+studies, blog posts) lives in the `content` column of `projects`/`posts`, alongside the
+queryable metadata (tags, dates, status, links). The MDX files under `src/content/` were
+the original source and were migrated into the DB once via `npm run db:import`
+(`src/db/import-content/`); they are now a historical backup, not read at runtime.
+`npm run db:import` is one-directional and destructive: it is the one-time file→DB migration, requires `IMPORT_CONFIRM=1`, and re-running it overwrites DB content and deletes rows (including admin-authored ones) not present as files — never run it as a "sync".
+
+`npm run db:seed` is a **dev-only bootstrap** that inserts a couple of sample rows into a
+fresh local database. It is NOT the source of truth and must never be treated as one —
+re-running it must never be a way to "restore" content, because it would not contain the
+real content. The admin edits the database directly; see
+`docs/superpowers/specs/2026-10-25-admin-cms-design.md`.
 
 ## Commands
 
@@ -22,7 +31,9 @@ npm run db:up              # start local Postgres container (docker compose up -
 npm run db:down            # stop it; `docker compose down -v` also wipes the volume
 npm run db:generate        # ONLY after editing src/db/schema.ts — emits a new drizzle/*.sql
 npm run db:migrate         # apply pending migrations
-npm run db:seed            # idempotent, safe to re-run
+npm run db:seed            # dev-only bootstrap (sample rows); NOT the source of truth
+npm run db:import          # one-time migration; DESTRUCTIVE re-run (overwrites/deletes DB
+                           # rows not backed by a file) — requires IMPORT_CONFIRM=1
 npm run db:studio          # drizzle-kit studio
 ```
 
@@ -45,8 +56,11 @@ src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStati
                   ui/         — AvailabilityStatus, shared by /about, /contact, and
                                 the home ContactSection
 src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
-src/db/           schema.ts, index.ts (client), queries.ts, seed.ts
-src/content/      projects/{slug}.md, posts/{slug}.md — read via src/lib/content.ts
+src/db/           schema.ts, index.ts (client), queries.ts, seed.ts (dev bootstrap),
+                  import-content/ (one-time MDX → DB importer, `db:import`)
+src/content/      projects/{slug}.md, posts/{slug}.md — historical backup only; migrated
+                  into the DB via `db:import`, NOT read at runtime (src/lib/content.ts's
+                  file readers are used only by the importer; pages read from Postgres)
 src/styles/       prose.module.css — shared MDX body styling for both detail pages
 drizzle/          generated migrations — COMMIT THESE, they are the applied-state source of truth
 ```
