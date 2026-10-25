@@ -54,8 +54,11 @@ src/components/   hero/       — HeroSection (GSAP), HeroScene (R3F), HeroStati
                   ui/         — AvailabilityStatus, shared by /about, /contact, and
                                 the home ContactSection
 src/lib/          scrollStore.ts (Zustand), useDeviceTier.ts, content.ts
-src/db/           schema.ts, index.ts (client), queries.ts, seed.ts
-src/content/      projects/{slug}.md, posts/{slug}.md — read via src/lib/content.ts
+src/db/           schema.ts, index.ts (client), queries.ts, seed.ts (dev bootstrap),
+                  import-content/ (one-time MDX → DB importer, `db:import`)
+src/content/      projects/{slug}.md, posts/{slug}.md — historical backup only; migrated
+                  into the DB via `db:import`, NOT read at runtime (src/lib/content.ts's
+                  file readers are used only by the importer; pages read from Postgres)
 src/styles/       prose.module.css — shared MDX body styling for both detail pages
 drizzle/          generated migrations — COMMIT THESE, they are the applied-state source of truth
 ```
