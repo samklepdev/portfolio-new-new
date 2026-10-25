@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Pagination } from "@/components/projects/Pagination";
 import { PostCard } from "@/components/blog/PostCard";
 import { PostList } from "@/components/blog/PostList";
@@ -87,14 +87,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
   return (
     <main className={styles.page}>
-      <Link href="/" className={styles.back}>
-        <span aria-hidden="true">←</span> Home
-      </Link>
-
-      <h1 className={styles.heading}>Blog</h1>
-      <p className={styles.intro}>
-        Notes on building things — what broke, and what the fix actually was.
-      </p>
+      <PageHeader
+        title="Blog"
+        backLinkText="Home"
+        subtitle="Notes on building things — what broke, and what the fix actually was."
+      />
 
       {featuredCards.length > 0 && (
         <section className={styles.featured} aria-labelledby="featured-heading">
