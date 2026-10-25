@@ -45,6 +45,17 @@ Built strictly in dependency order:
 - `projects.content: text` — nullable (so the migration applies before backfill), holds
   the MDX/markdown body.
 - `posts.content: text` — same.
+- **`projects` Tech/Design tab columns** (all nullable text): `techDescription`,
+  `techTabImage`, `techTabImageAlt`, `designDescription`, `designTabImage`,
+  `designTabImageAlt`. The project detail page's tabbed section
+  (`projects/[slug]/page.tsx` `buildTabs`) currently reads these from MDX *frontmatter*
+  (`techDescription`, `techTabImg`, `techTabImgAlt`, `designDescription`, `designTabImg`,
+  `designTabImgAlt`), which have no DB equivalent. Without columns, retiring the files
+  silently loses the tabs. There are exactly two fixed tabs, so flat columns (not a
+  `project_tabs` table) are the YAGNI choice.
+
+Posts need **only** `content` — the blog detail page already sources everything else
+(title, excerpt, date, tags, cover, reading time) from the DB row.
 
 No other column changes. `tags`, `project_metrics`, `project_tags`/`post_tags`, and
 `contact_submissions` are already shaped for the admin's needs.
