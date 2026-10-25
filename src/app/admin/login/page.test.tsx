@@ -43,4 +43,40 @@ describe("AdminLoginPage", () => {
     expect(await screen.findByText("Incorrect password")).toBeInTheDocument();
     expect(push).not.toHaveBeenCalled();
   });
+
+  it("honors a safe /admin sub-path from ?from", async () => {
+    (fetch as unknown as vi.Mock).mockResolvedValue({ ok: true });
+    window.history.replaceState({}, "", "/admin/login?from=/admin/projects");
+    render(<AdminLoginPage />);
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "secret" } });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/admin/projects"));
+  });
+
+  it("ignores an absolute external ?from (open-redirect guard)", async () => {
+    (fetch as unknown as vi.Mock).mockResolvedValue({ ok: true });
+    window.history.replaceState({}, "", "/admin/login?from=https://evil.com");
+    render(<AdminLoginPage />);
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "secret" } });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/admin"));
+  });
+
+  it("ignores a protocol-relative ?from and a non-admin path", async () => {
+    (fetch as unknown as vi.Mock).mockResolvedValue({ ok: true });
+    window.history.replaceState({}, "", "/admin/login?from=//evil.com");
+    render(<AdminLoginPage />);
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "secret" } });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/admin"));
+  });
+
+  it("does not loop back to /admin/login from ?from", async () => {
+    (fetch as unknown as vi.Mock).mockResolvedValue({ ok: true });
+    window.history.replaceState({}, "", "/admin/login?from=/admin/login");
+    render(<AdminLoginPage />);
+    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "secret" } });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/admin"));
+  });
 });

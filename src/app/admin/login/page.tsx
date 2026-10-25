@@ -24,7 +24,9 @@ export default function AdminLoginPage() {
     if (res.ok) {
       // Read ?from only on the client to avoid a Suspense boundary for useSearchParams.
       const from = new URLSearchParams(window.location.search).get("from");
-      router.push(from && from.startsWith("/admin") ? from : "/admin");
+      const target =
+        from && from.startsWith("/admin") && from !== "/admin/login" ? from : "/admin";
+      router.push(target);
       router.refresh();
       return;
     }
