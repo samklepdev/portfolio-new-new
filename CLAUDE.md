@@ -261,6 +261,10 @@ spreads; that throws "not iterable". It can collapse once the project is on
   - **Post dates are formatted with `Intl.DateTimeFormat` pinned to `timeZone: "UTC"`.**
     `publishedAt` is date-only; formatting it in the server's zone and again in the visitor's
     lands on different calendar days and trips a hydration mismatch.
+  - **`tags.name` is globally unique and shared across `kind: 'tech'` and `kind: 'topic'`** — a
+    name used by both (e.g. "Next") must not have its `kind` flipped by whichever upsert runs
+    second. The seed's topic-tag upsert deliberately no-ops `kind` on conflict. Nothing may start
+    filtering tags by `kind` until a composite `(name, kind)` identity lands (tracked follow-up).
   See `docs/superpowers/specs/2026-09-11-blog-design.md`.
 
 ## Not yet built — in order

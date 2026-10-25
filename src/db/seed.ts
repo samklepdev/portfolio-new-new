@@ -233,7 +233,7 @@ async function seed() {
       .values(topicNames.map((name) => ({ name, kind: "topic", iconUrl: null })))
       .onConflictDoUpdate({
         target: tags.name,
-        set: { kind: sql`excluded.kind` },
+        set: { name: sql`excluded.name` },
       })
       .returning();
 

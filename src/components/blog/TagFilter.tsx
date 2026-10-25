@@ -15,7 +15,7 @@ export function TagFilter({ tags, activeSlug }: TagFilterProps) {
     <nav className={styles.filter} aria-label="Filter posts by tag">
       <Link
         href="/blog"
-        className={`${styles.chip} ${!activeSlug ? styles.active : ""}`}
+        className={[styles.chip, !activeSlug && styles.active].filter(Boolean).join(" ")}
         aria-current={!activeSlug ? "page" : undefined}
       >
         All
@@ -25,7 +25,9 @@ export function TagFilter({ tags, activeSlug }: TagFilterProps) {
         <Link
           key={tag.slug}
           href={`/blog?tag=${tag.slug}`}
-          className={`${styles.chip} ${activeSlug === tag.slug ? styles.active : ""}`}
+          className={[styles.chip, activeSlug === tag.slug && styles.active]
+            .filter(Boolean)
+            .join(" ")}
           aria-current={activeSlug === tag.slug ? "page" : undefined}
         >
           {tag.name}

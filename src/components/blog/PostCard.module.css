@@ -8,16 +8,20 @@
   transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
 }
 
-.card:hover,
 .card:focus-visible {
   transform: translateY(-2px);
   border-color: rgba(0, 240, 255, 0.4);
   box-shadow: 0 0 32px rgba(0, 240, 255, 0.1);
-}
-
-.card:focus-visible {
   outline: 2px solid var(--neon-turquoise, #00f0ff);
   outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 32px rgba(0, 240, 255, 0.1);
+  }
 }
 
 .inner {
@@ -39,9 +43,14 @@
   transition: transform 400ms ease;
 }
 
-.card:hover .thumbImage,
 .card:focus-visible .thumbImage {
   transform: scale(1.03);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .thumbImage {
+    transform: scale(1.03);
+  }
 }
 
 .body {
@@ -113,9 +122,14 @@
   transition: transform 200ms ease;
 }
 
-.card:hover .arrow,
 .card:focus-visible .arrow {
   transform: translateX(3px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .arrow {
+    transform: translateX(3px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

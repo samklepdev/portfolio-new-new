@@ -68,14 +68,16 @@
   transition: color 200ms ease;
 }
 
-.row:hover .link,
 .link:focus-visible {
   color: var(--neon-turquoise, #00f0ff);
-}
-
-.link:focus-visible {
   outline: 2px solid var(--neon-turquoise, #00f0ff);
   outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .link {
+    color: var(--neon-turquoise, #00f0ff);
+  }
 }
 
 .excerpt {
@@ -97,8 +99,10 @@
   transition: transform 200ms ease;
 }
 
-.row:hover .arrow {
-  transform: translateX(3px);
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .arrow {
+    transform: translateX(3px);
+  }
 }
 
 .empty {
