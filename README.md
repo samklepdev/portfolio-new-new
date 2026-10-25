@@ -7,7 +7,7 @@
 [![MDX](https://img.shields.io/badge/MDX-Content-000000?logo=mdx&logoColor=white)](https://mdxjs.com/)
 [![Drizzle](https://img.shields.io/badge/Drizzle-ORM-C5F74F?logo=drizzle&logoColor=black)](https://orm.drizzle.team/)
 
-Personal portfolio and case-study site for Sam Klep. Built with Next.js 15, React 19, TypeScript, PostgreSQL, and MDX, it pairs editorial writing with a structured metadata layer: long-form project work lives in version-controlled MDX files, while Postgres stores queryable data like tags, dates, URLs, status, and metrics.
+Personal portfolio and case-study site for Sam Klepper. Built with Next.js 15, React 19, TypeScript, PostgreSQL, and MDX, it pairs editorial writing with a structured metadata layer: long-form project work lives in version-controlled MDX files, while Postgres stores queryable data like tags, dates, URLs, status, and metrics.
 
 ## Highlights
 
