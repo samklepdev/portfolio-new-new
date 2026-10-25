@@ -3,11 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getProjectBySlug, getPublishedProjects } from "@/db/queries";
-import {
-  getContentSlugs,
-  getProjectContent,
-  resolvePublicImage,
-} from "@/lib/content";
+import { resolvePublicImage } from "@/lib/content";
 import { ProjectTabs, type ProjectTab } from "@/components/projects/ProjectTabs";
 import styles from "./page.module.css";
 import prose from "@/styles/prose.module.css";
@@ -20,14 +16,9 @@ type PageProps = {
 };
 
 export async function generateStaticParams() {
-  const [projects, contentSlugs] = await Promise.all([
-    getPublishedProjects(),
-    getContentSlugs("projects"),
-  ]);
-  const withContent = new Set(contentSlugs);
-
+  const projects = await getPublishedProjects();
   return projects
-    .filter((project) => withContent.has(project.slug))
+    .filter((project) => Boolean(project.content))
     .map((project) => ({ slug: project.slug }));
 }
 
@@ -50,17 +41,14 @@ export async function generateMetadata({
 export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const [project, content] = await Promise.all([
-    getProjectBySlug(slug),
-    getProjectContent(slug),
-  ]);
+  const project = await getProjectBySlug(slug);
 
-  if (!project || project.status !== "published" || !content) {
+  if (!project || project.status !== "published" || !project.content) {
     notFound();
   }
 
   const tags = project.projectTags.map((pt) => pt.tag);
-  const tabs = await buildTabs(content.frontmatter);
+  const tabs = await buildTabs(project);
 
   return (
     <main className={styles.page}>
@@ -121,7 +109,7 @@ export default async function ProjectPage({ params }: PageProps) {
       </header>
 
       <article className={prose.prose}>
-        <MDXRemote source={content.body} />
+        <MDXRemote source={project.content} />
       </article>
 
       <ProjectTabs tabs={tabs} />
@@ -129,23 +117,28 @@ export default async function ProjectPage({ params }: PageProps) {
   );
 }
 
-async function buildTabs(
-  frontmatter: Record<string, unknown>
-): Promise<ProjectTab[]> {
+async function buildTabs(project: {
+  techDescription: string | null;
+  techTabImage: string | null;
+  techTabImageAlt: string | null;
+  designDescription: string | null;
+  designTabImage: string | null;
+  designTabImageAlt: string | null;
+}): Promise<ProjectTab[]> {
   const sources = [
     {
       id: "tech",
       label: "Tech",
-      description: frontmatter.techDescription,
-      image: frontmatter.techTabImg,
-      alt: frontmatter.techTabImgAlt,
+      description: project.techDescription,
+      image: project.techTabImage,
+      alt: project.techTabImageAlt,
     },
     {
       id: "design",
       label: "Design",
-      description: frontmatter.designDescription,
-      image: frontmatter.designTabImg,
-      alt: frontmatter.designTabImgAlt,
+      description: project.designDescription,
+      image: project.designTabImage,
+      alt: project.designTabImageAlt,
     },
   ];
 
