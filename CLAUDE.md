@@ -4,10 +4,18 @@
 
 Personal portfolio. **Next.js 15 (App Router) + React 19 + TypeScript + PostgreSQL + MDX.**
 
-Replaces an earlier Express/Sequelize CMS (`port-new`). The governing decision: **no build-your-own
-CMS.** Long-form content lives in MDX files in this repo; Postgres holds only queryable metadata
-(tags, dates, status, links). The two are joined by `slug`. There is no admin CRUD app and adding
-one would undo the point of the rebuild.
+Replaces an earlier Express/Sequelize CMS (`port-new`). **Postgres is the source of
+truth**, and `/admin` is the CMS that writes to it: long-form content (project case
+studies, blog posts) lives in the `content` column of `projects`/`posts`, alongside the
+queryable metadata (tags, dates, status, links). The MDX files under `src/content/` were
+the original source and were migrated into the DB once via `npm run db:import`
+(`src/db/import-content/`); they are now a historical backup, not read at runtime.
+
+`npm run db:seed` is a **dev-only bootstrap** that inserts a couple of sample rows into a
+fresh local database. It is NOT the source of truth and must never be treated as one —
+re-running it must never be a way to "restore" content, because it would not contain the
+real content. The admin edits the database directly; see
+`docs/superpowers/specs/2026-10-25-admin-cms-design.md`.
 
 ## Commands
 
@@ -22,7 +30,8 @@ npm run db:up              # start local Postgres container (docker compose up -
 npm run db:down            # stop it; `docker compose down -v` also wipes the volume
 npm run db:generate        # ONLY after editing src/db/schema.ts — emits a new drizzle/*.sql
 npm run db:migrate         # apply pending migrations
-npm run db:seed            # idempotent, safe to re-run
+npm run db:seed            # dev-only bootstrap (sample rows); NOT the source of truth
+npm run db:import          # one-time: migrate src/content/*.md into the DB
 npm run db:studio          # drizzle-kit studio
 ```
 
