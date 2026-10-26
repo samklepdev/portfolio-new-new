@@ -1,14 +1,8 @@
-import AdminNav from "../AdminNav";
-import styles from "./layout.module.css";
+import AdminShell from "../AdminShell";
 
 // Wraps the authenticated admin pages only. /admin/login lives outside this
-// group (directly under admin/layout.tsx), so the nav + sign-out never render
-// on the login screen.
+// group (directly under admin/layout.tsx), so the sidebar never renders on the
+// login screen. The centered content container now lives inside AdminShell.
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <AdminNav />
-      <div className={styles.content}>{children}</div>
-    </>
-  );
+  return <AdminShell>{children}</AdminShell>;
 }
