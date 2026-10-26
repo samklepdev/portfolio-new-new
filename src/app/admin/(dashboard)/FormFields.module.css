@@ -1,0 +1,35 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #00f0ff;
+}
+.input {
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.5rem;
+  background: #0b0e14;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #f5f7fa;
+}
+.input:focus {
+  outline: none;
+  border-color: #00f0ff;
+}
+.mono {
+  composes: input;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  line-height: 1.5;
+  resize: vertical;
+}
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f5f7fa;
+}

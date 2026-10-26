@@ -1,0 +1,20 @@
+.button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.4rem;
+  background: transparent;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #aab2c0;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.button:hover {
+  color: #f5f7fa;
+  border-color: #00f0ff;
+  background: rgba(0, 240, 255, 0.08);
+}
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

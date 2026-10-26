@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/apiAuth";
 import { parseProjectInput } from "@/lib/validateAdmin";
 import { listProjects } from "@/db/admin-queries";
-import { upsertProjectWithTags } from "@/db/content-write";
+import { SlugConflictError, upsertProjectWithTags } from "@/db/content-write";
 
 const unauthorized = () => NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -24,6 +24,13 @@ export async function POST(request: Request) {
   const parsed = parseProjectInput(body);
   if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
 
-  const row = await upsertProjectWithTags(parsed.value);
-  return NextResponse.json(row, { status: 201 });
+  try {
+    const row = await upsertProjectWithTags(parsed.value, { onSlugConflict: "reject" });
+    return NextResponse.json(row, { status: 201 });
+  } catch (err) {
+    if (err instanceof SlugConflictError) {
+      return NextResponse.json({ error: err.message }, { status: 409 });
+    }
+    throw err;
+  }
 }

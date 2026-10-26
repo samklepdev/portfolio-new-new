@@ -10,6 +10,15 @@ export type TagRow = typeof tags.$inferSelect;
 export type ProjectWrite = ProjectInput & { id?: number };
 export type PostWrite = PostInput & { id?: number };
 
+export class SlugConflictError extends Error {
+  constructor(message = "slug already exists") {
+    super(message);
+    this.name = "SlugConflictError";
+  }
+}
+
+type WriteOpts = { onSlugConflict?: "overwrite" | "reject" };
+
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 // Upsert tech/topic tags by name, returning a name->id map. Mirrors the
@@ -77,7 +86,10 @@ const PROJECT_COLUMNS = (p: ProjectWrite) => ({
   designTabImageAlt: p.designTabImageAlt,
 });
 
-export async function upsertProjectWithTags(input: ProjectWrite): Promise<ProjectRow> {
+export async function upsertProjectWithTags(
+  input: ProjectWrite,
+  opts: WriteOpts = {},
+): Promise<ProjectRow> {
   return db.transaction(async (tx) => {
     const cols = PROJECT_COLUMNS(input);
     let row: ProjectRow;
@@ -89,6 +101,14 @@ export async function upsertProjectWithTags(input: ProjectWrite): Promise<Projec
         .returning();
       if (!updated) throw new Error(`Project ${input.id} not found`);
       row = updated;
+    } else if (opts.onSlugConflict === "reject") {
+      const [inserted] = await tx
+        .insert(projects)
+        .values(cols)
+        .onConflictDoNothing({ target: projects.slug })
+        .returning();
+      if (!inserted) throw new SlugConflictError(`A project with slug "${input.slug}" already exists`);
+      row = inserted;
     } else {
       const [inserted] = await tx
         .insert(projects)
@@ -156,7 +176,10 @@ const POST_COLUMNS = (p: PostWrite) => ({
   readingMinutes: p.readingMinutes,
 });
 
-export async function upsertPostWithTags(input: PostWrite): Promise<PostRow> {
+export async function upsertPostWithTags(
+  input: PostWrite,
+  opts: WriteOpts = {},
+): Promise<PostRow> {
   return db.transaction(async (tx) => {
     const cols = POST_COLUMNS(input);
     let row: PostRow;
@@ -168,6 +191,14 @@ export async function upsertPostWithTags(input: PostWrite): Promise<PostRow> {
         .returning();
       if (!updated) throw new Error(`Post ${input.id} not found`);
       row = updated;
+    } else if (opts.onSlugConflict === "reject") {
+      const [inserted] = await tx
+        .insert(posts)
+        .values(cols)
+        .onConflictDoNothing({ target: posts.slug })
+        .returning();
+      if (!inserted) throw new SlugConflictError(`A post with slug "${input.slug}" already exists`);
+      row = inserted;
     } else {
       const [inserted] = await tx
         .insert(posts)
