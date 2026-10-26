@@ -4,6 +4,12 @@ import type { DashboardStats } from "@/db/admin-dashboard";
 
 const mocks = vi.hoisted(() => ({ getDashboardStats: vi.fn() }));
 vi.mock("@/db/admin-dashboard", () => ({ getDashboardStats: mocks.getDashboardStats }));
+vi.mock("@/services/ProjectService", () => ({ default: class { list = vi.fn().mockResolvedValue([]); } }));
+vi.mock("@/services/PostService", () => ({ default: class { list = vi.fn().mockResolvedValue([]); } }));
+vi.mock("@/services/TagService", () => ({ default: class { list = vi.fn().mockResolvedValue([]); } }));
+vi.mock("@/services/SubmissionService", () => ({ default: class { list = vi.fn().mockResolvedValue([]); } }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("react-toastify", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 import AdminDashboard from "./page";
 
@@ -46,6 +52,9 @@ describe("AdminDashboard", () => {
     );
     expect(screen.getByText(/Tech tags/i)).toBeInTheDocument();
     expect(screen.getByText("20")).toBeInTheDocument();          // tech tags
+    expect(
+      screen.getByRole("combobox", { name: /search admin content/i }),
+    ).toBeInTheDocument();
   });
 
   it("flags email delivery failures with an alert cue", async () => {

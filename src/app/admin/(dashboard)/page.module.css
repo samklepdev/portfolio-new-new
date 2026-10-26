@@ -6,6 +6,12 @@
 
 .header {
   display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerRow {
+  display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 1.5rem;
@@ -355,7 +361,7 @@
 }
 
 @media (max-width: 520px) {
-  .header {
+  .headerRow {
     align-items: flex-start;
     flex-direction: column;
   }

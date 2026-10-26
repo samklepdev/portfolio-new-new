@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getDashboardStats } from "@/db/admin-dashboard";
+import GlobalSearch from "./GlobalSearch";
 import styles from "./page.module.css";
 
 // Keep the overview live instead of baking database aggregates into static HTML.
@@ -64,16 +65,19 @@ export default async function AdminDashboard() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <div>
-          <p className={styles.eyebrow}>Workspace overview</p>
-          <h1 className={styles.heading}>Dashboard</h1>
-          <p className={styles.intro}>
-            A quick look at your content and incoming messages.
-          </p>
+        <GlobalSearch />
+        <div className={styles.headerRow}>
+          <div>
+            <p className={styles.eyebrow}>Workspace overview</p>
+            <h1 className={styles.heading}>Dashboard</h1>
+            <p className={styles.intro}>
+              A quick look at your content and incoming messages.
+            </p>
+          </div>
+          <Link className={styles.siteLink} href="/">
+            View website <span aria-hidden="true">↗</span>
+          </Link>
         </div>
-        <Link className={styles.siteLink} href="/">
-          View website <span aria-hidden="true">↗</span>
-        </Link>
       </header>
 
       <section className={styles.metrics} aria-label="Site metrics">
