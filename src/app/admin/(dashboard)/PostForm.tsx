@@ -89,7 +89,7 @@ export default function PostForm({
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Topic tags</legend>
         <div className={styles.repeatRow}>
-          {tags.map((t) => (
+          {tags && tags.map((t) => (
             <button type="button" key={t} className={styles.ghost}
               onClick={() => setTags((prev) => prev.filter((x) => x !== t))}>{t} ✕</button>
           ))}
