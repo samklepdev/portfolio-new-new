@@ -5,6 +5,32 @@ import styles from "./page.module.css";
 // Keep the overview live instead of baking database aggregates into static HTML.
 export const dynamic = "force-dynamic";
 
+const iconProps = {
+  width: 22,
+  height: 22,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.75,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  "aria-hidden": true,
+  focusable: false,
+};
+
+const ProjectsIcon = () => (
+  <svg {...iconProps}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
+);
+const PostsIcon = () => (
+  <svg {...iconProps}><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" /><path d="M13 3v6h6" /><path d="M9 13h6M9 17h6" /></svg>
+);
+const InquiriesIcon = () => (
+  <svg {...iconProps}><path d="M3 5h18v14H3z" /><path d="M3 7l9 6 9-6" /></svg>
+);
+const EmailIcon = () => (
+  <svg {...iconProps}><path d="M22 3 11 14" /><path d="M22 3 15 21l-4-7-7-4z" /></svg>
+);
+
 const dateFmt = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
   month: "short",
@@ -28,6 +54,13 @@ export default async function AdminDashboard() {
   const publishedPercent =
     totalContent === 0 ? 0 : Math.round((publishedContent / totalContent) * 100);
 
+  const emailNote = [
+    stats.email.failed > 0 ? "Needs attention" : "No delivery failures",
+    stats.email.pending > 0 ? `${stats.email.pending} pending` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -45,41 +78,55 @@ export default async function AdminDashboard() {
 
       <section className={styles.metrics} aria-label="Site metrics">
         <article className={styles.metricCard}>
+          <span className={styles.metricIcon} aria-hidden="true">
+            <ProjectsIcon />
+          </span>
           <span className={styles.metricLabel}>Projects</span>
-          <strong className={styles.metricValue}>{stats.projects.total}</strong>
-          <span className={styles.metricNote}>
-            {stats.projects.published} published · {stats.projects.draft} drafts
-          </span>
+          <div className={styles.metricValueRow}>
+            <strong className={styles.metricValue}>{stats.projects.total}</strong>
+            <span className={styles.badge}>{stats.projects.published} published</span>
+          </div>
+          <span className={styles.metricNote}>{stats.projects.draft} drafts in progress</span>
         </article>
         <article className={styles.metricCard}>
+          <span className={styles.metricIcon} aria-hidden="true">
+            <PostsIcon />
+          </span>
           <span className={styles.metricLabel}>Posts</span>
-          <strong className={styles.metricValue}>{stats.posts.total}</strong>
-          <span className={styles.metricNote}>
-            {stats.posts.published} published · {stats.posts.draft} drafts
-          </span>
+          <div className={styles.metricValueRow}>
+            <strong className={styles.metricValue}>{stats.posts.total}</strong>
+            <span className={styles.badge}>{stats.posts.published} published</span>
+          </div>
+          <span className={styles.metricNote}>{stats.posts.draft} drafts in progress</span>
         </article>
         <article className={styles.metricCard}>
+          <span className={styles.metricIcon} aria-hidden="true">
+            <InquiriesIcon />
+          </span>
           <span className={styles.metricLabel}>New inquiries</span>
-          <strong className={styles.metricValue}>{stats.submissionsLast30Days}</strong>
+          <div className={styles.metricValueRow}>
+            <strong className={styles.metricValue}>{stats.submissionsLast30Days}</strong>
+          </div>
           <span className={styles.metricNote}>Received in the last 30 days</span>
         </article>
         <article className={styles.metricCard}>
+          <span className={styles.metricIcon} aria-hidden="true">
+            <EmailIcon />
+          </span>
           <span className={styles.metricLabel}>Email delivered</span>
-          <strong className={styles.metricValue}>{stats.email.delivered}</strong>
-          <span className={styles.metricNote}>
-            {stats.email.failed > 0 ? (
+          <div className={styles.metricValueRow}>
+            <strong className={styles.metricValue}>{stats.email.delivered}</strong>
+            {stats.email.failed > 0 && (
               <span
-                className={styles.failure}
+                className={`${styles.badge} ${styles.badgeDanger}`}
                 role="status"
                 aria-label="Email delivery failures"
               >
                 {stats.email.failed} failed
               </span>
-            ) : (
-              "No delivery failures"
             )}
-            {stats.email.pending > 0 ? ` · ${stats.email.pending} pending` : ""}
-          </span>
+          </div>
+          <span className={styles.metricNote}>{emailNote}</span>
         </article>
       </section>
 

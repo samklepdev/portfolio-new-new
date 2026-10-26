@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import SubmissionService from "@/services/SubmissionService";
 import type { SubmissionRowDTO } from "@/services/types";
 import { ApiError } from "@/services/ApiError";
+import DataTable, { type Column } from "../DataTable";
 import { deliveryStatus } from "./status";
 import listStyles from "../list.module.css";
 import styles from "./submissions.module.css";
@@ -28,6 +29,39 @@ export default function SubmissionsListPage() {
       .catch((err) => toast.error(err instanceof ApiError ? err.message : "Failed to load submissions"));
   }, [service]);
 
+  const columns = useMemo<Column<SubmissionRowDTO>[]>(
+    () => [
+      { key: "name", header: "Name", sort: (s) => s.name, cell: (s) => s.name },
+      { key: "email", header: "Email", sort: (s) => s.email, cell: (s) => s.email },
+      {
+        key: "createdAt",
+        header: "Received",
+        sort: (s) => s.createdAt,
+        cell: (s) => dateFmt.format(new Date(s.createdAt)),
+      },
+      {
+        key: "status",
+        header: "Status",
+        sort: (s) => deliveryStatus(s),
+        cell: (s) => {
+          const status = deliveryStatus(s);
+          return <span className={`${styles.badge} ${styles[status]}`}>{status}</span>;
+        },
+      },
+      {
+        key: "actions",
+        header: "",
+        cellClassName: listStyles.rowActions,
+        cell: (s) => (
+          <Link className={listStyles.editLink} href={`/admin/submissions/${s.id}`} aria-label={`View ${s.name}`}>
+            View
+          </Link>
+        ),
+      },
+    ],
+    [],
+  );
+
   return (
     <div>
       <div className={listStyles.header}>
@@ -35,31 +69,15 @@ export default function SubmissionsListPage() {
       </div>
       {rows === null ? (
         <p className={listStyles.muted}>Loading…</p>
-      ) : rows.length === 0 ? (
-        <p className={listStyles.muted}>No submissions yet.</p>
       ) : (
-        <table className={listStyles.table}>
-          <thead>
-            <tr><th>Name</th><th>Email</th><th>Received</th><th>Status</th><th /></tr>
-          </thead>
-          <tbody>
-            {rows.map((s) => {
-              const status = deliveryStatus(s);
-              return (
-                <tr key={s.id}>
-                  <td>{s.name}</td>
-                  <td>{s.email}</td>
-                  <td>{dateFmt.format(new Date(s.createdAt))}</td>
-                  <td><span className={`${styles.badge} ${styles[status]}`}>{status}</span></td>
-                  <td className={listStyles.rowActions}>
-                    <Link className={listStyles.editLink} href={`/admin/submissions/${s.id}`}
-                      aria-label={`View ${s.name}`}>View</Link>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          getKey={(s) => s.id}
+          search={(s) => `${s.name} ${s.email}`}
+          searchPlaceholder="Search submissions…"
+          emptyLabel="No submissions yet."
+        />
       )}
     </div>
   );
