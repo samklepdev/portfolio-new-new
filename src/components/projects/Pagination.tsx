@@ -6,6 +6,8 @@ type PaginationProps = {
   totalPages: number;
   basePath: string;
   label?: string;
+  /** Extra query params (e.g. an active tag filter) kept on every page link. */
+  query?: Record<string, string>;
 };
 
 export function Pagination({
@@ -13,10 +15,17 @@ export function Pagination({
   totalPages,
   basePath,
   label = "Projects pagination",
+  query,
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
-  const href = (n: number) => (n === 1 ? basePath : `${basePath}?page=${n}`);
+  const href = (n: number) => {
+    const params = new URLSearchParams(query);
+    // Page 1 carries no ?page= so the canonical first page stays clean.
+    if (n > 1) params.set("page", String(n));
+    const qs = params.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  };
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 

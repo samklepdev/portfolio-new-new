@@ -1,4 +1,4 @@
-import { and, count, eq, asc, desc, inArray, sql } from "drizzle-orm";
+import { and, count, eq, asc, desc, inArray, isNotNull, sql } from "drizzle-orm";
 import { db } from "./index";
 import { posts, postTags, projects, tags } from "./schema";
 
@@ -20,8 +20,27 @@ export async function getPublishedProjects() {
   });
 }
 
-export async function getPublishedProjectsPage(page: number, perPage: number) {
-  const where = eq(projects.status, "published");
+/**
+ * Distinct industries published projects were built for, alphabetical.
+ * The industry is stored in `projects.category`.
+ */
+export async function getPublishedProjectIndustries(): Promise<string[]> {
+  const rows = await db
+    .selectDistinct({ category: projects.category })
+    .from(projects)
+    .where(and(eq(projects.status, "published"), isNotNull(projects.category)))
+    .orderBy(asc(projects.category));
+  return rows.map((row) => row.category).filter((c): c is string => c !== null);
+}
+
+export async function getPublishedProjectsPage(
+  page: number,
+  perPage: number,
+  industry?: string
+) {
+  const where = industry
+    ? and(eq(projects.status, "published"), eq(projects.category, industry))
+    : eq(projects.status, "published");
 
   const [rows, [totals]] = await Promise.all([
     db.query.projects.findMany({
