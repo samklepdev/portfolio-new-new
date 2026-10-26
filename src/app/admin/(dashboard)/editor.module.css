@@ -16,9 +16,10 @@
   gap: 1rem;
 }
 .fieldset {
-  border: 1px solid rgba(0, 240, 255, 0.15);
-  border-radius: 0.75rem;
-  padding: 1rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: #12161f;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -27,7 +28,7 @@
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #aab2c0;
+  color: #8993a3;
   padding: 0 0.4rem;
 }
 .repeatRow {
@@ -45,13 +46,17 @@
 }
 .primary {
   font: inherit;
-  padding: 0.55rem 1.1rem;
-  border-radius: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 0.65rem;
   border: 1px solid #00f0ff;
   background: #00f0ff;
   color: #0b0e14;
-  font-weight: 600;
+  font-weight: 650;
   cursor: pointer;
+  transition: filter 0.15s ease;
+}
+.primary:hover:not(:disabled) {
+  filter: brightness(1.12);
 }
 .primary:disabled {
   opacity: 0.6;
@@ -59,12 +64,23 @@
 }
 .ghost {
   font: inherit;
-  padding: 0.5rem 0.9rem;
-  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.65rem;
   border: 1px solid rgba(0, 240, 255, 0.3);
   background: transparent;
   color: #f5f7fa;
   cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.ghost:hover {
+  border-color: #00f0ff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary,
+  .ghost {
+    transition: none;
+  }
 }
 .error {
   color: #ff2e97;

@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 .heading {
@@ -10,45 +11,106 @@
   font-size: 1.75rem;
   color: #f5f7fa;
 }
+
+/* Primary action: a filled accent button, matching the editor's primary. */
 .newLink {
-  padding: 0.5rem 0.9rem;
-  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 0.65rem;
   border: 1px solid #00f0ff;
-  color: #00f0ff;
+  background: #00f0ff;
+  color: #0b0e14;
+  font-size: 0.85rem;
+  font-weight: 650;
   text-decoration: none;
-  font-size: 0.9rem;
+  transition: filter 0.15s ease;
 }
-.muted { color: #aab2c0; }
+.newLink:hover {
+  filter: brightness(1.12);
+}
+
+.muted {
+  color: #8993a3;
+}
+
+/* Card-wrapped data table: the table itself is the surface (separate borders
+   so the 16px corners can clip), with a quiet header row and hover on rows. */
 .table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  background: #12161f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
   color: #f5f7fa;
 }
 .table th,
 .table td {
   text-align: left;
-  padding: 0.6rem 0.75rem;
-  border-bottom: 1px solid rgba(0, 240, 255, 0.12);
-  font-size: 0.9rem;
+  padding: 0.9rem 1.25rem;
+  font-size: 0.86rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.table th {
-  color: #aab2c0;
+.table thead th {
+  background: rgba(255, 255, 255, 0.02);
+  color: #8993a3;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
 }
+.table tbody tr {
+  transition: background 0.15s ease;
+}
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
 .slug {
-  color: #aab2c0;
+  color: #8993a3;
   font-size: 0.8rem;
   margin-left: 0.5rem;
 }
 .rowActions {
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   align-items: center;
 }
 .editLink {
   color: #00f0ff;
   text-decoration: none;
+  font-weight: 550;
+}
+.editLink:hover {
+  color: #f5f7fa;
+}
+
+/* Status pill shared by the projects and posts tables. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: rgba(255, 255, 255, 0.06);
+  color: #aab2c0;
+}
+.statusPublished {
+  background: rgba(0, 240, 255, 0.1);
+  color: #00f0ff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table tbody tr,
+  .newLink {
+    transition: none;
+  }
 }

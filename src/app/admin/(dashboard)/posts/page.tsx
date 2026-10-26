@@ -51,7 +51,11 @@ export default function PostsListPage() {
             {rows.map((p) => (
               <tr key={p.id}>
                 <td>{p.title}<span className={styles.slug}>/{p.slug}</span></td>
-                <td>{p.status}</td>
+                <td>
+                  <span className={`${styles.status} ${p.status === "published" ? styles.statusPublished : ""}`}>
+                    {p.status}
+                  </span>
+                </td>
                 <td>{p.featured ? "★" : ""}</td>
                 <td>{p.publishedAt ?? "—"}</td>
                 <td className={styles.rowActions}>
