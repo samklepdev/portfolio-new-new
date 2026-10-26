@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import { ToastContainer } from "react-toastify";
+import { Analytics } from "@vercel/analytics/next";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import "./toast.css";
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body>
         {children}
         <ToastContainer theme="dark" position="bottom-right" />
+        <Analytics />
       </body>
     </html>
   );
