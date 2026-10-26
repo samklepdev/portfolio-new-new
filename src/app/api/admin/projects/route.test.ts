@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { SlugConflictError } from "@/db/content-write";
 
 const mocks = vi.hoisted(() => ({
   requireAdmin: vi.fn(),
@@ -8,7 +9,10 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/apiAuth", () => ({ requireAdmin: mocks.requireAdmin }));
 vi.mock("@/db/admin-queries", () => ({ listProjects: mocks.listProjects }));
-vi.mock("@/db/content-write", () => ({ upsertProjectWithTags: mocks.upsertProjectWithTags }));
+vi.mock("@/db/content-write", async () => {
+  const actual = await vi.importActual<typeof import("@/db/content-write")>("@/db/content-write");
+  return { SlugConflictError: actual.SlugConflictError, upsertProjectWithTags: mocks.upsertProjectWithTags };
+});
 
 import { GET, POST } from "./route";
 
@@ -47,6 +51,7 @@ describe("/api/admin/projects", () => {
     expect(await res.json()).toEqual({ id: 9, slug: "demo" });
     expect(mocks.upsertProjectWithTags).toHaveBeenCalledWith(
       expect.objectContaining({ slug: "demo", title: "Demo", status: "published" }),
+      { onSlugConflict: "reject" },
     );
   });
 
@@ -60,5 +65,21 @@ describe("/api/admin/projects", () => {
     mocks.requireAdmin.mockResolvedValue(false);
     const res = await POST(post({ slug: "demo", title: "D", summary: "s" }));
     expect(res.status).toBe(401);
+  });
+
+  it("POST returns 409 when the slug already exists", async () => {
+    mocks.upsertProjectWithTags.mockRejectedValue(new SlugConflictError("slug exists"));
+    const res = await POST(post({ slug: "demo", title: "Demo", summary: "s" }));
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toMatch(/slug/i);
+  });
+
+  it("POST passes onSlugConflict: reject to the write path", async () => {
+    mocks.upsertProjectWithTags.mockResolvedValue({ id: 9, slug: "demo" });
+    await POST(post({ slug: "demo", title: "Demo", summary: "s" }));
+    expect(mocks.upsertProjectWithTags).toHaveBeenCalledWith(
+      expect.objectContaining({ slug: "demo" }),
+      { onSlugConflict: "reject" },
+    );
   });
 });

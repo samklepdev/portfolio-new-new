@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { SlugConflictError } from "@/db/content-write";
 
 const mocks = vi.hoisted(() => ({
   requireAdmin: vi.fn(),
@@ -8,7 +9,10 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/apiAuth", () => ({ requireAdmin: mocks.requireAdmin }));
 vi.mock("@/db/admin-queries", () => ({ listPosts: mocks.listPosts }));
-vi.mock("@/db/content-write", () => ({ upsertPostWithTags: mocks.upsertPostWithTags }));
+vi.mock("@/db/content-write", async () => {
+  const actual = await vi.importActual<typeof import("@/db/content-write")>("@/db/content-write");
+  return { SlugConflictError: actual.SlugConflictError, upsertPostWithTags: mocks.upsertPostWithTags };
+});
 
 import { GET, POST } from "./route";
 
@@ -39,6 +43,23 @@ describe("/api/admin/posts", () => {
     expect(res.status).toBe(201);
     expect(mocks.upsertPostWithTags).toHaveBeenCalledWith(
       expect.objectContaining({ slug: "p", title: "P", excerpt: "e" }),
+      { onSlugConflict: "reject" },
+    );
+  });
+
+  it("POST returns 409 when the slug already exists", async () => {
+    mocks.upsertPostWithTags.mockRejectedValue(new SlugConflictError("slug exists"));
+    const res = await POST(post({ slug: "p", title: "P", excerpt: "e" }));
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toMatch(/slug/i);
+  });
+
+  it("POST passes onSlugConflict: reject to the write path", async () => {
+    mocks.upsertPostWithTags.mockResolvedValue({ id: 3, slug: "p" });
+    await POST(post({ slug: "p", title: "P", excerpt: "e" }));
+    expect(mocks.upsertPostWithTags).toHaveBeenCalledWith(
+      expect.objectContaining({ slug: "p" }),
+      { onSlugConflict: "reject" },
     );
   });
 
