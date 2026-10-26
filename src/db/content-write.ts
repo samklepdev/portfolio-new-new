@@ -1,4 +1,4 @@
-import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
+import { and, eq, notInArray, sql } from "drizzle-orm";
 import { db } from "./index";
 import { posts, postTags, projects, projectTags, tags } from "./schema";
 import type { ProjectInput, PostInput, TagInput } from "@/services/types";
@@ -236,6 +236,3 @@ export async function deleteTag(id: number): Promise<boolean> {
   const deleted = await db.delete(tags).where(eq(tags.id, id)).returning({ id: tags.id });
   return deleted.length > 0;
 }
-
-// Exported for callers that need to check tag existence before linking.
-export { inArray };
