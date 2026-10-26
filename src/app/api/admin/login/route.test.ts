@@ -3,6 +3,7 @@
  */
 import { beforeEach, describe, expect, it } from "vitest";
 import { hashPassword } from "@/lib/adminPassword";
+import { resetRateLimitStore } from "@/lib/rateLimit";
 import { POST } from "./route";
 
 const SECRET = "test-secret-key-at-least-32-bytes-long!!";
@@ -17,6 +18,7 @@ function req(body: unknown): Request {
 
 describe("POST /api/admin/login", () => {
   beforeEach(() => {
+    resetRateLimitStore();
     process.env.ADMIN_JWT_SECRET = SECRET;
     process.env.ADMIN_PASSWORD_HASH = hashPassword("letmein");
   });
@@ -46,5 +48,24 @@ describe("POST /api/admin/login", () => {
     delete process.env.ADMIN_PASSWORD_HASH;
     const res = await POST(req({ password: "letmein" }));
     expect(res.status).toBe(500);
+  });
+
+  it("returns 429 after too many attempts from one IP", async () => {
+    function attempt() {
+      return POST(
+        new Request("http://localhost/api/admin/login", {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-forwarded-for": "9.9.9.9" },
+          body: JSON.stringify({ password: "nope" }),
+        }),
+      );
+    }
+    for (let i = 0; i < 10; i += 1) {
+      const res = await attempt();
+      expect(res.status).toBe(401);
+    }
+    const blocked = await attempt();
+    expect(blocked.status).toBe(429);
+    expect(blocked.headers.get("Retry-After")).toBeTruthy();
   });
 });
