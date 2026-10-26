@@ -1,6 +1,12 @@
 import { getDashboardStats } from "@/db/admin-dashboard";
 import styles from "./page.module.css";
 
+// The dashboard reads live Postgres aggregates via an uncached DB query, which
+// Next would otherwise bake into static HTML at build time (freezing the stats
+// until the next deploy). Force per-request rendering so the numbers are live;
+// the middleware's Cache-Control: no-store then keeps the browser from caching them.
+export const dynamic = "force-dynamic";
+
 const dateFmt = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
   month: "short",
