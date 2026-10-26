@@ -7,7 +7,7 @@ describe("ThemeForm", () => {
     render(<ThemeForm submitLabel="Create theme" onSubmit={vi.fn()} submitting={false} />);
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     for (const slot of ["Background", "Foreground", "Turquoise", "Pink", "Purple", "Green"]) {
-      expect(screen.getByLabelText(new RegExp(slot, "i"))).toBeInTheDocument();
+      expect(screen.getByLabelText(slot)).toBeInTheDocument();
     }
   });
 

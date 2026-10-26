@@ -70,7 +70,7 @@ export default function ThemeForm({
               />
               <input
                 type="text"
-                aria-label="Hex value"
+                aria-label={`${slot.label} hex`}
                 className={fieldStyles.input}
                 value={colors[slot.key]}
                 onChange={(e) => setColors((c) => ({ ...c, [slot.key]: e.target.value }))}
