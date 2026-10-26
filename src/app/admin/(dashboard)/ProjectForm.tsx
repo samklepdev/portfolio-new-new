@@ -126,7 +126,7 @@ export default function ProjectForm({
 
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>Tech stack</legend>
-        {tech.map((t, i) => (
+        {tech && tech.map((t, i) => (
           <div className={styles.repeatRow} key={i}>
             <input aria-label={`Tech name ${i + 1}`} placeholder="Name" value={t.name}
               onChange={(e) => setTechAt(i, { name: e.target.value })} />
