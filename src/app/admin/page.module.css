@@ -1,0 +1,66 @@
+.heading {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-display, inherit);
+  font-size: 1.75rem;
+  color: #f5f7fa;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+.card {
+  padding: 1.25rem 1.5rem;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 0.75rem;
+  background: #12161f;
+}
+.cardTitle {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #00f0ff;
+}
+.stat {
+  margin: 0 0 0.5rem;
+  color: #f5f7fa;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.big {
+  font-family: var(--font-display, inherit);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.sub {
+  font-size: 0.85rem;
+  color: #aab2c0;
+}
+.alert {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  color: #ff2e97;
+}
+.list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.listItem {
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  color: #f5f7fa;
+  font-size: 0.9rem;
+}
+.meta {
+  color: #aab2c0;
+  font-size: 0.8rem;
+}

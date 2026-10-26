@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdminNav from "./AdminNav";
 import styles from "./layout.module.css";
 
 export const metadata: Metadata = {
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <div className={styles.shell}>{children}</div>;
+  return (
+    <div className={styles.shell}>
+      <AdminNav />
+      <div className={styles.content}>{children}</div>
+    </div>
+  );
 }

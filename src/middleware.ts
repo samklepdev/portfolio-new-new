@@ -11,7 +11,13 @@ export async function middleware(request: NextRequest) {
   if (PUBLIC_PATHS.has(pathname)) return NextResponse.next();
 
   const token = request.cookies.get(SESSION_COOKIE)?.value;
-  if (await verifySession(token)) return NextResponse.next();
+  if (await verifySession(token)) {
+    // Authenticated admin responses must never be cached by the browser or a
+    // shared proxy — they carry per-admin, always-live data.
+    const res = NextResponse.next();
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
 
   // API callers get a machine-readable 401 (so the service layer can surface it);
   // page requests get redirected to the login screen.

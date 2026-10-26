@@ -1,0 +1,38 @@
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+  background: #12161f;
+}
+.brand {
+  font-family: var(--font-display, inherit);
+  font-weight: 700;
+  color: #00f0ff;
+  letter-spacing: 0.02em;
+}
+.links {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.link {
+  color: #aab2c0;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+}
+.link:hover {
+  color: #f5f7fa;
+}
+.link[aria-current="page"] {
+  color: #f5f7fa;
+  border-bottom-color: #00f0ff;
+}
+.spacer {
+  flex: 1;
+}

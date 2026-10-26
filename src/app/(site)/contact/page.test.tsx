@@ -6,7 +6,7 @@ vi.mock("@/app/actions/contact", () => ({
   submitContact: vi.fn(),
 }));
 
-import ContactPage from "@/app/contact/page";
+import ContactPage from "@/app/(site)/contact/page";
 
 describe("ContactPage", () => {
   it("has exactly one h1", () => {
