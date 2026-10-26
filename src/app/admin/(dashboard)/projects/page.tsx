@@ -7,6 +7,7 @@ import ProjectService from "@/services/ProjectService";
 import type { ProjectRowDTO } from "@/services/types";
 import { ApiError } from "@/services/ApiError";
 import DeleteButton from "../DeleteButton";
+import DataTable, { type Column } from "../DataTable";
 import styles from "../list.module.css";
 
 export default function ProjectsListPage() {
@@ -22,15 +23,70 @@ export default function ProjectsListPage() {
 
   useEffect(() => load(), [load]);
 
-  async function remove(id: number, title: string) {
-    try {
-      await service.delete(String(id));
-      toast.success(`Deleted “${title}”`);
-      load();
-    } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Delete failed");
-    }
-  }
+  const remove = useCallback(
+    async (id: number, title: string) => {
+      try {
+        await service.delete(String(id));
+        toast.success(`Deleted “${title}”`);
+        load();
+      } catch (err) {
+        toast.error(err instanceof ApiError ? err.message : "Delete failed");
+      }
+    },
+    [service, load],
+  );
+
+  const columns = useMemo<Column<ProjectRowDTO>[]>(
+    () => [
+      {
+        key: "title",
+        header: "Title",
+        sort: (p) => p.title,
+        cell: (p) => (
+          <>
+            {p.title}
+            <span className={styles.slug}>/{p.slug}</span>
+          </>
+        ),
+      },
+      {
+        key: "status",
+        header: "Status",
+        sort: (p) => p.status,
+        cell: (p) => (
+          <span className={`${styles.status} ${p.status === "published" ? styles.statusPublished : ""}`}>
+            {p.status}
+          </span>
+        ),
+      },
+      {
+        key: "featured",
+        header: "Featured",
+        sort: (p) => (p.featured ? 1 : 0),
+        cell: (p) => (p.featured ? "★" : ""),
+      },
+      {
+        key: "startedAt",
+        header: "Started",
+        sort: (p) => p.startedAt,
+        cell: (p) => p.startedAt ?? "—",
+      },
+      {
+        key: "actions",
+        header: "",
+        cellClassName: styles.rowActions,
+        cell: (p) => (
+          <>
+            <Link className={styles.editLink} href={`/admin/projects/${p.id}/edit`} aria-label={`Edit ${p.title}`}>
+              Edit
+            </Link>
+            <DeleteButton onConfirm={() => remove(p.id, p.title)} />
+          </>
+        ),
+      },
+    ],
+    [remove],
+  );
 
   return (
     <div>
@@ -40,33 +96,15 @@ export default function ProjectsListPage() {
       </div>
       {rows === null ? (
         <p className={styles.muted}>Loading…</p>
-      ) : rows.length === 0 ? (
-        <p className={styles.muted}>No projects yet.</p>
       ) : (
-        <table className={styles.table}>
-          <thead>
-            <tr><th>Title</th><th>Status</th><th>Featured</th><th>Started</th><th /></tr>
-          </thead>
-          <tbody>
-            {rows.map((p) => (
-              <tr key={p.id}>
-                <td>{p.title}<span className={styles.slug}>/{p.slug}</span></td>
-                <td>
-                  <span className={`${styles.status} ${p.status === "published" ? styles.statusPublished : ""}`}>
-                    {p.status}
-                  </span>
-                </td>
-                <td>{p.featured ? "★" : ""}</td>
-                <td>{p.startedAt ?? "—"}</td>
-                <td className={styles.rowActions}>
-                  <Link className={styles.editLink} href={`/admin/projects/${p.id}/edit`}
-                    aria-label={`Edit ${p.title}`}>Edit</Link>
-                  <DeleteButton onConfirm={() => remove(p.id, p.title)} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          getKey={(p) => p.id}
+          search={(p) => `${p.title} ${p.slug} ${p.status}`}
+          searchPlaceholder="Search projects…"
+          emptyLabel="No projects yet."
+        />
       )}
     </div>
   );
