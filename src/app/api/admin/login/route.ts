@@ -1,0 +1,34 @@
+import { NextResponse } from "next/server";
+import { verifyPassword } from "@/lib/adminPassword";
+import { signSession, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/adminSession";
+
+export async function POST(request: Request) {
+  const hash = process.env.ADMIN_PASSWORD_HASH;
+  const secret = process.env.ADMIN_JWT_SECRET;
+  if (!hash || !secret) {
+    return NextResponse.json({ error: "Admin auth is not configured" }, { status: 500 });
+  }
+
+  let password: unknown;
+  try {
+    const body = await request.json();
+    password = (body as { password?: unknown } | null)?.password;
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+
+  if (typeof password !== "string" || !verifyPassword(password, hash)) {
+    return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
+  }
+
+  const token = await signSession();
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(SESSION_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_MAX_AGE,
+  });
+  return res;
+}

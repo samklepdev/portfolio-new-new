@@ -17,7 +17,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx src/db/seed.ts",
     "db:import": "tsx src/db/import-content/run.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "admin:hash": "tsx src/lib/hashAdminPassword.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",
@@ -28,6 +29,7 @@
     "drizzle-orm": "^0.36.0",
     "gray-matter": "^4.0.3",
     "gsap": "^3.12.0",
+    "jose": "^6.2.13",
     "next": "^15.0.0",
     "next-mdx-remote": "^5.0.0",
     "postgres": "^3.4.0",
