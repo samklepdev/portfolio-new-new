@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { contactSubmissions } from "@/db/schema";
 import { validateContact } from "@/lib/contactValidation";
 import type { ContactState } from "@/lib/contactState";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 import { CONTACT_EMAIL } from "@/lib/siteLinks";
 
 async function notify(row: {
@@ -62,6 +63,15 @@ export async function submitContact(
       email: values.email,
     });
     return { status: "success" };
+  }
+
+  const token = String(formData.get("recaptchaToken") ?? "");
+  if (!(await verifyRecaptcha(token))) {
+    return {
+      status: "error",
+      formError: `We couldn't verify your submission. Please try again, or email ${CONTACT_EMAIL} directly.`,
+      values,
+    };
   }
 
   const result = validateContact(values);

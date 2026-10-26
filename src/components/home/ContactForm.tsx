@@ -1,11 +1,38 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import Script from "next/script";
 import { submitContact } from "@/app/actions/contact";
 import { initialContactState } from "@/lib/contactState";
 import { LIMITS } from "@/lib/contactValidation";
 import styles from "./ContactForm.module.css";
 import { toast } from "react-toastify";
+
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+declare global {
+  interface Window {
+    grecaptcha?: {
+      ready: (cb: () => void) => void;
+      execute: (siteKey: string, opts: { action: string }) => Promise<string>;
+    };
+  }
+}
+
+// Resolve a fresh reCAPTCHA v3 token for this submission. Returns "" when the
+// widget isn't configured or hasn't loaded — the server treats a missing token
+// as unconfigured (skips) or invalid (rejects) depending on its own secret.
+function executeRecaptcha(): Promise<string> {
+  const g = typeof window !== "undefined" ? window.grecaptcha : undefined;
+  if (!RECAPTCHA_SITE_KEY || !g) return Promise.resolve("");
+  return new Promise((resolve) => {
+    g.ready(() => {
+      g.execute(RECAPTCHA_SITE_KEY, { action: "contact" }).then(resolve, () =>
+        resolve("")
+      );
+    });
+  });
+}
 
 type FieldProps = {
   name: string;
@@ -83,8 +110,21 @@ export function ContactForm() {
     }
   }, [state]);
 
+  // Attach a reCAPTCHA token just before dispatching the server action, so the
+  // token is fresh (v3 tokens expire after ~2 minutes) and tied to this submit.
+  async function submitWithRecaptcha(formData: FormData) {
+    formData.set("recaptchaToken", await executeRecaptcha());
+    formAction(formData);
+  }
+
   return (
-    <form ref={formRef} action={formAction} className={styles.form} noValidate>
+    <form ref={formRef} action={submitWithRecaptcha} className={styles.form} noValidate>
+      {RECAPTCHA_SITE_KEY && (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+          strategy="afterInteractive"
+        />
+      )}
       <div className={styles.honeypot} aria-hidden="true">
         <label htmlFor="contact-referral">Referral code</label>
         <input
