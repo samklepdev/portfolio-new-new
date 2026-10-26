@@ -7,9 +7,11 @@ import * as THREE from "three";
 import { useScrollStore } from "@/lib/scrollStore";
 import type { DeviceTier } from "@/lib/useDeviceTier";
 
-const NEON_TURQUOISE = "#00F0FF";
-const NEON_PINK = "#FF2E97";
-const NEON_PURPLE = "#B026FF";
+function readVar(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
 
 function ParticleField({ count }: { count: number }) {
   const pointsRef = useRef<THREE.Points>(null);
@@ -18,9 +20,9 @@ function ParticleField({ count }: { count: number }) {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const palette = [
-      new THREE.Color(NEON_TURQUOISE),
-      new THREE.Color(NEON_PINK),
-      new THREE.Color(NEON_PURPLE),
+      new THREE.Color(readVar("--neon-turquoise", "#00F0FF")),
+      new THREE.Color(readVar("--neon-pink", "#FF2E97")),
+      new THREE.Color(readVar("--neon-purple", "#B026FF")),
     ];
 
     for (let i = 0; i < count; i++) {
