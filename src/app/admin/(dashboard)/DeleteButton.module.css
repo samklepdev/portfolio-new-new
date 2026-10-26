@@ -1,0 +1,20 @@
+.button,
+.armed {
+  font: inherit;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255, 46, 151, 0.4);
+  color: #ff2e97;
+}
+.armed {
+  background: #ff2e97;
+  color: #0b0e14;
+  border-color: #ff2e97;
+}
+.button:disabled,
+.armed:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
