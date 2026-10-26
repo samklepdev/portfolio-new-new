@@ -10,10 +10,10 @@ vi.mock("next/navigation", () => ({
 import AdminSidebar from "./AdminSidebar";
 
 describe("AdminSidebar", () => {
-  it("renders all five admin links and a sign-out control", () => {
+  it("renders all six admin links and a sign-out control", () => {
     mocks.usePathname.mockReturnValue("/admin");
     render(<AdminSidebar collapsed={false} onToggleCollapsed={vi.fn()} />);
-    for (const label of ["Dashboard", "Projects", "Posts", "Tags", "Submissions"]) {
+    for (const label of ["Dashboard", "Projects", "Posts", "Tags", "Themes", "Submissions"]) {
       expect(screen.getByRole("link", { name: label })).toBeInTheDocument();
     }
     expect(screen.getByRole("button", { name: /sign out/i })).toBeInTheDocument();
