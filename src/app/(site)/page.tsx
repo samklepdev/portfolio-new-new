@@ -5,7 +5,7 @@ import { ClientBand } from "@/components/home/ClientBand";
 import { ContactSection } from "@/components/home/ContactSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { getFeaturedProjects } from "@/db/queries";
-import ProjectsSection from "@/app/ProjectsSection";
+import ProjectsSection from "@/app/(site)/ProjectsSection";
 
 export const revalidate = 60;
 

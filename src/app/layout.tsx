@@ -1,8 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
-import { Footer } from "@/components/footer/Footer";
-import { Header } from "@/components/header/Header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
@@ -42,9 +40,7 @@ export default function RootLayout({
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       <body>
-        <Header />
         {children}
-        <Footer />
         <ToastContainer theme="dark" position="bottom-right" />
       </body>
     </html>
