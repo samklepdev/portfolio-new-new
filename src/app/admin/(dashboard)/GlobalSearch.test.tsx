@@ -88,6 +88,16 @@ describe("GlobalSearch", () => {
     // open per the M3 fix), so the debounce + data load have settled.
     await screen.findByRole("option", { name: /Alpha Portal/ });
     fireEvent.keyDown(input, { key: "ArrowDown" });
+    // Wait until the highlight actually lands on the first option before
+    // pressing Enter: the debounced-query effect resets activeIndex to -1 when
+    // results change, and under load that reset can flush after ArrowDown.
+    // Asserting aria-selected first makes the keyboard-nav step deterministic.
+    await waitFor(() =>
+      expect(screen.getByRole("option", { name: /Alpha Portal/ })).toHaveAttribute(
+        "aria-selected",
+        "true",
+      ),
+    );
     fireEvent.keyDown(input, { key: "Enter" });
     expect(mocks.push).toHaveBeenCalledWith("/admin/projects/1/edit");
 
