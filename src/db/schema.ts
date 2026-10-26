@@ -151,3 +151,17 @@ export const contactSubmissions = pgTable("contact_submissions", {
   emailedAt: timestamp("emailed_at", { withTimezone: true }),
   emailError: text("email_error"),
 });
+
+export const themes = pgTable("themes", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  background: text("background").notNull().default("#0b0e14"),
+  foreground: text("foreground").notNull().default("#ffffff"),
+  turquoise: text("turquoise").notNull().default("#00f0ff"),
+  pink: text("pink").notNull().default("#ff2e97"),
+  purple: text("purple").notNull().default("#b026ff"),
+  green: text("green").notNull().default("#39ff88"),
+  isActive: boolean("is_active").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});

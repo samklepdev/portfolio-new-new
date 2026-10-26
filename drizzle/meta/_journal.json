@@ -43,6 +43,13 @@
       "when": 1792967565390,
       "tag": "0005_bored_kree",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793049883132,
+      "tag": "0006_sharp_tempest",
+      "breakpoints": true
     }
   ]
 }

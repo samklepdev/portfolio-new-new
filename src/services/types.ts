@@ -78,3 +78,18 @@ export type SubmissionRowDTO = {
   emailedAt: string | null;
   emailError: string | null;
 };
+
+export type ThemeInput = {
+  name: string;
+  background: string;
+  foreground: string;
+  turquoise: string;
+  pink: string;
+  purple: string;
+  green: string;
+};
+
+export type ThemeRowDTO = ThemeInput & {
+  id: number;
+  isActive: boolean;
+};
