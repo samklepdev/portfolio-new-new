@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { DashboardStats } from "@/db/admin-dashboard";
 
@@ -21,19 +21,30 @@ const stats: DashboardStats = {
 describe("AdminDashboard", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("renders the four stat cards with their numbers", async () => {
+  it("renders overview metrics, recent inquiries, and management links", async () => {
     mocks.getDashboardStats.mockResolvedValue(stats);
     render(await AdminDashboard());
 
-    expect(screen.getByText("Content")).toBeInTheDocument();
+    const metrics = within(screen.getByRole("region", { name: "Site metrics" }));
+    expect(metrics.getByText("Projects")).toBeInTheDocument();
     expect(screen.getByText("15")).toBeInTheDocument();          // projects total
     expect(screen.getByText(/2 drafts?/i)).toBeInTheDocument();  // draft count
+    expect(metrics.getByText("Posts")).toBeInTheDocument();
+    expect(screen.getByText("New inquiries")).toBeInTheDocument();
 
-    expect(screen.getByText(/Recent submissions/i)).toBeInTheDocument();
+    expect(screen.getByText(/Recent inquiries/i)).toBeInTheDocument();
     expect(screen.getByText("Ada Lovelace")).toBeInTheDocument();
 
-    expect(screen.getByText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByText("Tag distribution")).toBeInTheDocument();
+    expect(screen.getByText(/Email delivered/i)).toBeInTheDocument();
+    expect(screen.getByRole("progressbar", { name: "Published content" })).toHaveAttribute(
+      "aria-valuenow",
+      "89",
+    );
+    expect(screen.getByRole("link", { name: /view all/i })).toHaveAttribute(
+      "href",
+      "/admin/submissions",
+    );
+    expect(screen.getByText(/Tech tags/i)).toBeInTheDocument();
     expect(screen.getByText("20")).toBeInTheDocument();          // tech tags
   });
 
