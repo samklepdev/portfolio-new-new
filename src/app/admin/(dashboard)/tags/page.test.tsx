@@ -48,6 +48,15 @@ describe("TagsListPage", () => {
     await waitFor(() => expect(mocks.edit).toHaveBeenCalledWith("1", expect.objectContaining({ name: "Preact" })));
   });
 
+  it("does not save an edit with an empty name", async () => {
+    render(<TagsListPage />);
+    await waitFor(() => expect(screen.getByText("React")).toBeInTheDocument());
+    fireEvent.click(screen.getByRole("button", { name: /edit react/i }));
+    fireEvent.change(screen.getByLabelText(/edit name/i), { target: { value: "  " } });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(mocks.edit).not.toHaveBeenCalled());
+  });
+
   it("names the cascade impact when deleting a used tag", async () => {
     mocks.del.mockResolvedValue(undefined);
     render(<TagsListPage />);

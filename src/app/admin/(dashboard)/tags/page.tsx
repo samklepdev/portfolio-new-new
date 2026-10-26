@@ -58,6 +58,10 @@ export default function TagsListPage() {
   }
 
   async function saveEdit(id: number) {
+    if (draft.name.trim() === "") {
+      toast.error("Tag name is required");
+      return;
+    }
     try {
       await service.edit(String(id), clean(draft));
       toast.success("Tag saved");

@@ -1,6 +1,7 @@
 import { render, screen, waitFor, act } from "@testing-library/react";
 import { Suspense } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ApiError } from "@/services/ApiError";
 
 const mocks = vi.hoisted(() => ({ get: vi.fn() }));
 vi.mock("@/services/SubmissionService", () => ({ default: class { get = mocks.get; } }));
@@ -35,5 +36,13 @@ describe("SubmissionDetailPage", () => {
     expect(screen.getByRole("link", { name: "jane@co.com" })).toHaveAttribute("href", "mailto:jane@co.com");
     expect(screen.getByText("Hi, I'd love to talk.")).toBeInTheDocument();
     expect(screen.getByText("$10k–20k")).toBeInTheDocument();
+  });
+
+  it("shows a not-found state instead of loading forever when the fetch fails", async () => {
+    mocks.get.mockRejectedValue(new ApiError(404, "Not found"));
+    await renderPage();
+    await waitFor(() => expect(screen.getByText("Not found")).toBeInTheDocument());
+    expect(screen.queryByText("Loading…")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /all submissions/i })).toBeInTheDocument();
   });
 });

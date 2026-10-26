@@ -20,14 +20,27 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
   const { id } = use(params);
   const service = useMemo(() => new SubmissionService(), []);
   const [row, setRow] = useState<SubmissionRowDTO | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     service
       .get(id)
       .then(setRow)
-      .catch((err) => toast.error(err instanceof ApiError ? err.message : "Failed to load submission"));
+      .catch((err) => {
+        const message = err instanceof ApiError ? err.message : "Failed to load submission";
+        setError(message);
+        toast.error(message);
+      });
   }, [service, id]);
 
+  if (error) {
+    return (
+      <div className={styles.detail}>
+        <Link className={listStyles.editLink} href="/admin/submissions">← All submissions</Link>
+        <p className={listStyles.muted}>{error}</p>
+      </div>
+    );
+  }
   if (!row) return <p className={listStyles.muted}>Loading…</p>;
 
   const status = deliveryStatus(row);
