@@ -113,18 +113,18 @@ export default function TagsListPage() {
               editingId === row.id ? (
                 <tr key={row.id}>
                   <td>
-                    <input aria-label={`Edit name ${row.name}`} value={draft.name}
+                    <input className={styles.cellInput} aria-label={`Edit name ${row.name}`} value={draft.name}
                       onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))} />
                   </td>
                   <td>
-                    <select aria-label={`Edit kind ${row.name}`} value={draft.kind}
+                    <select className={styles.cellInput} aria-label={`Edit kind ${row.name}`} value={draft.kind}
                       onChange={(e) => setDraft((d) => ({ ...d, kind: e.target.value }))}>
                       {KIND_OPTIONS.map((k) => <option key={k} value={k}>{k}</option>)}
                     </select>
                   </td>
                   <td>{usageLabel(row)}</td>
                   <td>
-                    <input aria-label={`Edit icon ${row.name}`} value={draft.iconUrl ?? ""}
+                    <input className={styles.cellInput} aria-label={`Edit icon ${row.name}`} value={draft.iconUrl ?? ""}
                       onChange={(e) => setDraft((d) => ({ ...d, iconUrl: e.target.value }))} />
                   </td>
                   <td className={listStyles.rowActions}>

@@ -7,8 +7,7 @@
 }
 .newRow input,
 .newRow select,
-table input,
-table select {
+.cellInput {
   font: inherit;
   padding: 0.4rem 0.55rem;
   border-radius: 0.4rem;
@@ -17,7 +16,7 @@ table select {
   color: #f5f7fa;
 }
 .newRow input:focus,
-table input:focus {
+.cellInput:focus {
   outline: none;
   border-color: #00f0ff;
 }
