@@ -25,4 +25,24 @@ describe("Pagination", () => {
     expect(screen.getByRole("link", { name: "Page 1" })).toHaveAttribute("href", "/blog");
     expect(screen.getByRole("link", { name: "Page 3" })).toHaveAttribute("href", "/blog?page=3");
   });
+
+  it("keeps extra query params on every page link", () => {
+    render(
+      <Pagination
+        page={2}
+        totalPages={3}
+        basePath="/projects"
+        query={{ tag: "react" }}
+      />
+    );
+    // Page 1 keeps the filter but still drops ?page=.
+    expect(screen.getByRole("link", { name: "Page 1" })).toHaveAttribute(
+      "href",
+      "/projects?tag=react"
+    );
+    expect(screen.getByRole("link", { name: "Page 3" })).toHaveAttribute(
+      "href",
+      "/projects?tag=react&page=3"
+    );
+  });
 });
