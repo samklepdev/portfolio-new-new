@@ -27,10 +27,10 @@ describe("/api/admin/tags", () => {
   });
 
   it("GET returns the tag list", async () => {
-    mocks.listTags.mockResolvedValue([{ id: 1, name: "React", kind: "tech" }]);
+    mocks.listTags.mockResolvedValue([{ id: 1, name: "React", kind: "tech", iconUrl: null, projectCount: 2, postCount: 0 }]);
     const res = await GET();
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual([{ id: 1, name: "React", kind: "tech" }]);
+    expect(await res.json()).toEqual([{ id: 1, name: "React", kind: "tech", iconUrl: null, projectCount: 2, postCount: 0 }]);
   });
 
   it("POST creates a tag and returns 201", async () => {

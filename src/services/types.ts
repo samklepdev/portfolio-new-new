@@ -51,6 +51,10 @@ export type TagInput = {
 // over JSON). Kept loose on timestamps since the client only displays them.
 export type TagRowDTO = { id: number; name: string; kind: string; iconUrl: string | null };
 
+// listTags enriches each tag with how many projects/posts reference it, so the
+// admin can see a tag's blast radius before deleting it (deletes cascade).
+export type TagListRowDTO = TagRowDTO & { projectCount: number; postCount: number };
+
 export type ProjectRowDTO = ProjectInput & {
   id: number;
   createdAt: string;

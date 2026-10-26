@@ -1,0 +1,44 @@
+.newRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.newRow input,
+.newRow select,
+.cellInput {
+  font: inherit;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.4rem;
+  background: #0b0e14;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #f5f7fa;
+}
+.newRow input:focus,
+.cellInput:focus {
+  outline: none;
+  border-color: #00f0ff;
+}
+.add,
+.cancel,
+.edit {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  background: transparent;
+}
+.add {
+  border: 1px solid #00f0ff;
+  color: #00f0ff;
+}
+.edit {
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+}
+.cancel {
+  border: 1px solid rgba(170, 178, 192, 0.4);
+  color: #aab2c0;
+}

@@ -25,7 +25,7 @@ describe("AboutPage", () => {
 
   it("renders the timeline, stack, and both testimonials in page source", () => {
     const { container } = render(<AboutPage />);
-    expect(container.querySelectorAll("ol li")).toHaveLength(4);
+    expect(container.querySelectorAll("ol li")).toHaveLength(5);
     expect(container.querySelectorAll("dd li")).toHaveLength(15);
     expect(container.querySelectorAll("blockquote")).toHaveLength(2);
   });

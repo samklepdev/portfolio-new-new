@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 import LogoutButton from "./LogoutButton";
 import styles from "./AdminNav.module.css";
 
-// Tags and Submissions pages land in a later phase; their nav links stay out
-// until the pages exist so the nav never points at a 404.
 const LINKS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/posts", label: "Posts" },
+  { href: "/admin/tags", label: "Tags" },
+  { href: "/admin/submissions", label: "Submissions" },
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
