@@ -1,4 +1,4 @@
-import { and, eq, notInArray, sql } from "drizzle-orm";
+import { and, eq, ne, notInArray, sql } from "drizzle-orm";
 import { db } from "./index";
 import { posts, postTags, projects, projectTags, tags, themes } from "./schema";
 import type { ProjectInput, PostInput, TagInput, ThemeInput } from "@/services/types";
@@ -289,7 +289,7 @@ type ThemeRow = typeof themes.$inferSelect;
 export async function upsertTheme(
   input: ThemeInput,
   opts: { id?: number } = {},
-): Promise<ThemeRow> {
+): Promise<ThemeRow | null> {
   const values = {
     name: input.name,
     background: input.background,
@@ -306,7 +306,7 @@ export async function upsertTheme(
         .set({ ...values, updatedAt: new Date() })
         .where(eq(themes.id, opts.id))
         .returning();
-      return row;
+      return row ?? null;
     }
     const [row] = await db.insert(themes).values(values).returning();
     return row;
@@ -318,10 +318,16 @@ export async function upsertTheme(
 
 export async function activateTheme(id: number): Promise<boolean> {
   return db.transaction(async (tx) => {
-    const [exists] = await tx.select({ id: themes.id }).from(themes).where(eq(themes.id, id));
-    if (!exists) return false;
-    await tx.update(themes).set({ isActive: false }).where(eq(themes.isActive, true));
-    await tx.update(themes).set({ isActive: true, updatedAt: new Date() }).where(eq(themes.id, id));
+    const activated = await tx
+      .update(themes)
+      .set({ isActive: true, updatedAt: new Date() })
+      .where(eq(themes.id, id))
+      .returning({ id: themes.id });
+    if (activated.length === 0) return false; // no such row; nothing written
+    await tx
+      .update(themes)
+      .set({ isActive: false })
+      .where(and(eq(themes.isActive, true), ne(themes.id, id)));
     return true;
   });
 }
