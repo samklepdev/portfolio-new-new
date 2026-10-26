@@ -1674,8 +1674,10 @@ Expected: each returns `307`/`302` (redirect to `/admin/login`, since unauthenti
 
 - [ ] **Step 4: Final commit if anything changed during verification**
 
+Stage only admin/editor paths with explicit pathspecs — **never `git add -A`** (the untracked `src/content/posts/pi-hosted-*.md` files must never be staged). Normally nothing changes in this step.
+
 ```bash
-git add -A
+git add "src/app/admin" src/db src/app/api/admin
 git commit -m "Phase 3b: verify admin projects/posts editor build" || echo "nothing to commit"
 ```
 
