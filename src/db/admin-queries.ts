@@ -1,6 +1,6 @@
 import { asc, desc, eq, sql } from "drizzle-orm";
 import { db } from "./index";
-import { contactSubmissions, posts, projects, tags } from "./schema";
+import { contactSubmissions, postTags, posts, projectTags, projects, tags } from "./schema";
 
 export type ProjectRow = typeof projects.$inferSelect;
 export type PostRow = typeof posts.$inferSelect;
@@ -47,8 +47,26 @@ export async function getPostById(id: number) {
   return row ?? null;
 }
 
-export async function listTags(): Promise<TagRow[]> {
-  return db.query.tags.findMany({ orderBy: [asc(tags.kind), asc(tags.name)] });
+export type TagWithCounts = TagRow & { projectCount: number; postCount: number };
+
+export async function listTags(): Promise<TagWithCounts[]> {
+  return db
+    .select({
+      id: tags.id,
+      name: tags.name,
+      kind: tags.kind,
+      iconUrl: tags.iconUrl,
+      projectCount:
+        sql<number>`(select count(*) from ${projectTags} where ${projectTags.tagId} = ${tags.id})`.mapWith(
+          Number,
+        ),
+      postCount:
+        sql<number>`(select count(*) from ${postTags} where ${postTags.tagId} = ${tags.id})`.mapWith(
+          Number,
+        ),
+    })
+    .from(tags)
+    .orderBy(asc(tags.kind), asc(tags.name));
 }
 
 export async function getTagById(id: number): Promise<TagRow | null> {
