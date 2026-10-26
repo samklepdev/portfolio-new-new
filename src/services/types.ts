@@ -46,3 +46,31 @@ export type TagInput = {
   kind: string;
   iconUrl: string | null;
 };
+
+// Row shapes the API returns (client-side view; dates arrive as ISO strings
+// over JSON). Kept loose on timestamps since the client only displays them.
+export type TagRowDTO = { id: number; name: string; kind: string; iconUrl: string | null };
+
+export type ProjectRowDTO = ProjectInput & {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PostRowDTO = PostInput & {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SubmissionRowDTO = {
+  id: number;
+  name: string;
+  email: string;
+  budget: string | null;
+  website: string | null;
+  message: string;
+  createdAt: string;
+  emailedAt: string | null;
+  emailError: string | null;
+};
