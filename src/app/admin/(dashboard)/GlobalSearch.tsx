@@ -153,16 +153,16 @@ export default function GlobalSearch() {
 
       {showDropdown && (
         <div className={styles.dropdown}>
-          {flat.length === 0 ? (
-            <p className={styles.empty}>No matches for “{query.trim()}”.</p>
-          ) : (
-            <ul className={styles.listbox} role="listbox" id={listboxId}>
-              {groups.map((group) => (
-                <li key={group.type} className={styles.group}>
+          <ul className={styles.listbox} role="listbox" id={listboxId}>
+            {flat.length === 0 ? (
+              <li className={styles.empty}>No matches for “{query.trim()}”.</li>
+            ) : (
+              groups.map((group) => (
+                <li key={group.type} className={styles.group} role="group" aria-label={group.heading}>
                   <p className={styles.groupHeading} aria-hidden="true">
                     {group.heading}
                   </p>
-                  <ul className={styles.groupItems}>
+                  <ul className={styles.groupItems} role="presentation">
                     {group.items.map((item) => (
                       <li key={item.key}>
                         <Link
@@ -195,9 +195,9 @@ export default function GlobalSearch() {
                     </Link>
                   )}
                 </li>
-              ))}
-            </ul>
-          )}
+              ))
+            )}
+          </ul>
         </div>
       )}
     </div>

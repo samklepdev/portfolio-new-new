@@ -50,7 +50,11 @@ describe("GlobalSearch", () => {
       target: { value: "alpha" },
     });
 
-    const listbox = await screen.findByRole("listbox");
+    // Wait for an actual option (not just the listbox, which is now always
+    // present once the dropdown is open — see the M3 a11y fix) so the
+    // debounce + data load have both settled before asserting.
+    await screen.findByRole("option", { name: /Alpha Portal/ });
+    const listbox = screen.getByRole("listbox");
     // Matches: Alpha Portal (project), Alpha Notes (post), ada@alpha.com (submission).
     expect(within(listbox).getByRole("option", { name: /Alpha Portal/ })).toHaveAttribute(
       "href", "/admin/projects/1/edit",
@@ -80,13 +84,15 @@ describe("GlobalSearch", () => {
     const input = screen.getByRole("combobox", { name: /search admin content/i });
 
     fireEvent.change(input, { target: { value: "alpha" } });
-    await screen.findByRole("listbox");
+    // Wait for an actual option, not just the listbox (always present once
+    // open per the M3 fix), so the debounce + data load have settled.
+    await screen.findByRole("option", { name: /Alpha Portal/ });
     fireEvent.keyDown(input, { key: "ArrowDown" });
     fireEvent.keyDown(input, { key: "Enter" });
     expect(mocks.push).toHaveBeenCalledWith("/admin/projects/1/edit");
 
     fireEvent.change(input, { target: { value: "alpha" } });
-    await screen.findByRole("listbox");
+    await screen.findByRole("option", { name: /Alpha Portal/ });
     fireEvent.keyDown(input, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull());
   });
@@ -98,8 +104,58 @@ describe("GlobalSearch", () => {
     fireEvent.change(screen.getByRole("combobox", { name: /search admin content/i }), {
       target: { value: "alpha" },
     });
-    const listbox = await screen.findByRole("listbox");
+    // Wait for an actual option, not just the listbox (always present once
+    // open per the M3 fix), so the debounce + data load have settled.
+    await screen.findByRole("option", { name: /Alpha Notes/ });
+    const listbox = screen.getByRole("listbox");
     expect(within(listbox).getByRole("option", { name: /Alpha Notes/ })).toBeInTheDocument();
     expect(within(listbox).queryByRole("option", { name: /Alpha Portal/ })).toBeNull();
+  });
+
+  it("keeps a listbox element in the DOM for the empty state", async () => {
+    render(<GlobalSearch />);
+    await waitFor(() => expect(mocks.listProjects).toHaveBeenCalled());
+    fireEvent.change(screen.getByRole("combobox", { name: /search admin content/i }), {
+      target: { value: "zzzzz" },
+    });
+    const listbox = await screen.findByRole("listbox");
+    expect(within(listbox).getByText(/no matches/i)).toBeInTheDocument();
+  });
+
+  it("conveys the result type via a group role/label on each result group", async () => {
+    render(<GlobalSearch />);
+    await waitFor(() => expect(mocks.listProjects).toHaveBeenCalled());
+    fireEvent.change(screen.getByRole("combobox", { name: /search admin content/i }), {
+      target: { value: "alpha" },
+    });
+    await screen.findByRole("option", { name: /Alpha Portal/ });
+
+    const projectGroup = screen.getByRole("group", { name: "Projects" });
+    expect(within(projectGroup).getByRole("option", { name: /Alpha Portal/ })).toBeInTheDocument();
+  });
+
+  it("caps each group at 5 and shows a +N more link to the section list page", async () => {
+    mocks.listProjects.mockResolvedValue(
+      Array.from({ length: 7 }, (_, i) => ({
+        id: i + 1,
+        slug: `alpha-${i + 1}`,
+        title: `Alpha Portal ${i + 1}`,
+        status: "published",
+      })),
+    );
+    render(<GlobalSearch />);
+    await waitFor(() => expect(mocks.listProjects).toHaveBeenCalled());
+
+    fireEvent.change(screen.getByRole("combobox", { name: /search admin content/i }), {
+      target: { value: "alpha portal" },
+    });
+
+    await screen.findByRole("option", { name: /Alpha Portal 1/ });
+    const listbox = screen.getByRole("listbox");
+    const projectGroup = within(listbox).getByRole("group", { name: "Projects" });
+    expect(within(projectGroup).getAllByRole("option")).toHaveLength(5);
+
+    const moreLink = within(projectGroup).getByRole("link", { name: /\+2 more/i });
+    expect(moreLink).toHaveAttribute("href", "/admin/projects");
   });
 });
