@@ -57,4 +57,22 @@ describe("admin middleware", () => {
     const res = await middleware(request("/admin", "garbage-token"));
     expect(res.status).toBe(307);
   });
+
+  it("sets Cache-Control: no-store on an authenticated admin page response", async () => {
+    const token = await signSession();
+    const res = await middleware(request("/admin", token));
+    expect(res.status).toBe(200); // NextResponse.next()
+    expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("sets Cache-Control: no-store on an authenticated admin API response", async () => {
+    const token = await signSession();
+    const res = await middleware(request("/api/admin/projects", token));
+    expect(res.headers.get("cache-control")).toBe("no-store");
+  });
+
+  it("does not set no-store on the public login page pass-through", async () => {
+    const res = await middleware(request("/admin/login"));
+    expect(res.headers.get("cache-control")).toBeNull();
+  });
 });
