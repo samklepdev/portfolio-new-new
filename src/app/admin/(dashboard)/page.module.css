@@ -1,66 +1,332 @@
-.heading {
-  margin: 0 0 1.5rem;
-  font-family: var(--font-display, inherit);
-  font-size: 1.75rem;
-  color: #f5f7fa;
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: 1rem;
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
 }
-.card {
-  padding: 1.25rem 1.5rem;
-  border: 1px solid rgba(0, 240, 255, 0.15);
-  border-radius: 0.75rem;
-  background: #12161f;
-}
-.cardTitle {
-  margin: 0 0 0.75rem;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+
+.eyebrow {
+  margin: 0 0 0.35rem;
   color: #00f0ff;
-}
-.stat {
-  margin: 0 0 0.5rem;
-  color: #f5f7fa;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-.big {
-  font-family: var(--font-display, inherit);
-  font-size: 1.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
-.sub {
-  font-size: 0.85rem;
-  color: #aab2c0;
-}
-.alert {
-  margin: 0 0 0.5rem;
-  font-weight: 600;
-  color: #ff2e97;
-}
-.list {
-  list-style: none;
-  margin: 0.5rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.listItem {
-  display: flex;
-  flex-direction: column;
-}
-.name {
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.65rem, 3vw, 2rem);
+  line-height: 1.2;
   color: #f5f7fa;
+}
+
+.intro {
+  margin: 0.45rem 0 0;
+  color: #aab2c0;
   font-size: 0.9rem;
 }
-.meta {
+
+.siteLink,
+.panelLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #00f0ff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.siteLink {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  border-radius: 0.55rem;
+  background: rgba(0, 240, 255, 0.05);
+}
+
+.siteLink:hover,
+.panelLink:hover {
+  color: #f5f7fa;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.metricCard,
+.panel {
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid rgba(0, 240, 255, 0.13);
+  border-radius: 0.8rem;
+  background: #12161f;
+}
+
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metricLabel {
   color: #aab2c0;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.metricValue {
+  color: #f5f7fa;
+  font-family: var(--font-display, inherit);
+  font-size: 2rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricNote {
+  color: #8993a3;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.failure {
+  color: #ff2e97;
+  font-weight: 650;
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(15rem, 0.85fr);
+  align-items: start;
+  gap: 0.85rem;
+}
+
+.panel {
+  padding: 1.25rem;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.panelTitle {
+  margin: 0;
+  color: #f5f7fa;
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+
+.panelDescription {
+  margin: 0.35rem 0 0;
+  color: #8993a3;
+  font-size: 0.77rem;
+  line-height: 1.5;
+}
+
+.panelLink {
+  padding-top: 0.12rem;
+}
+
+.inquiryList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.inquiry {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.78rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 2.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(0, 240, 255, 0.08);
+  color: #00f0ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.inquiryDetails {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.inquiryName,
+.inquiryEmail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inquiryName {
+  color: #f5f7fa;
+  font-size: 0.83rem;
+  font-weight: 550;
+}
+
+.inquiryEmail,
+.inquiryDate {
+  color: #8993a3;
+  font-size: 0.73rem;
+}
+
+.inquiryDate {
+  flex: none;
+}
+
+.emptyState {
+  margin: 1.25rem 0 0;
+  padding: 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 0.55rem;
+  color: #aab2c0;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.sidePanels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  color: #aab2c0;
+  font-size: 0.75rem;
+}
+
+.progressHeader strong {
+  color: #f5f7fa;
+  font-variant-numeric: tabular-nums;
+}
+
+.progressTrack {
+  height: 0.45rem;
+  margin-top: 0.55rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #00f0ff;
+  transition: width 0.25s ease;
+}
+
+.tagSummary {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #aab2c0;
+  font-size: 0.75rem;
+}
+
+.tagSummary strong {
+  margin-left: 0.25rem;
+  color: #f5f7fa;
+  font-variant-numeric: tabular-nums;
+}
+
+.quickLinks {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.75rem;
+}
+
+.quickLinks a {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.65rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #c5ccd6;
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.quickLinks a:hover {
+  color: #00f0ff;
+}
+
+@media (max-width: 1000px) {
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .metrics {
+    gap: 0.65rem;
+  }
+
+  .metricCard {
+    padding: 0.9rem;
+  }
+
+  .metricValue {
+    font-size: 1.7rem;
+  }
+
+  .inquiry {
+    gap: 0.55rem;
+  }
+
+  .inquiryDate {
+    max-width: 4.5rem;
+    text-align: right;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressFill {
+    transition: none;
+  }
 }
