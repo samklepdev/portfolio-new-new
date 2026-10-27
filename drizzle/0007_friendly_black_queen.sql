@@ -1,0 +1,1 @@
+ALTER TABLE "themes" ADD COLUMN "hero_preset" text DEFAULT 'orbit' NOT NULL;
