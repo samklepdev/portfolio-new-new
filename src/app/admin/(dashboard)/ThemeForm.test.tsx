@@ -36,4 +36,38 @@ describe("ThemeForm", () => {
       expect.objectContaining({ name: "Vapor", background: expect.any(String) }),
     );
   });
+
+  it("defaults the hero animation to orbit and submits it", () => {
+    const onSubmit = vi.fn();
+    render(<ThemeForm submitLabel="Create theme" onSubmit={onSubmit} submitting={false} />);
+    expect(screen.getByRole("radio", { name: /orbit/i })).toBeChecked();
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Vapor" } });
+    fireEvent.submit(screen.getByRole("button", { name: /create theme/i }).closest("form")!);
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ heroPreset: "orbit" }));
+  });
+
+  it("submits the chosen hero animation", () => {
+    const onSubmit = vi.fn();
+    render(<ThemeForm submitLabel="Create theme" onSubmit={onSubmit} submitting={false} />);
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Vapor" } });
+    fireEvent.click(screen.getByRole("radio", { name: /pulse/i }));
+    fireEvent.submit(screen.getByRole("button", { name: /create theme/i }).closest("form")!);
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ heroPreset: "pulse" }));
+  });
+
+  it("pre-selects the hero animation of an existing theme", () => {
+    render(
+      <ThemeForm
+        submitLabel="Save"
+        submitting={false}
+        onSubmit={vi.fn()}
+        initial={{
+          id: 3, name: "Sunset", isActive: false, heroPreset: "wave",
+          background: "#101010", foreground: "#fafafa", turquoise: "#11ccdd",
+          pink: "#ee3388", purple: "#9922ee", green: "#22dd77",
+        }}
+      />,
+    );
+    expect(screen.getByRole("radio", { name: /wave/i })).toBeChecked();
+  });
 });
