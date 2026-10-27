@@ -14,7 +14,7 @@ const valid = {
 describe("parseThemeInput", () => {
   it("accepts a valid payload and trims the name", () => {
     const result = parseThemeInput({ ...valid, name: "  Sunset  " });
-    expect(result).toEqual({ ok: true, value: { ...valid, name: "Sunset" } });
+    expect(result).toEqual({ ok: true, value: { ...valid, name: "Sunset", heroPreset: "orbit" } });
   });
 
   it("accepts both #rgb and #rrggbb hex", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseId, parseProjectInput, parsePostInput, parseTagInput } from "./validateAdmin";
+import { parseId, parseProjectInput, parsePostInput, parseTagInput, parseThemeInput } from "./validateAdmin";
 
 describe("parseId", () => {
   it("accepts positive integers", () => {
@@ -74,5 +74,34 @@ describe("parseTagInput", () => {
   });
   it("rejects a missing name", () => {
     expect(parseTagInput({ kind: "tech" }).ok).toBe(false);
+  });
+});
+
+describe("parseThemeInput", () => {
+  const base = {
+    name: "Vapor",
+    background: "#0b0e14",
+    foreground: "#ffffff",
+    turquoise: "#00f0ff",
+    pink: "#ff2e97",
+    purple: "#b026ff",
+    green: "#39ff88",
+  };
+
+  it("accepts and echoes a valid hero preset", () => {
+    const result = parseThemeInput({ ...base, heroPreset: "pulse" });
+    expect(result).toEqual({ ok: true, value: expect.objectContaining({ heroPreset: "pulse" }) });
+  });
+
+  it("defaults heroPreset to orbit when absent", () => {
+    const result = parseThemeInput(base);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.value.heroPreset).toBe("orbit");
+  });
+
+  it("rejects an unknown hero preset", () => {
+    const result = parseThemeInput({ ...base, heroPreset: "spin" });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/hero preset/i);
   });
 });
