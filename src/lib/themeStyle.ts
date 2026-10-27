@@ -6,7 +6,7 @@ import type { ThemeRowDTO } from "@/services/types";
  * Spread onto the <html> element's inline style, which beats any stylesheet
  * :root rule regardless of load order — no flash, no ordering fragility.
  */
-export function paletteToStyle(theme: ThemeRowDTO | null): Record<string, string> {
+export function themeToStyle(theme: ThemeRowDTO | null): Record<string, string> {
   if (!theme) return {};
   return {
     "--background": theme.background,
@@ -15,5 +15,6 @@ export function paletteToStyle(theme: ThemeRowDTO | null): Record<string, string
     "--neon-pink": theme.pink,
     "--neon-purple": theme.purple,
     "--neon-green": theme.green,
+    "--hero-preset": theme.heroPreset ?? "orbit",
   };
 }
