@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { sql } from "drizzle-orm";
 import { client, db } from "./index";
-import { projects, posts } from "./schema";
+import { projects, posts, themes } from "./schema";
 
 // Dev-only bootstrap. Postgres is the source of truth; the real content lives
 // in the DB (authored via /admin, migrated once via `npm run db:import`). This
@@ -40,7 +40,31 @@ async function seed() {
       set: { title: sql`excluded.title`, updatedAt: new Date() },
     });
 
-  console.log("Dev bootstrap complete (sample-project, sample-post).");
+  await db
+    .insert(themes)
+    .values({
+      name: "Sunset",
+      background: "#140b0e",
+      foreground: "#fff6f0",
+      turquoise: "#ffb347",
+      pink: "#ff5e7e",
+      purple: "#c04cfd",
+      green: "#39ff88",
+      isActive: false,
+    })
+    .onConflictDoUpdate({
+      target: themes.name,
+      set: {
+        background: sql`excluded.background`,
+        foreground: sql`excluded.foreground`,
+        turquoise: sql`excluded.turquoise`,
+        pink: sql`excluded.pink`,
+        purple: sql`excluded.purple`,
+        green: sql`excluded.green`,
+      },
+    });
+
+  console.log("Dev bootstrap complete (sample-project, sample-post, sample theme).");
 }
 
 seed()

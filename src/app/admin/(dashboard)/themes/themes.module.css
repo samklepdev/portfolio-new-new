@@ -1,0 +1,64 @@
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #aab2c0;
+}
+.slotInputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.slotInputs input[type="color"] {
+  width: 2.5rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  background: #0b0e14;
+  cursor: pointer;
+}
+.swatches {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+.swatch {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.activePill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 240, 255, 0.1);
+  color: #00f0ff;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.activateBtn,
+.useDefaultBtn {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  background: transparent;
+  color: #00f0ff;
+  cursor: pointer;
+}
+.useDefaultBtn {
+  margin-bottom: 1rem;
+}
+.useDefaultBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

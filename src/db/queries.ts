@@ -1,6 +1,7 @@
 import { and, count, eq, asc, desc, inArray, isNotNull, sql } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 import { db } from "./index";
-import { posts, postTags, projects, tags } from "./schema";
+import { posts, postTags, projects, tags, themes } from "./schema";
 
 const publishedOrder = [
   desc(projects.featured),
@@ -192,3 +193,16 @@ export async function getPostTagNames(): Promise<string[]> {
     .orderBy(asc(tags.name));
   return rows.map((row) => row.name);
 }
+
+type ThemeRow = typeof themes.$inferSelect;
+
+// Cached + tagged so the static root layout can read the active theme without
+// forcing every page dynamic. Mutations call revalidateTag("active-theme").
+export const getActiveTheme = unstable_cache(
+  async (): Promise<ThemeRow | null> => {
+    const [row] = await db.select().from(themes).where(eq(themes.isActive, true)).limit(1);
+    return row ?? null;
+  },
+  ["active-theme"],
+  { tags: ["active-theme"] },
+);

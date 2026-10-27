@@ -1,4 +1,4 @@
-import type { ProjectInput, PostInput, TagInput, Tech } from "@/services/types";
+import type { ProjectInput, PostInput, TagInput, Tech, ThemeInput } from "@/services/types";
 
 export type Validated<T> = { ok: true; value: T } | { ok: false; error: string };
 
@@ -125,4 +125,33 @@ export function parseTagInput(body: unknown): Validated<TagInput> {
   if (typeof kind !== "string") return { ok: false, error: kind.error };
   if (!TAG_KINDS.has(kind)) return { ok: false, error: `Invalid kind "${kind}" (tech|topic)` };
   return { ok: true, value: { name, kind, iconUrl: optStr(body, "iconUrl") } };
+}
+
+const HEX_RE = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+const THEME_COLORS = [
+  "background",
+  "foreground",
+  "turquoise",
+  "pink",
+  "purple",
+  "green",
+] as const;
+
+export function parseThemeInput(body: unknown): Validated<ThemeInput> {
+  if (!isObject(body)) return { ok: false, error: "Body must be an object" };
+
+  const name = reqStr(body, "name");
+  if (typeof name !== "string") return { ok: false, error: name.error };
+
+  const colors = {} as Record<(typeof THEME_COLORS)[number], string>;
+  for (const field of THEME_COLORS) {
+    const value = reqStr(body, field);
+    if (typeof value !== "string") return { ok: false, error: value.error };
+    if (!HEX_RE.test(value)) {
+      return { ok: false, error: `Invalid hex colour for "${field}": "${value}"` };
+    }
+    colors[field] = value;
+  }
+
+  return { ok: true, value: { name, ...colors } };
 }

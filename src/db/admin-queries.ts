@@ -1,6 +1,6 @@
 import { asc, desc, eq, sql } from "drizzle-orm";
 import { db } from "./index";
-import { contactSubmissions, postTags, posts, projectTags, projects, tags } from "./schema";
+import { contactSubmissions, postTags, posts, projectTags, projects, tags, themes } from "./schema";
 
 export type ProjectRow = typeof projects.$inferSelect;
 export type PostRow = typeof posts.$inferSelect;
@@ -84,5 +84,19 @@ export async function getSubmissionById(id: number): Promise<SubmissionRow | nul
   const row = await db.query.contactSubmissions.findFirst({
     where: eq(contactSubmissions.id, id),
   });
+  return row ?? null;
+}
+
+type ThemeRow = typeof themes.$inferSelect;
+
+export async function listThemes(): Promise<ThemeRow[]> {
+  return db
+    .select()
+    .from(themes)
+    .orderBy(desc(themes.isActive), desc(themes.createdAt), asc(themes.id));
+}
+
+export async function getTheme(id: number): Promise<ThemeRow | null> {
+  const [row] = await db.select().from(themes).where(eq(themes.id, id));
   return row ?? null;
 }

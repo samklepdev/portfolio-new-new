@@ -7,6 +7,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import "./toast.css";
+import { getActiveTheme } from "@/db/queries";
+import { paletteToStyle } from "@/lib/themeStyle";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -31,15 +33,18 @@ export const metadata: Metadata = {
   description: "Full-stack engineer — TypeScript, React, C#",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const activeTheme = await getActiveTheme();
+
   return (
     <html
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      style={paletteToStyle(activeTheme) as React.CSSProperties}
     >
       <body>
         {children}

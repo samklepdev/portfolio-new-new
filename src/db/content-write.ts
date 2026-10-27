@@ -1,7 +1,7 @@
-import { and, eq, notInArray, sql } from "drizzle-orm";
+import { and, eq, ne, notInArray, sql } from "drizzle-orm";
 import { db } from "./index";
-import { posts, postTags, projects, projectTags, tags } from "./schema";
-import type { ProjectInput, PostInput, TagInput } from "@/services/types";
+import { posts, postTags, projects, projectTags, tags, themes } from "./schema";
+import type { ProjectInput, PostInput, TagInput, ThemeInput } from "@/services/types";
 
 export type ProjectRow = typeof projects.$inferSelect;
 export type PostRow = typeof posts.$inferSelect;
@@ -265,5 +265,78 @@ export async function updateTag(id: number, input: TagInput): Promise<TagRow | n
 
 export async function deleteTag(id: number): Promise<boolean> {
   const deleted = await db.delete(tags).where(eq(tags.id, id)).returning({ id: tags.id });
+  return deleted.length > 0;
+}
+
+export class NameConflictError extends Error {
+  constructor(message = "name already exists") {
+    super(message);
+    this.name = "NameConflictError";
+  }
+}
+
+function isUniqueViolation(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    (err as { code?: string }).code === "23505"
+  );
+}
+
+type ThemeRow = typeof themes.$inferSelect;
+
+export async function upsertTheme(
+  input: ThemeInput,
+  opts: { id?: number } = {},
+): Promise<ThemeRow | null> {
+  const values = {
+    name: input.name,
+    background: input.background,
+    foreground: input.foreground,
+    turquoise: input.turquoise,
+    pink: input.pink,
+    purple: input.purple,
+    green: input.green,
+  };
+  try {
+    if (opts.id !== undefined) {
+      const [row] = await db
+        .update(themes)
+        .set({ ...values, updatedAt: new Date() })
+        .where(eq(themes.id, opts.id))
+        .returning();
+      return row ?? null;
+    }
+    const [row] = await db.insert(themes).values(values).returning();
+    return row;
+  } catch (err) {
+    if (isUniqueViolation(err)) throw new NameConflictError();
+    throw err;
+  }
+}
+
+export async function activateTheme(id: number): Promise<boolean> {
+  return db.transaction(async (tx) => {
+    const activated = await tx
+      .update(themes)
+      .set({ isActive: true, updatedAt: new Date() })
+      .where(eq(themes.id, id))
+      .returning({ id: themes.id });
+    if (activated.length === 0) return false; // no such row; nothing written
+    await tx
+      .update(themes)
+      .set({ isActive: false })
+      .where(and(eq(themes.isActive, true), ne(themes.id, id)));
+    return true;
+  });
+}
+
+export async function deactivateAllThemes(): Promise<void> {
+  await db.update(themes).set({ isActive: false }).where(eq(themes.isActive, true));
+}
+
+export async function deleteTheme(id: number): Promise<boolean> {
+  const deleted = await db.delete(themes).where(eq(themes.id, id)).returning({ id: themes.id });
   return deleted.length > 0;
 }

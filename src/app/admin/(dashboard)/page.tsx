@@ -200,6 +200,7 @@ export default async function AdminDashboard() {
               <Link href="/admin/projects">Projects <span aria-hidden="true">→</span></Link>
               <Link href="/admin/posts">Posts <span aria-hidden="true">→</span></Link>
               <Link href="/admin/tags">Tags <span aria-hidden="true">→</span></Link>
+              <Link href="/admin/themes">Themes <span aria-hidden="true">→</span></Link>
             </div>
           </section>
         </aside>
