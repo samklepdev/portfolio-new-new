@@ -77,6 +77,12 @@ export default function ThemesListPage() {
         ),
       },
       {
+        key: "heroPreset",
+        header: "Animation",
+        sort: (t) => t.heroPreset ?? "orbit",
+        cell: (t) => t.heroPreset ?? "orbit",
+      },
+      {
         key: "active",
         header: "Status",
         sort: (t) => (t.isActive ? 1 : 0),
