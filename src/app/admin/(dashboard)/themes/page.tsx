@@ -83,6 +83,12 @@ export default function ThemesListPage() {
         cell: (t) => t.heroPreset ?? "orbit",
       },
       {
+        key: "isPublic",
+        header: "Public",
+        sort: (t) => (t.isPublic ? 1 : 0),
+        cell: (t) => (t.isPublic ? "Yes" : "No"),
+      },
+      {
         key: "active",
         header: "Status",
         sort: (t) => (t.isActive ? 1 : 0),
