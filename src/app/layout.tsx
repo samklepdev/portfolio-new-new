@@ -7,8 +7,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import "./toast.css";
-import { getActiveTheme } from "@/db/queries";
-import { themeToStyle } from "@/lib/themeStyle";
+import { getActiveTheme, getPublicThemes } from "@/db/queries";
+import { themeToStyle, toPublicTheme } from "@/lib/themeStyle";
+import { buildThemeBootScript } from "@/lib/themeBoot";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -38,7 +39,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const activeTheme = await getActiveTheme();
+  const [activeTheme, publicRows] = await Promise.all([getActiveTheme(), getPublicThemes()]);
+  const publicThemes = publicRows.map(toPublicTheme);
 
   return (
     <html
@@ -47,6 +49,12 @@ export default async function RootLayout({
       style={themeToStyle(activeTheme) as React.CSSProperties}
     >
       <body>
+        <script
+          id="__themes__"
+          type="application/json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(publicThemes).replace(/</g, "\\u003c") }}
+        />
+        <script dangerouslySetInnerHTML={{ __html: buildThemeBootScript() }} />
         {children}
         <ToastContainer theme="dark" position="bottom-right" />
         <Analytics />

@@ -6,7 +6,7 @@ describe("ThemeForm", () => {
   it("renders a name field and all six colour fields", () => {
     render(<ThemeForm submitLabel="Create theme" onSubmit={vi.fn()} submitting={false} />);
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
-    for (const slot of ["Background", "Foreground", "Turquoise", "Pink", "Purple", "Green"]) {
+    for (const slot of ["Background", "Foreground", "Primary", "Secondary", "Accent", "Status"]) {
       expect(screen.getByLabelText(slot)).toBeInTheDocument();
     }
   });
@@ -69,5 +69,22 @@ describe("ThemeForm", () => {
       />,
     );
     expect(screen.getByRole("radio", { name: /wave/i })).toBeChecked();
+  });
+
+  it("submits isPublic false by default", () => {
+    const onSubmit = vi.fn();
+    render(<ThemeForm submitLabel="Create theme" onSubmit={onSubmit} submitting={false} />);
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Vapor" } });
+    fireEvent.submit(screen.getByRole("button", { name: /create theme/i }).closest("form")!);
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ isPublic: false }));
+  });
+
+  it("submits isPublic true when 'Show on site' is checked", () => {
+    const onSubmit = vi.fn();
+    render(<ThemeForm submitLabel="Create theme" onSubmit={onSubmit} submitting={false} />);
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Vapor" } });
+    fireEvent.click(screen.getByLabelText(/show on site/i));
+    fireEvent.submit(screen.getByRole("button", { name: /create theme/i }).closest("form")!);
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ isPublic: true }));
   });
 });

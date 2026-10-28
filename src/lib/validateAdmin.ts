@@ -163,5 +163,5 @@ export function parseThemeInput(body: unknown): Validated<ThemeInput> {
     heroPreset = rawPreset;
   }
 
-  return { ok: true, value: { name, ...colors, heroPreset } };
+  return { ok: true, value: { name, ...colors, heroPreset, isPublic: optBool(body.isPublic, false) } };
 }

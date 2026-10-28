@@ -57,6 +57,13 @@
       "when": 1793125866816,
       "tag": "0007_friendly_black_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793198236959,
+      "tag": "0008_broken_menace",
+      "breakpoints": true
     }
   ]
 }

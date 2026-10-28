@@ -1,4 +1,4 @@
-import type { ThemeRowDTO } from "@/services/types";
+import type { ThemeRowDTO, PublicTheme } from "@/services/types";
 
 /**
  * CSS custom properties for a theme, keyed to match globals.css :root. An empty
@@ -16,5 +16,14 @@ export function themeToStyle(theme: ThemeRowDTO | null): Record<string, string> 
     "--neon-purple": theme.purple,
     "--neon-green": theme.green,
     "--hero-preset": theme.heroPreset ?? "orbit",
+  };
+}
+
+export function toPublicTheme(theme: ThemeRowDTO): PublicTheme {
+  return {
+    id: theme.id,
+    name: theme.name,
+    isActive: theme.isActive,
+    style: themeToStyle(theme),
   };
 }

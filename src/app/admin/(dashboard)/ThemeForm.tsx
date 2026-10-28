@@ -7,13 +7,15 @@ import styles from "./editor.module.css";
 import fieldStyles from "./FormFields.module.css";
 import themeStyles from "./themes/themes.module.css";
 
-const SLOTS: { key: keyof Omit<ThemeInput, "name">; label: string; fallback: string }[] = [
+type ColorKey = "background" | "foreground" | "turquoise" | "pink" | "purple" | "green";
+
+const SLOTS: { key: ColorKey; label: string; fallback: string }[] = [
   { key: "background", label: "Background", fallback: "#0b0e14" },
   { key: "foreground", label: "Foreground", fallback: "#ffffff" },
-  { key: "turquoise", label: "Turquoise", fallback: "#00f0ff" },
-  { key: "pink", label: "Pink", fallback: "#ff2e97" },
-  { key: "purple", label: "Purple", fallback: "#b026ff" },
-  { key: "green", label: "Green", fallback: "#39ff88" },
+  { key: "turquoise", label: "Primary", fallback: "#00f0ff" },
+  { key: "pink", label: "Secondary", fallback: "#ff2e97" },
+  { key: "purple", label: "Accent", fallback: "#b026ff" },
+  { key: "green", label: "Status", fallback: "#39ff88" },
 ];
 
 export default function ThemeForm({
@@ -32,6 +34,7 @@ export default function ThemeForm({
     Object.fromEntries(SLOTS.map((s) => [s.key, initial?.[s.key] ?? s.fallback])),
   );
   const [heroPreset, setHeroPreset] = useState<string>(initial?.heroPreset ?? DEFAULT_HERO_PRESET);
+  const [isPublic, setIsPublic] = useState<boolean>(initial?.isPublic ?? false);
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -44,6 +47,7 @@ export default function ThemeForm({
       purple: colors.purple,
       green: colors.green,
       heroPreset,
+      isPublic,
     });
   }
 
@@ -98,6 +102,17 @@ export default function ThemeForm({
           </label>
         ))}
       </fieldset>
+
+      <label className={fieldStyles.field}>
+        <span className={fieldStyles.label}>
+          <input
+            type="checkbox"
+            checked={isPublic}
+            onChange={(e) => setIsPublic(e.target.checked)}
+          />{" "}
+          Show on site
+        </span>
+      </label>
 
       <div className={styles.actions}>
         <button type="submit" className={styles.primary} disabled={submitting}>

@@ -14,7 +14,10 @@ const valid = {
 describe("parseThemeInput", () => {
   it("accepts a valid payload and trims the name", () => {
     const result = parseThemeInput({ ...valid, name: "  Sunset  " });
-    expect(result).toEqual({ ok: true, value: { ...valid, name: "Sunset", heroPreset: "orbit" } });
+    expect(result).toEqual({
+      ok: true,
+      value: { ...valid, name: "Sunset", heroPreset: "orbit", isPublic: false },
+    });
   });
 
   it("accepts both #rgb and #rrggbb hex", () => {
@@ -43,5 +46,31 @@ describe("parseThemeInput", () => {
     const { green, ...withoutGreen } = valid;
     void green;
     expect(parseThemeInput(withoutGreen).ok).toBe(false);
+  });
+});
+
+describe("parseThemeInput isPublic", () => {
+  const base = {
+    name: "Vapor",
+    background: "#0b0e14", foreground: "#ffffff", turquoise: "#00f0ff",
+    pink: "#ff2e97", purple: "#b026ff", green: "#39ff88",
+  };
+
+  it("accepts isPublic: true", () => {
+    const r = parseThemeInput({ ...base, isPublic: true });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.isPublic).toBe(true);
+  });
+
+  it("defaults isPublic to false when absent", () => {
+    const r = parseThemeInput(base);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.isPublic).toBe(false);
+  });
+
+  it("coerces a non-boolean isPublic to false", () => {
+    const r = parseThemeInput({ ...base, isPublic: "yes" });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.isPublic).toBe(false);
   });
 });

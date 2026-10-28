@@ -299,6 +299,7 @@ export async function upsertTheme(
     purple: input.purple,
     green: input.green,
     heroPreset: input.heroPreset ?? "orbit",
+    isPublic: input.isPublic ?? false,
   };
   try {
     if (opts.id !== undefined) {

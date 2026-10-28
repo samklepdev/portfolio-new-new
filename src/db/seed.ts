@@ -40,31 +40,33 @@ async function seed() {
       set: { title: sql`excluded.title`, updatedAt: new Date() },
     });
 
-  await db
-    .insert(themes)
-    .values({
-      name: "Sunset",
-      background: "#140b0e",
-      foreground: "#fff6f0",
-      turquoise: "#2dd4bf",
-      pink: "#ff5e7e",
-      purple: "#c04cfd",
-      green: "#39ff88",
-      heroPreset: "pulse",
-      isActive: false,
-    })
-    .onConflictDoUpdate({
-      target: themes.name,
-      set: {
-        background: sql`excluded.background`,
-        foreground: sql`excluded.foreground`,
-        turquoise: sql`excluded.turquoise`,
-        pink: sql`excluded.pink`,
-        purple: sql`excluded.purple`,
-        green: sql`excluded.green`,
-        heroPreset: sql`excluded.hero_preset`,
-      },
-    });
+  const seedThemes = [
+    { name: "CyberPunk", background: "#0b0e14", foreground: "#ffffff", turquoise: "#00f0ff",
+      pink: "#ff2e97", purple: "#b026ff", green: "#39ff88", heroPreset: "orbit", isPublic: true, isActive: true },
+    { name: "Ember", background: "#140b0a", foreground: "#fff4ec", turquoise: "#ff7a18",
+      pink: "#ff2e63", purple: "#b5179e", green: "#4ade80", heroPreset: "pulse", isPublic: true, isActive: false },
+    { name: "Synthwave", background: "#120a1e", foreground: "#f6f0ff", turquoise: "#c05cff",
+      pink: "#ff5bd1", purple: "#3ab0ff", green: "#35e07f", heroPreset: "wave", isPublic: true, isActive: false },
+  ];
+
+  for (const t of seedThemes) {
+    await db
+      .insert(themes)
+      .values(t)
+      .onConflictDoUpdate({
+        target: themes.name,
+        set: {
+          background: sql`excluded.background`,
+          foreground: sql`excluded.foreground`,
+          turquoise: sql`excluded.turquoise`,
+          pink: sql`excluded.pink`,
+          purple: sql`excluded.purple`,
+          green: sql`excluded.green`,
+          heroPreset: sql`excluded.hero_preset`,
+          isPublic: sql`excluded.is_public`,
+        },
+      });
+  }
 
   console.log("Dev bootstrap complete (sample-project, sample-post, sample theme).");
 }

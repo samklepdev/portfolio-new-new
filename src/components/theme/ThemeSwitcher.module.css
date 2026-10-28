@@ -1,0 +1,76 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.trigger:hover {
+  border-color: var(--neon-turquoise);
+  color: var(--neon-turquoise);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 50;
+  min-width: 11rem;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: var(--card, #12161f);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.6rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.45rem 0.5rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover,
+.option[aria-selected="true"] {
+  background: rgba(0, 240, 255, 0.1);
+}
+
+.swatches {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.swatches span {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.name {
+  flex: 1;
+}
+
+.check {
+  color: var(--neon-turquoise);
+}

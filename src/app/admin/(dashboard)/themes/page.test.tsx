@@ -14,9 +14,9 @@ vi.mock("react-toastify", () => ({ toast: { success: vi.fn(), error: vi.fn() } }
 import ThemesListPage from "./page";
 
 const themes = [
-  { id: 1, name: "Default Neon", isActive: true, heroPreset: "orbit", background: "#0b0e14", foreground: "#ffffff",
+  { id: 1, name: "Default Neon", isActive: true, isPublic: true, heroPreset: "orbit", background: "#0b0e14", foreground: "#ffffff",
     turquoise: "#00f0ff", pink: "#ff2e97", purple: "#b026ff", green: "#39ff88" },
-  { id: 2, name: "Sunset", isActive: false, heroPreset: "pulse", background: "#101010", foreground: "#fafafa",
+  { id: 2, name: "Sunset", isActive: false, isPublic: false, heroPreset: "pulse", background: "#101010", foreground: "#fafafa",
     turquoise: "#11ccdd", pink: "#ee3388", purple: "#9922ee", green: "#22dd77" },
 ];
 
@@ -53,5 +53,15 @@ describe("ThemesListPage", () => {
     render(<ThemesListPage />);
     await waitFor(() => expect(screen.getByText("Default Neon")).toBeInTheDocument());
     expect(screen.getByText("pulse")).toBeInTheDocument();
+  });
+
+  it("shows whether each theme is public", async () => {
+    render(<ThemesListPage />);
+    await waitFor(() => expect(screen.getByText("Default Neon")).toBeInTheDocument());
+    const rows = screen.getAllByRole("row");
+    // header + 2 data rows
+    expect(rows.length).toBeGreaterThanOrEqual(3);
+    expect(screen.getByText("Yes")).toBeInTheDocument();
+    expect(screen.getByText("No")).toBeInTheDocument();
   });
 });
