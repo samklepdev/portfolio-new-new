@@ -206,3 +206,16 @@ export const getActiveTheme = unstable_cache(
   ["active-theme"],
   { tags: ["active-theme"] },
 );
+
+// Public themes for the front-end switcher. Shares the "active-theme" cache tag
+// so every theme mutation (which already revalidates it) busts this too.
+export const getPublicThemes = unstable_cache(
+  async (): Promise<ThemeRow[]> =>
+    db
+      .select()
+      .from(themes)
+      .where(eq(themes.isPublic, true))
+      .orderBy(desc(themes.isActive), asc(themes.id)),
+  ["public-themes"],
+  { tags: ["active-theme"] },
+);
