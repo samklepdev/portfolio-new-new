@@ -88,9 +88,17 @@ export type ThemeInput = {
   purple: string;
   green: string;
   heroPreset?: string;
+  isPublic?: boolean;
 };
 
 export type ThemeRowDTO = ThemeInput & {
   id: number;
   isActive: boolean;
+};
+
+export type PublicTheme = {
+  id: number;
+  name: string;
+  isActive: boolean;
+  style: Record<string, string>;
 };

@@ -162,6 +162,7 @@ export const themes = pgTable("themes", {
   purple: text("purple").notNull().default("#b026ff"),
   green: text("green").notNull().default("#39ff88"),
   heroPreset: text("hero_preset").notNull().default("orbit"),
+  isPublic: boolean("is_public").notNull().default(false),
   isActive: boolean("is_active").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
