@@ -7,7 +7,9 @@ import styles from "./editor.module.css";
 import fieldStyles from "./FormFields.module.css";
 import themeStyles from "./themes/themes.module.css";
 
-const SLOTS: { key: keyof Omit<ThemeInput, "name">; label: string; fallback: string }[] = [
+type ColorKey = "background" | "foreground" | "turquoise" | "pink" | "purple" | "green";
+
+const SLOTS: { key: ColorKey; label: string; fallback: string }[] = [
   { key: "background", label: "Background", fallback: "#0b0e14" },
   { key: "foreground", label: "Foreground", fallback: "#ffffff" },
   { key: "turquoise", label: "Turquoise", fallback: "#00f0ff" },
