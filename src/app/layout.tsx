@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import "./toast.css";
 import { getActiveTheme } from "@/db/queries";
-import { paletteToStyle } from "@/lib/themeStyle";
+import { themeToStyle } from "@/lib/themeStyle";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -44,7 +44,7 @@ export default async function RootLayout({
     <html
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
-      style={paletteToStyle(activeTheme) as React.CSSProperties}
+      style={themeToStyle(activeTheme) as React.CSSProperties}
     >
       <body>
         {children}

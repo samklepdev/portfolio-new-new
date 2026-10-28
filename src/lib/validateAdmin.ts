@@ -1,4 +1,5 @@
 import type { ProjectInput, PostInput, TagInput, Tech, ThemeInput } from "@/services/types";
+import { HERO_PRESETS, DEFAULT_HERO_PRESET, isHeroPreset } from "@/lib/heroPresets";
 
 export type Validated<T> = { ok: true; value: T } | { ok: false; error: string };
 
@@ -153,5 +154,14 @@ export function parseThemeInput(body: unknown): Validated<ThemeInput> {
     colors[field] = value;
   }
 
-  return { ok: true, value: { name, ...colors } };
+  const rawPreset = (body as Record<string, unknown>).heroPreset;
+  let heroPreset: string = DEFAULT_HERO_PRESET;
+  if (rawPreset !== undefined) {
+    if (!isHeroPreset(rawPreset)) {
+      return { ok: false, error: `Invalid hero preset: "${String(rawPreset)}" (expected one of ${HERO_PRESETS.join(", ")})` };
+    }
+    heroPreset = rawPreset;
+  }
+
+  return { ok: true, value: { name, ...colors, heroPreset } };
 }

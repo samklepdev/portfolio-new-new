@@ -6,6 +6,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { useScrollStore } from "@/lib/scrollStore";
 import type { DeviceTier } from "@/lib/useDeviceTier";
+import { resolveHeroMotion } from "./heroMotion";
 
 function readVar(name: string, fallback: string): string {
   if (typeof window === "undefined") return fallback;
@@ -16,7 +17,7 @@ function readVar(name: string, fallback: string): string {
 function ParticleField({ count }: { count: number }) {
   const pointsRef = useRef<THREE.Points>(null);
 
-  const { positions, colors } = useMemo(() => {
+  const { positions, colors, basePositions, motion } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const palette = [
@@ -41,21 +42,30 @@ function ParticleField({ count }: { count: number }) {
       colors[i * 3 + 2] = color.b;
     }
 
-    return { positions, colors };
+    // Pristine copy so the wave preset can displace from a stable origin.
+    const basePositions = positions.slice();
+    // Read the active theme's motion once, here — never per frame.
+    const motion = resolveHeroMotion(readVar("--hero-preset", "orbit"));
+
+    return { positions, colors, basePositions, motion };
   }, [count]);
 
   useFrame((state, delta) => {
-    if (!pointsRef.current) return;
+    const points = pointsRef.current;
+    if (!points) return;
 
-    // ambient rotation, independent of scroll
-    pointsRef.current.rotation.y += delta * 0.03;
+    // preset-specific ambient motion (orbit/drift/pulse/wave)
+    const ambientScale = motion(points, {
+      elapsed: state.clock.elapsedTime,
+      delta,
+      basePositions,
+    });
 
     // scroll-driven: field disperses outward and fades as progress -> 1
     const progress = useScrollStore.getState().progress;
-    const scale = 1 + progress * 2.2;
-    pointsRef.current.scale.setScalar(scale);
+    points.scale.setScalar(ambientScale * (1 + progress * 2.2));
 
-    const material = pointsRef.current.material as THREE.PointsMaterial;
+    const material = points.material as THREE.PointsMaterial;
     material.opacity = Math.max(0, 1 - progress * 1.4);
   });
 

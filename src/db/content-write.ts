@@ -298,6 +298,7 @@ export async function upsertTheme(
     pink: input.pink,
     purple: input.purple,
     green: input.green,
+    heroPreset: input.heroPreset ?? "orbit",
   };
   try {
     if (opts.id !== undefined) {

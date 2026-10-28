@@ -46,10 +46,11 @@ async function seed() {
       name: "Sunset",
       background: "#140b0e",
       foreground: "#fff6f0",
-      turquoise: "#ffb347",
+      turquoise: "#2dd4bf",
       pink: "#ff5e7e",
       purple: "#c04cfd",
       green: "#39ff88",
+      heroPreset: "pulse",
       isActive: false,
     })
     .onConflictDoUpdate({
@@ -61,6 +62,7 @@ async function seed() {
         pink: sql`excluded.pink`,
         purple: sql`excluded.purple`,
         green: sql`excluded.green`,
+        heroPreset: sql`excluded.hero_preset`,
       },
     });
 

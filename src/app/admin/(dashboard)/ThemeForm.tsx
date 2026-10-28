@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ThemeInput, ThemeRowDTO } from "@/services/types";
+import { HERO_PRESETS, DEFAULT_HERO_PRESET, HERO_PRESET_LABELS } from "@/lib/heroPresets";
 import styles from "./editor.module.css";
 import fieldStyles from "./FormFields.module.css";
 import themeStyles from "./themes/themes.module.css";
@@ -30,6 +31,7 @@ export default function ThemeForm({
   const [colors, setColors] = useState<Record<string, string>>(() =>
     Object.fromEntries(SLOTS.map((s) => [s.key, initial?.[s.key] ?? s.fallback])),
   );
+  const [heroPreset, setHeroPreset] = useState<string>(initial?.heroPreset ?? DEFAULT_HERO_PRESET);
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -41,6 +43,7 @@ export default function ThemeForm({
       pink: colors.pink,
       purple: colors.purple,
       green: colors.green,
+      heroPreset,
     });
   }
 
@@ -79,6 +82,22 @@ export default function ThemeForm({
           </div>
         ))}
       </div>
+
+      <fieldset className={themeStyles.presetFieldset}>
+        <legend className={fieldStyles.label}>Hero animation</legend>
+        {HERO_PRESETS.map((preset) => (
+          <label key={preset} className={themeStyles.presetOption}>
+            <input
+              type="radio"
+              name="heroPreset"
+              value={preset}
+              checked={heroPreset === preset}
+              onChange={() => setHeroPreset(preset)}
+            />
+            <span>{HERO_PRESET_LABELS[preset]}</span>
+          </label>
+        ))}
+      </fieldset>
 
       <div className={styles.actions}>
         <button type="submit" className={styles.primary} disabled={submitting}>

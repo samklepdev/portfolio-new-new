@@ -87,6 +87,7 @@ export type ThemeInput = {
   pink: string;
   purple: string;
   green: string;
+  heroPreset?: string;
 };
 
 export type ThemeRowDTO = ThemeInput & {
