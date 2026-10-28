@@ -19,14 +19,21 @@ export function ThemeSwitcher({ themes }: { themes: PublicTheme[] }) {
     }
   }, [themes]);
 
-  // Close on outside click while open.
+  // Close on outside click or Escape while open.
   useEffect(() => {
     if (!open) return;
     const onDown = (e: PointerEvent) => {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     document.addEventListener("pointerdown", onDown);
-    return () => document.removeEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [open]);
 
   if (themes.length === 0) return null;
@@ -57,27 +64,26 @@ export function ThemeSwitcher({ themes }: { themes: PublicTheme[] }) {
         </svg>
       </button>
       {open && (
-        <ul className={styles.menu} role="listbox" aria-label="Theme">
+        <div className={styles.menu} role="listbox" aria-label="Theme">
           {themes.map((theme) => (
-            <li key={theme.id}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={theme.id === selectedId}
-                className={styles.option}
-                onClick={() => pick(theme)}
-              >
-                <span className={styles.swatches} aria-hidden="true">
-                  <span style={{ background: theme.style["--neon-turquoise"] }} />
-                  <span style={{ background: theme.style["--neon-pink"] }} />
-                  <span style={{ background: theme.style["--neon-purple"] }} />
-                </span>
-                <span className={styles.name}>{theme.name}</span>
-                {theme.id === selectedId && <span className={styles.check} aria-hidden="true">✓</span>}
-              </button>
-            </li>
+            <button
+              key={theme.id}
+              type="button"
+              role="option"
+              aria-selected={theme.id === selectedId}
+              className={styles.option}
+              onClick={() => pick(theme)}
+            >
+              <span className={styles.swatches} aria-hidden="true">
+                <span style={{ background: theme.style["--neon-turquoise"] }} />
+                <span style={{ background: theme.style["--neon-pink"] }} />
+                <span style={{ background: theme.style["--neon-purple"] }} />
+              </span>
+              <span className={styles.name}>{theme.name}</span>
+              {theme.id === selectedId && <span className={styles.check} aria-hidden="true">✓</span>}
+            </button>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

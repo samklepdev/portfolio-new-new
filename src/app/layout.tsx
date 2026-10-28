@@ -52,7 +52,7 @@ export default async function RootLayout({
         <script
           id="__themes__"
           type="application/json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(publicThemes) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(publicThemes).replace(/</g, "\\u003c") }}
         />
         <script dangerouslySetInnerHTML={{ __html: buildThemeBootScript() }} />
         {children}
