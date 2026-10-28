@@ -7,9 +7,11 @@ import { SbkLogo } from "@/components/brand/SbkLogo";
 import { usePathname } from "next/navigation";
 import { useScrollStore } from "@/lib/scrollStore";
 import { NAV_LINKS, RESUME_URL } from "@/lib/siteLinks";
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
+import type { PublicTheme } from "@/services/types";
 import styles from "./Header.module.css";
 
-export function Header() {
+export function Header({ publicThemes }: { publicThemes: PublicTheme[] }) {
   const pathname = usePathname();
   const heroDismissed = useScrollStore((state) => state.heroDismissed);
   const logoLanded = useScrollStore((state) => state.logoLanded);
@@ -73,6 +75,7 @@ export function Header() {
         </ul>
 
         <div className={styles.actions}>
+          <ThemeSwitcher themes={publicThemes} />
           <a className={styles.resume} href={RESUME_URL} download>
             Resume
             <svg
